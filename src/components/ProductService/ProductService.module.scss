@@ -1,0 +1,57 @@
+.product-service-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 150px;
+  font-family: "Poppins";
+  align-items: center;
+  gap: 100px;
+  margin-bottom: 150px;
+}
+
+.product-service-item {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+
+  >h1 {
+    font-weight: 700;
+    font-size: 20px;
+  }
+
+  >p {
+    font-size: 14px;
+  }
+
+  img {
+    width: 20px;
+    height: 20px;
+  }
+
+  >span {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    height: 80px;
+    position: relative;
+    background-color: var(--black);
+    border-radius: 50%;
+    border: 10px solid var(--text-gray-500);
+
+    >.icon-check {
+      position: absolute;
+      color: var(--black);
+      left: 50%;
+      top: 50%;
+      transform: translate(-45%, -50%);
+      font-size: 17px;
+    }
+
+    >i {
+      font-size: 30px;
+      color: white;
+    }
+  }
+}

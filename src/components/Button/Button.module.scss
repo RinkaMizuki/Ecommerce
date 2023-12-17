@@ -1,0 +1,17 @@
+.btn-sm {
+  height: 45px;
+  width: 139px;
+}
+
+.btn-lg {
+  height: 45px;
+  width: 200px;
+}
+
+.btn {
+  font-family: "Poppins";
+  border-radius: 5px;
+  background-color: var(--primary);
+  color: var(--text-white);
+  cursor: pointer;
+}

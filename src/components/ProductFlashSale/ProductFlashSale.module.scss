@@ -1,0 +1,17 @@
+.container {
+  width: 100%;
+  border-bottom: 1px solid #d3d3d3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 50px;
+}
+.mySwiper {
+   & img {
+    height: unset;
+  }
+}
+
+.btn-wrapper {
+  margin-bottom: 50px;
+}

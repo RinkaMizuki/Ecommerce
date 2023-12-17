@@ -1,0 +1,122 @@
+.wrapper {
+  margin-top: 50px;
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.cart-container {
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+  font-family: "Poppins";
+  border-radius: 5px;
+  overflow: hidden;
+  gap: 20px;
+}
+
+.cart-img {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  overflow: hidden;
+  width: 250px;
+  height: 350px;
+  cursor: pointer;
+  background-color: var(--bg-gray);
+  >img {
+    transform: scale(0.8);
+    transition: all .7s ease-in-out;
+  }
+  >img:hover {
+    transform: scale(1.0);
+  }
+  >span {
+    display: inline-block;
+    position: absolute;
+  }
+
+  >.cart-sale {
+    top: 10px;
+    left: 10px;
+    padding: 5px 7px;
+    color: var(--text-white);
+    background-color: var(--primary);
+    border-radius: 4px;
+  }
+
+  >.cart-like,
+  >.cart-review {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    right: 10px;
+    top: 10px;
+    width: 34px;
+    height: 34px;
+    background-color: var(--white);
+    border-radius: 50%;
+    cursor: pointer;
+
+    >i {
+      font-size: 21px;
+    }
+  }
+
+  >.cart-review {
+    top: 55px;
+  }
+}
+
+.cart-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: start;
+}
+
+.cart-title {
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.cart-price-sale {
+  font-weight: 500;
+  color: var(--primary);
+  margin-right: 10px;
+  font-size: 16px;
+}
+
+.cart-price {
+  font-weight: 500;
+  text-decoration: line-through;
+  color: var(--text-gray-700);
+  font-size: 16px;
+}
+
+.cart-feedback {
+  font-size: 15px;
+  >i {
+    margin-right: 4px;
+    color: var(--bg-yellow);
+  }
+
+  color: var(--text-gray-700);
+  font-weight: 600;
+}
+
+.add-cart {
+  height: 41px;
+  width: 100%;
+  position: absolute;
+  background-color: var(--black);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-100%);
+  bottom: 0;
+}

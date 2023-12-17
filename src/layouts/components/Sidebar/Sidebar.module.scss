@@ -1,0 +1,33 @@
+.sidebar-wrapper {
+  width: 217px;
+  margin-right: 30px;
+  position: relative;
+}
+.sidebar-content{
+  font-family: "Poppins";
+  font-weight: 400;
+  font-size: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 26px;
+}
+.sidebar-item {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  letter-spacing: 1px;
+  > span {
+    display: inline-block;
+  }
+}
+
+.line {
+position: absolute;
+  top: -30px;
+  right: -30px;
+  width: 1px;
+  height: 373px;
+  background-color: #d3d3d3;
+}
