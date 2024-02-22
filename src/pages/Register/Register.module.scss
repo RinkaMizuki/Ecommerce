@@ -1,0 +1,104 @@
+.btn-google {
+  background-color: var(--white);
+  width: 100%;
+  color: var(--black);
+  margin-top: 10px;
+
+  img {
+    width: 30px;
+    height: 30px;
+  }
+
+  >div {
+    border: 1px solid var(--text-gray-500);
+    border-radius: 5px;
+    padding: 6px;
+    gap: 20px;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.register-wrapper {
+  font-family: "Poppins";
+  align-items: center;
+  display: flex;
+  gap: 100px;
+  margin-top: 50px;
+  margin-bottom: 100px;
+}
+
+.register-image {
+  flex-basis: 70%;
+
+  >img {
+    height: 500px;
+  }
+}
+
+.register-form {
+  flex-basis: 30%;
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.register-title {
+  >h1 {
+    font-weight: 600;
+    font-size: 30px;
+  }
+
+  >p {
+    font-size: 14px;
+    margin-top: 20px;
+  }
+}
+
+.register-info {
+  display: flex;
+  flex-direction: column;
+  gap: 35px;
+
+  >input {
+    border-bottom: 1px solid var(--text-gray-500);
+    padding-bottom: 5px;
+  }
+
+  >.password-wrapper {
+    border-bottom: 1px solid var(--text-gray-500);
+    padding-bottom: 5px;
+    position: relative;
+
+    >i {
+      cursor: pointer;
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+}
+
+.btn-register {
+  width: 100%;
+  margin-top: -15px;
+}
+
+.register-redirect {
+  margin-top: -20px;
+  text-align: center;
+
+  >a {
+    display: inline-block;
+    margin-left: 10px;
+    color: var(--black);
+  }
+}
+.custom-loading {
+  width: 30px !important;
+  height: 30px !important;
+  border-width: 4px !important;
+}

@@ -13,17 +13,44 @@ import { useRef, useState } from "react";
 import ViewTitle from "../ViewTitle/index.js";
 import { Lightbox } from "react-modal-image";
 import Button from "../Button";
+import { useEffect } from "react";
+import useCustomFetch from "../../hooks/useCustomFetch.jsx";
+import queryString from "query-string";
 
 const cx = classNames.bind(styles);
 
 const ProductFlashSale = () => {
-    const [isOpen, setIsOpen] = useState(false);
+    const [productId, setProductId] = useState("");
+    const [productSale, setProductSale] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [get] = useCustomFetch();
 
     const prevRef = useRef(null);
     const nextRef = useRef(null);
 
-    const closeLightBox = () => {
-        setIsOpen(!isOpen);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setIsLoading(true);
+
+                const filterData = { sale: 'flashSale' };
+                const queryStringData = queryString.stringify({ filter: JSON.stringify(filterData) })
+
+                const response = await get(`Admin/products?${queryStringData}`);
+                setProductSale(response.data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        // Call the fetchData function
+        fetchData();
+    }, []);
+
+    const closeLightBox = (id) => {
+        setProductId(id);
     }
 
     return (
@@ -35,17 +62,24 @@ const ProductFlashSale = () => {
                 label="Today's"
                 title="Flash Sales"
             />
-            {isOpen &&
-                <div style={{ fontFamily: "Poppins" }}>
-                    <Lightbox
-                        imageBackgroundColor="transparent"
-                        hideZoom={true}
-                        hideDownload={true}
-                        onClose={closeLightBox}
-                        large="https://www.pngplay.com/wp-content/uploads/13/Gaming-Keyboard-Transparent-Free-PNG.png"
-                        alt="Review Product"
-                    />
-                </div>
+            {
+                productSale?.map(p => {
+                    if (p.id == productId) {
+                        return (
+                            <div style={{ fontFamily: "Poppins" }} key={p.id}>
+                                <Lightbox
+                                    imageBackgroundColor="transparent"
+                                    hideZoom={true}
+                                    hideDownload={true}
+                                    onClose={closeLightBox}
+                                    large={p.url}
+                                    alt={p.image}
+                                />
+                            </div>
+                        )
+                    }
+                    return null;
+                })
             }
             <div className={cx("container")}>
                 <Swiper
@@ -60,36 +94,20 @@ const ProductFlashSale = () => {
                     modules={[FreeMode, Navigation]}
                     className={cx("mySwiper")}
                 >
-                    <SwiperSlide className={cx("custom-swiper-slide")}>
-                        <Cart onCloseLightBox={closeLightBox}></Cart>
-                    </SwiperSlide>
-                    <SwiperSlide className={cx("custom-swiper-slide")}>
-                        <Cart onCloseLightBox={closeLightBox}></Cart>
-                    </SwiperSlide>
-                    <SwiperSlide className={cx("custom-swiper-slide")}>
-                        <Cart onCloseLightBox={closeLightBox}></Cart>
-                    </SwiperSlide>
-                    <SwiperSlide className={cx("custom-swiper-slide")}>
-                        <Cart onCloseLightBox={closeLightBox}></Cart>
-                    </SwiperSlide>
-                    <SwiperSlide className={cx("custom-swiper-slide")}>
-                        <Cart onCloseLightBox={closeLightBox}></Cart>
-                    </SwiperSlide>
-                    <SwiperSlide className={cx("custom-swiper-slide")}>
-                        <Cart onCloseLightBox={closeLightBox}></Cart>
-                    </SwiperSlide>
-                    <SwiperSlide className={cx("custom-swiper-slide")}>
-                        <Cart onCloseLightBox={closeLightBox}></Cart>
-                    </SwiperSlide>
-                    <SwiperSlide className={cx("custom-swiper-slide")}>
-                        <Cart onCloseLightBox={closeLightBox}></Cart>
-                    </SwiperSlide>
-                    <SwiperSlide className={cx("custom-swiper-slide")}>
-                        <Cart onCloseLightBox={closeLightBox}></Cart>
-                    </SwiperSlide>
+                    {productSale?.map(p => (
+                        <SwiperSlide
+                            className={cx("custom-swiper-slide")}
+                            key={p.id}
+                        >
+                            <Cart
+                                onCloseLightBox={closeLightBox}
+                                data={p}
+                            />
+                        </SwiperSlide>
+                    ))}
                 </Swiper>
                 <div className={cx("btn-wrapper")}>
-                    <Button lagre={true} content="View All Products" />
+                    <Button lagre={true}>View All Products</Button>
                 </div>
             </div>
         </>

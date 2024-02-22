@@ -5,6 +5,7 @@ import ViewTitle from "../ViewTitle";
 import classNames from "classnames/bind";
 import styles from "./SuggestProduct.module.scss";
 import Button from "../Button";
+import shooter from "../../assets/images/Shooter.png"
 import 'swiper/css';
 import 'swiper/css/grid';
 import { useRef } from 'react';
@@ -38,50 +39,50 @@ const SuggestProduct = () => {
         modules={[Grid,Navigation]}
       >
         <SwiperSlide>
-          <Cart img="https://fantechworld.com/wp-content/uploads/2019/09/GP11_PRD3-1024x576.png"></Cart>
+          <Cart img={shooter}></Cart>
         </SwiperSlide>
         <SwiperSlide>
-          <Cart img="https://fantechworld.com/wp-content/uploads/2019/09/GP11_PRD3-1024x576.png"></Cart>
+          <Cart img={shooter}></Cart>
         </SwiperSlide>
         <SwiperSlide>
-          <Cart img="https://fantechworld.com/wp-content/uploads/2019/09/GP11_PRD3-1024x576.png"></Cart>
+          <Cart img={shooter}></Cart>
         </SwiperSlide>
         <SwiperSlide>
-          <Cart img="https://fantechworld.com/wp-content/uploads/2019/09/GP11_PRD3-1024x576.png"></Cart>
+          <Cart img={shooter}></Cart>
         </SwiperSlide>
         <SwiperSlide>
-          <Cart img="https://fantechworld.com/wp-content/uploads/2019/09/GP11_PRD3-1024x576.png"></Cart>
+          <Cart img={shooter}></Cart>
         </SwiperSlide>
         <SwiperSlide>
-          <Cart img="https://fantechworld.com/wp-content/uploads/2019/09/GP11_PRD3-1024x576.png"></Cart>
+          <Cart img={shooter}></Cart>
         </SwiperSlide>
         <SwiperSlide>
-          <Cart img="https://fantechworld.com/wp-content/uploads/2019/09/GP11_PRD3-1024x576.png"></Cart>
+          <Cart img={shooter}></Cart>
         </SwiperSlide>
         <SwiperSlide>
-          <Cart img="https://fantechworld.com/wp-content/uploads/2019/09/GP11_PRD3-1024x576.png"></Cart>
+          <Cart img={shooter}></Cart>
         </SwiperSlide>
         <SwiperSlide>
-          <Cart img="https://fantechworld.com/wp-content/uploads/2019/09/GP11_PRD3-1024x576.png"></Cart>
+          <Cart img={shooter}></Cart>
         </SwiperSlide>
         <SwiperSlide>
-          <Cart img="https://fantechworld.com/wp-content/uploads/2019/09/GP11_PRD3-1024x576.png"></Cart>
+          <Cart img={shooter}></Cart>
         </SwiperSlide>
         <SwiperSlide>
-          <Cart img="https://fantechworld.com/wp-content/uploads/2019/09/GP11_PRD3-1024x576.png"></Cart>
+          <Cart img={shooter}></Cart>
         </SwiperSlide>
         <SwiperSlide>
-          <Cart img="https://fantechworld.com/wp-content/uploads/2019/09/GP11_PRD3-1024x576.png"></Cart>
+          <Cart img={shooter}></Cart>
         </SwiperSlide>
         <SwiperSlide>
-          <Cart img="https://fantechworld.com/wp-content/uploads/2019/09/GP11_PRD3-1024x576.png"></Cart>
+          <Cart img={shooter}></Cart>
         </SwiperSlide>
         <SwiperSlide>
-          <Cart img="https://fantechworld.com/wp-content/uploads/2019/09/GP11_PRD3-1024x576.png"></Cart>
+          <Cart img={shooter}></Cart>
         </SwiperSlide>
       </Swiper>
       <div className={cx("btn-wrapper")}>
-        <Button content="View All Suggest" lagre/>
+        <Button lagre>View All Suggest</Button>
       </div>
     </div>
   )

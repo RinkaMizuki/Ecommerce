@@ -13,7 +13,7 @@ const Slider = () => {
   for (let i = 0; i < 5; i++) {
     row.push(<SwiperSlide key={i}>
       <div className="swiper-zoom-container">
-        <img src="https://www.apple.com/newsroom/images/2023/09/apple-unveils-iphone-15-pro-and-iphone-15-pro-max/article/Apple-iPhone-15-Pro-lineup-hero-230912_Full-Bleed-Image.jpg.xlarge.jpg" alt="" />
+        <img src="https://lh3.googleusercontent.com/FETzGOo1Efz7J9SqBdo8h8LwytumW5geyGio-cVgVXRfNNVILmpSPZdcboy-A6jodlgnDMbpJhrfjqvwLf0-epdC1aEdzcdNvU62VhxcLMdmJT5WFkkIdx3BL9OOtD-HwCXmcyfPNZpomiM-QfPb-i9hAIV8kCAFBCypJPhZFC2cJFOYl8ytcrNmCg" alt="Iphone 13 Pro" />
       </div>
     </SwiperSlide>);
   }

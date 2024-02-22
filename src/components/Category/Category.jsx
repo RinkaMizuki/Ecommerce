@@ -18,11 +18,11 @@ const Category = () => {
       <ViewTitle label="Categories" title="Browser By Category" />
       <div className={cx("category-container")}>
         <div className={cx("category-item")}>
-          <i class="fa-solid fa-mobile-screen"></i>
+          <i className="fa-solid fa-mobile-screen"></i>
           <span>Phones</span>
         </div>
         <div className={cx("category-item")}>
-          <i class="fa-solid fa-display"></i>
+          <i className="fa-solid fa-display"></i>
           <span>Computers</span>
         </div>
         <div className={cx("category-item")} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
@@ -31,15 +31,15 @@ const Category = () => {
           <span>Watches</span>
         </div>
         <div className={cx("category-item")}>
-          <i class="fa-solid fa-camera"></i>
+          <i className="fa-solid fa-camera"></i>
           <span>Cameras</span>
         </div>
         <div className={cx("category-item")}>
-          <i class="fa-solid fa-headphones"></i>
+          <i className="fa-solid fa-headphones"></i>
           <span>HeadPhones</span>
         </div>
         <div className={cx("category-item")}>
-          <i class="fa-solid fa-gamepad"></i>
+          <i className="fa-solid fa-gamepad"></i>
           <span>Gamings</span>
         </div>
       </div>

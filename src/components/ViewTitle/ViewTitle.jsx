@@ -20,7 +20,7 @@ const ViewTitle = ({ className, flashsale = false, title, label, nextRef, prevRe
         {!btnView ? <div className={cx("title-navigate")}>
           <i className={cx("icon-arrow-left", "fa-solid fa-arrow-left-long")} ref={prevRef}></i>
           <i className={cx("icon-arrow-right", "fa-solid fa-arrow-right-long")} ref={nextRef}></i>
-        </div> : !emptyBtn ? <Button small={true} content="View All" className={className} /> : null}
+        </div> : !emptyBtn ? <Button small={true} className={className} >View All</Button> : null}
       </div>
     </div>
   )

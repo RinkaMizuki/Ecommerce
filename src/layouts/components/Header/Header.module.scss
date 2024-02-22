@@ -58,7 +58,7 @@
   flex-basis: 53%;
   gap: 40px;
 
-  >h2 {
+  >a:first-child {
     font-weight: 700;
     font-size: 23px;
     flex-grow: 2;
@@ -113,4 +113,58 @@
 
 input::placeholder {
   font-size: 15px;
+}
+
+.user-info {
+  width: 32px;
+  height: 32px;
+  background-color: var(--primary);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+
+  >i {
+    color: var(--white);
+  }
+}
+
+.menu-container {
+  width: 225px;
+  height: 208px;
+  backdrop-filter: blur(60px);
+  color: var(--white);
+  font-family: "Poppins";
+  font-weight: 300;
+  font-size: 15px;
+  border-radius: 5px;
+}
+
+.menu-dropdown {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+
+  >li:first-child {
+    margin-top: 10px;
+  }
+
+  >li:last-child {
+    margin-bottom: 10px;
+  }
+
+  >li {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px;
+    transition: all .1s ease-in-out;
+
+    &:hover {
+      background-color: var(--black);
+    }
+  }
 }
