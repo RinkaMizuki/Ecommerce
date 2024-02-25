@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import styles from "./Header.module.scss";
 import classNames from 'classnames/bind';
 import { useDispatch, useSelector } from "react-redux";
@@ -9,12 +9,13 @@ import { logoutFailed, logoutStart, logoutSuccess } from "../../../redux/authSli
 import useCustomFetch from "../../../hooks/useCustomFetch";
 import { useSpring, animated } from "@react-spring/web";
 import TokenService from "../../../services/tokenService";
+import { getLocalFavoriteProductId } from "../../../services/favoriteService";
 
 const cx = classNames.bind(styles);
 
 const Header = function () {
 
-  const [, logoutService] = useCustomFetch();
+  const [, post] = useCustomFetch();
 
   const config = { tension: 300, friction: 20 };
   const initialStyles = { opacity: 0, transform: "scale(0.5)" };
@@ -22,11 +23,14 @@ const Header = function () {
   const userLogin = useSelector(state => state.auth.login.currentUser);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = async () => {
+
+
     dispatch(logoutStart())
     try {
-      var res = await logoutService(`/Auth/logout?userId=${userLogin.user.userId}`, {}, {})
+      var res = await post(`/Auth/logout?userId=${userLogin.user.id}`, {}, {})
       dispatch(logoutSuccess(res?.data))
       TokenService.removeToken("token");
       navigate("/")
@@ -35,7 +39,6 @@ const Header = function () {
       dispatch(logoutFailed(res.data))
     }
   }
-
 
   function onMount() {
     setSpring({
@@ -84,7 +87,10 @@ const Header = function () {
               <input type="text" name="search" id="search" placeholder="What are you looking for?" />
               <i className={cx("icon-search", "fa-solid fa-magnifying-glass")}></i>
             </div>
-            <i className={cx("icon-heart", "fa-regular fa-heart")}></i>
+            {location.pathname !== "/favorite" ? <Link to="/favorite" className={cx("favorite-wrapper")}>
+              <span className={cx("favorite-quantity")}>{getLocalFavoriteProductId().length || null}</span>
+              <i className={cx("icon-heart", "fa-regular fa-heart")}></i>
+            </Link> : <i className={cx("icon-heart", "fa-solid fa-heart", "active")}></i>}
             <i className={cx("icon-cart", "fa-solid fa-cart-shopping")}></i>
             {userLogin && <Tippy
               duration={500}

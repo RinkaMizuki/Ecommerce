@@ -3,9 +3,10 @@ import styles from "./Cart.module.scss"
 import classNames from "classnames/bind";
 import { useSpring, animated, config } from "@react-spring/web"
 import StarRatings from "react-star-ratings";
+import { setLocalFavoriteProductId } from "../../services/favoriteService";
 const cx = classNames.bind(styles);
 
-const Cart = ({ onCloseLightBox, data, img = null }) => {
+const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false, isRemove = false, hiddenHeart = false }) => {
   const cartRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -33,8 +34,14 @@ const Cart = ({ onCloseLightBox, data, img = null }) => {
     })
   }
 
+  const handleSaveFavorite = (id) => {
+    setLocalFavoriteProductId(id)
+  }
+
   return (
-    <div className={cx("cart-container")}>
+    <div className={cx("cart-container", {
+      [className]: className,
+    })}>
       <animated.div className={cx("cart-img")}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -47,35 +54,48 @@ const Cart = ({ onCloseLightBox, data, img = null }) => {
         <span
           className={cx("cart-sale")}
         >-40%</span>
-        <span
-          className={cx("cart-like")}
+        {!isRemove ? <>
+          {!hiddenHeart && <span
+            className={cx("cart-like")}
+            onClick={() => { handleSaveFavorite(data.id) }}
+          >
+            <i className="fa-regular fa-heart">
+            </i>
+          </span>}
+
+          <span className={cx("cart-review", {
+            "hidden-heart": hiddenHeart,
+          })} onClick={() => onCloseLightBox(data.id)}><i className="fa-regular fa-eye"></i></span>
+        </> : <span
+          className={cx("cart-trash")}
         >
-          <i className="fa-regular fa-heart">
-          </i>
-        </span>
-        <span className={cx("cart-review")} onClick={() => onCloseLightBox(data.id)}><i className="fa-regular fa-eye"></i></span>
+          <i className="fa-regular fa-trash-can"></i>
+        </span>}
         <animated.div className={cx("add-cart")}
           style={{ ...springs }}
           ref={cartRef}
-        >Add To Cart</animated.div>
+        >
+          <i className="fa-solid fa-cart-shopping"></i>
+          <span style={{ marginLeft: "10px" }}>Add To Cart</span>
+        </animated.div>
       </animated.div>
       <div className={cx("cart-content")}>
         <h2 className={cx("cart-title")}>{data?.title}</h2>
         <div className={cx("cart-price-wrapper")}>
-          <span className={cx("cart-price-sale")}>{data?.price * (1 - data?.discount / 100)} VND</span>
-          <span className={cx("cart-price")}>{data?.price} VND</span>
+          <span className={cx("cart-price-sale")}>{(data?.price * (1 - data?.discount / 100)).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</span>
+          <span className={cx("cart-price")}>{data?.price.toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</span>
         </div>
-        <div className={cx("cart-feedback")}>
+        {!hiddenStar && <div className={cx("cart-feedback")}>
           <StarRatings
-            rating={isNaN(data?.productRates?.reduce((sum, rate) => sum + rate.star, 0) / data?.productRates?.length) ? 5 : data?.productRates?.reduce((sum, rate) => sum + rate.star, 0) / data?.productRates?.length}
+            rating={isNaN(data?.productRates?.reduce((sum, rate) => sum + rate.star, 0) / data?.productRates?.length) ? 0 : data?.productRates?.reduce((sum, rate) => sum + rate.star, 0) / data?.productRates?.length}
             starRatedColor="gold"
             numberOfStars={5}
-            starDimension="20px"
+            starDimension="17px"
             starSpacing="1px"
             name='rating'
           />
           <span>({data?.productRates?.length})</span>
-        </div>
+        </div>}
       </div>
     </div>
   )

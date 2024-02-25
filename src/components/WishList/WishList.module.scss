@@ -1,0 +1,90 @@
+.main-container {
+  margin-top: 30px;
+  font-family: "Poppins";
+  margin-bottom: 100px;
+}
+
+.top-container,
+.bottom-container {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.wrapper-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: 18px;
+}
+
+.btn-move {
+  width: 220px;
+  height: 50px;
+  font-weight: 500;
+  color: var(--black);
+  background-color: var(--white);
+  border: 2px solid var(--text-gray-700);
+}
+
+.btn-see {
+  font-weight: 500;
+  width: 150px;
+  height: 50px;
+  color: var(--black);
+  background-color: var(--white);
+  border: 2px solid var(--text-gray-700);
+}
+
+.wrapper-wishlist,
+.wrapper-foryou {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-gap: 90px;
+}
+
+.wrapper-foryou {
+  margin-top: 50px;
+}
+
+.spacing-line {
+  height: 100px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  >div {
+    width: 50%;
+    height: 1px;
+    background-color: var(--primary);
+  }
+}
+
+.title-time-text {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+  >span {
+    margin-top: 10px;
+    margin-left: 35px;
+    flex-grow: 1;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--black);
+  }
+
+  >.box-primary {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 40px;
+    background-color: var(--primary);
+    border-radius: 5px;
+  }
+}

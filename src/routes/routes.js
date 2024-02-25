@@ -5,6 +5,7 @@ import Home from "../pages/Home";
 import Register from "../pages/Register";
 import Login from "../pages/Login";
 import User from "../pages/User";
+import WishList from "../components/WishList/WishList";
 
 const publicRoutes = [
   {
@@ -21,7 +22,11 @@ const publicRoutes = [
   },
   {
     path: config.routes.user,
-    element : User,
+    element: User,
+  },
+  {
+    path: config.routes.favorite,
+    element: WishList,
   },
 ]
 

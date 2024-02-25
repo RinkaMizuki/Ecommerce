@@ -109,6 +109,11 @@
 .icon-cart {
   font-size: 23px;
   cursor: pointer;
+  color: #000 !important;
+}
+
+.active {
+  color: var(--primary) !important;
 }
 
 input::placeholder {
@@ -167,4 +172,23 @@ input::placeholder {
       background-color: var(--black);
     }
   }
+}
+
+.favorite-wrapper {
+  display: inline-block;
+  position: relative;
+}
+
+.favorite-quantity {
+  position: absolute;
+  width: 17px;
+  height: 17px;
+  right: -5px;
+  top: -3px;
+  background-color: var(--primary);
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  border-radius: 50%;
+  font-size: 16px;
 }

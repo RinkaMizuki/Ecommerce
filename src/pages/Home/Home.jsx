@@ -2,15 +2,15 @@ import styles from "./Home.module.scss";
 import classNames from "classnames/bind";
 import ProductFlashSale from "../../components/ProductFlashSale";
 import Category from "../../components/Category";
-import BestSeller from "../../components/BestSeller/BestSeller";
 import ProductFuture from "../../components/ProductFuture";
-import SuggestProduct from "../../components/SuggestProduct";
+import ProductSuggest from "../../components/ProductSuggest";
 import ProductArrival from "../../components/ProductArrival";
 import Sidebar from "../../layouts/components/Sidebar";
 import Slider from "../../layouts/components/Slider";
 import ProductService from "../../components/ProductService";
 import { toast, ToastContainer } from "react-toastify"
 import Snowfall from "react-snowfall";
+import ProductBestSeller from "../../components/ProductBestSeller/ProductBestSeller";
 
 const cx = classNames.bind(styles);
 
@@ -32,9 +32,9 @@ const Home = () => {
       </div>
       <ProductFlashSale></ProductFlashSale>
       <Category></Category>
-      <BestSeller></BestSeller>
+      <ProductBestSeller></ProductBestSeller>
       <ProductFuture></ProductFuture>
-      <SuggestProduct></SuggestProduct>
+      <ProductSuggest></ProductSuggest>
       <ProductArrival></ProductArrival>
       <ProductService></ProductService>
     </div >

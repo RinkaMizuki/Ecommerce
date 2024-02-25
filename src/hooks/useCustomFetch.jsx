@@ -1,8 +1,9 @@
 import httpRequests from "../utils/httpRequests";
 import tokenService from "../services/tokenService"
+import { useNavigate } from "react-router-dom";
 
 const useCustomFetch = () => {
-
+  const navigate = useNavigate();
   const refreshToken = async () => {
     try {
       const res = await httpRequests.post(`/Auth/refresh-token`);
@@ -14,7 +15,7 @@ const useCustomFetch = () => {
   //nếu có token thì trước khi request sẽ đính kèm vào headers
   httpRequests.interceptors.request.use(
     async (config) => {
-      const token = tokenService.getLocalAccessToken()?.token;
+      const token = tokenService.getLocalAccessToken()?.token || import.meta.env.VITE_ECOMMERCE_FAKE_TOKEN;
       if (token) {
         config.headers["Authorization"] = `Bearer ${token}`;
       }
@@ -35,7 +36,7 @@ const useCustomFetch = () => {
         originalRequest._retry = true;
 
         const respRt = await refreshToken();
-        const accessToken = respRt.data.accessToken;
+        const accessToken = respRt.data?.accessToken;
 
         tokenService.updateLocalAccessToken({
           token: accessToken,
