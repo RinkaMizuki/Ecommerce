@@ -138,12 +138,17 @@ input::placeholder {
 .menu-container {
   width: 225px;
   height: 208px;
-  backdrop-filter: blur(60px);
+  // backdrop-filter: blur(60px);
   color: var(--white);
+  background-color: rgba(43, 43, 43, 0.8);
   font-family: "Poppins";
   font-weight: 300;
   font-size: 15px;
   border-radius: 5px;
+}
+
+.underline {
+  text-decoration: underline !important;
 }
 
 .menu-dropdown {
@@ -179,6 +184,11 @@ input::placeholder {
   position: relative;
 }
 
+.wrapper-active {
+  position: relative;
+}
+
+.favorite-quantity-active,
 .favorite-quantity {
   position: absolute;
   width: 17px;
@@ -189,6 +199,12 @@ input::placeholder {
   display: flex;
   justify-content: center;
   align-self: center;
+  cursor: pointer;
   border-radius: 50%;
   font-size: 16px;
+}
+
+.favorite-quantity-active {
+  color: var(--black);
+  background-color: #fff;
 }

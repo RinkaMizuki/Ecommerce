@@ -1,16 +1,17 @@
-const setLocalFavoriteProductId = (newId) => {
-  let listIds = getLocalFavoriteProductId();
+const setLocalFavoriteProductId = (newId, userId = "") => {
+  let listIds = getLocalFavoriteProductId(userId);
   const isExistId = listIds.some(oldId => oldId == newId);
   if (isExistId) {
     listIds = listIds.filter(oldId => oldId !== newId);
   } else {
     listIds.push(newId);
   }
-  localStorage.setItem("favorites", JSON.stringify(listIds));
+  localStorage.setItem(`favorites_${userId}`, JSON.stringify(listIds));
+  window.dispatchEvent(new Event(`NewDataEvent_${userId}`));
 }
 
-const getLocalFavoriteProductId = () => {
-  const ids = JSON.parse(localStorage.getItem("favorites")) || [];
+const getLocalFavoriteProductId = (userId = "") => {
+  const ids = JSON.parse(localStorage.getItem(`favorites_${userId}`)) || [];
   return ids;
 }
 

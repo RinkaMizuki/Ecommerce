@@ -5,6 +5,7 @@ import Home from "../pages/Home";
 import Register from "../pages/Register";
 import Login from "../pages/Login";
 import User from "../pages/User";
+import Contact from "../pages/Contact";
 import WishList from "../components/WishList/WishList";
 
 const publicRoutes = [
@@ -27,6 +28,10 @@ const publicRoutes = [
   {
     path: config.routes.favorite,
     element: WishList,
+  },
+  {
+    path: config.routes.contact,
+    element: Contact,
   },
 ]
 

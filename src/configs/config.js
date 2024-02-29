@@ -5,6 +5,8 @@ const configRoutes = {
   login: "/login",
   user: "/user",
   favorite: "/favorite",
+  contact: "/contact",
+  
 }
 
 export default configRoutes;

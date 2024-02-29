@@ -1,15 +1,19 @@
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import styles from "./Cart.module.scss"
 import classNames from "classnames/bind";
 import { useSpring, animated, config } from "@react-spring/web"
 import StarRatings from "react-star-ratings";
-import { setLocalFavoriteProductId } from "../../services/favoriteService";
+import { setLocalFavoriteProductId, getLocalFavoriteProductId } from "../../services/favoriteService";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 const cx = classNames.bind(styles);
 
 const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false, isRemove = false, hiddenHeart = false }) => {
   const cartRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
-
+  const userInfo = useSelector(state => state.auth.login.currentUser);
+  const navigate = useNavigate();
+  const [idFavorites, setIdFavorites] = useState(getLocalFavoriteProductId(userInfo?.user?.id));
   const [springs, api] = useSpring(() => (
     {
       from: { y: 43 },
@@ -35,8 +39,30 @@ const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false
   }
 
   const handleSaveFavorite = (id) => {
-    setLocalFavoriteProductId(id)
+    if (!userInfo) {
+      navigate("/login")
+      return;
+    }
+    setLocalFavoriteProductId(id, userInfo.user.id)
   }
+
+  const handleRemoveProductFavorite = (id) => {
+    setLocalFavoriteProductId(id, userInfo.user.id)
+  }
+
+  useEffect(() => {
+
+    const handleStorageChange = () => {
+      const ids = getLocalFavoriteProductId(userInfo.user.id);
+      setIdFavorites(ids);
+    }
+
+    window.addEventListener(`NewDataEvent_${userInfo?.user?.id}`, handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [])
 
   return (
     <div className={cx("cart-container", {
@@ -59,8 +85,8 @@ const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false
             className={cx("cart-like")}
             onClick={() => { handleSaveFavorite(data.id) }}
           >
-            <i className="fa-regular fa-heart">
-            </i>
+            {!idFavorites.includes(data.id) || !userInfo ? <i className={cx("fa-regular fa-heart", "normal")}>
+            </i> : <i className={cx("fa-solid fa-heart", "active")}></i>}
           </span>}
 
           <span className={cx("cart-review", {
@@ -68,6 +94,7 @@ const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false
           })} onClick={() => onCloseLightBox(data.id)}><i className="fa-regular fa-eye"></i></span>
         </> : <span
           className={cx("cart-trash")}
+          onClick={() => handleRemoveProductFavorite(data.id)}
         >
           <i className="fa-regular fa-trash-can"></i>
         </span>}

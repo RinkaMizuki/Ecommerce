@@ -78,7 +78,10 @@
 }
 
 .swiper-zoom-container>img {
-  object-fit: cover !important;
+  height: auto;
+  max-width: 100%;
+  object-fit: contain !important;
+  object-position: center;
 }
 
 .swiper:hover {

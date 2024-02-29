@@ -6,16 +6,31 @@ import 'swiper/scss';
 import 'swiper/scss/pagination';
 import 'swiper/scss/navigation';
 import 'swiper/scss/zoom';
+import { useEffect, useState } from "react";
+import useCustomFetch from "../../../hooks/useCustomFetch";
 
 const Slider = () => {
 
+  const [getListSlider] = useCustomFetch();
+  const [listSlider, setListSlider] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+
+    const fetchData = async () => {
+      setIsLoading(true);
+      const response = await getListSlider("/Admin/sliders")
+      setListSlider(response.data);
+      setIsLoading(false);
+    }
+
+    fetchData();
+
+  }, [])
+
   const row = [];
   for (let i = 0; i < 5; i++) {
-    row.push(<SwiperSlide key={i}>
-      <div className="swiper-zoom-container">
-        <img src="https://lh3.googleusercontent.com/FETzGOo1Efz7J9SqBdo8h8LwytumW5geyGio-cVgVXRfNNVILmpSPZdcboy-A6jodlgnDMbpJhrfjqvwLf0-epdC1aEdzcdNvU62VhxcLMdmJT5WFkkIdx3BL9OOtD-HwCXmcyfPNZpomiM-QfPb-i9hAIV8kCAFBCypJPhZFC2cJFOYl8ytcrNmCg" alt="Iphone 13 Pro" />
-      </div>
-    </SwiperSlide>);
+    row.push();
   }
 
   return (
@@ -36,7 +51,13 @@ const Slider = () => {
         navigation={true} //cho phép click vào thanh điều hướng
         modules={[Pagination, Navigation, Autoplay]}
       >
-        {row}
+        {listSlider.map((slide) => (
+          <SwiperSlide key={slide.id}>
+            <div className="swiper-zoom-container">
+              <img src={slide.url} alt={slide.image} />
+            </div>
+          </SwiperSlide>
+        ))}
       </Swiper>
     </div>
   )

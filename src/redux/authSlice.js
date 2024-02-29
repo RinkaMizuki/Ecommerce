@@ -34,7 +34,7 @@ const authSlice = createSlice({
       state.login.isFetching = false;
       state.login.currentUser = null;
       state.login.erorr = false;
-      state.login.message = action.payload.message;
+      state.login.message = action?.payload?.message;
     },
     logoutFailed: (state, action) => {
       state.login.isFetching = false;

@@ -6,13 +6,22 @@ import classNames from "classnames/bind";
 import queryString from "query-string";
 import useCustomFetch from "../../hooks/useCustomFetch";
 import { Lightbox } from "react-modal-image";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { getLocalFavoriteProductId } from "../../services/favoriteService";
 
 const cx = classNames.bind(styles)
 
 const WishList = () => {
-  const [productSuggest, setProductSuggest] = useState(null);
+  const [productSuggest, setProductSuggest] = useState([]);
+  const [productFavorite, setProductFavorite] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [productId, setProductId] = useState("");
+  const userLogin = useSelector(state => state.auth.login.currentUser);
+  const [listIdFavorite, setListIdFavorite] = useState(getLocalFavoriteProductId(userLogin.user.id));
+  const [isAuthenticated, setAuthenticated] = useState(false);
+  const navigate = useNavigate();
+
   const [get] = useCustomFetch();
 
   useEffect(() => {
@@ -31,13 +40,62 @@ const WishList = () => {
         setIsLoading(false);
       }
     };
-
-    // Call the fetchData function
     fetchData();
+  }, [])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+
+        const filterData = {
+          idFavorites: listIdFavorite,
+          total: listIdFavorite.length
+        };
+        const queryStringData = queryString.stringify({ filter: JSON.stringify(filterData) })
+
+        const response = await get(`Admin/products?${queryStringData}`);
+        setProductFavorite(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchData();
+  }, [listIdFavorite])
+
+  useEffect(() => {
+
+    const handleStorageChange = () => {
+      const ids = getLocalFavoriteProductId(userLogin.user.id);
+      setListIdFavorite(ids);
+    }
+
+    window.addEventListener(`NewDataEvent_${userLogin?.user?.id}`, handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [])
+
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      // Thực hiện kiểm tra đăng nhập, có thể là một cuộc gọi API hoặc xác thực khác
+      const authenticated = !!userLogin;
+
+      setAuthenticated(authenticated);
+
+      if (!authenticated) {
+        navigate('/login');
+      }
+    };
+
+    checkAuthentication();
   }, [])
 
   const closeLightBox = (id) => {
     setProductId(id);
+  }
+  if (!isAuthenticated) {
+    return null;
   }
 
   return (
@@ -61,11 +119,14 @@ const WishList = () => {
       })}
       <div className={cx("top-container")}>
         <div className={cx("wrapper-header")}>
-          <h2 className={cx("title")}>Wishlist (4)</h2>
-          <Button className={cx("btn-move")}>Move All Bag</Button>
+          <h2 className={cx("title")}>Wishlist ({listIdFavorite.length})</h2>
+          {!!productFavorite.length && <Button className={cx("btn-move")}>Move All Bag</Button>}
         </div>
-        <div className={cx("wrapper-wishlist")}>
-          {productSuggest?.map(p => (
+        <div className={cx({
+          "wrapper-wishlist-result": productFavorite.length,
+          "wrapper-wishlist-no-result": !productFavorite.length,
+        })}>
+          {productFavorite.length ? productFavorite?.map(p => (
             <Cart
               isRemove={true}
               className={cx("item")}
@@ -73,7 +134,7 @@ const WishList = () => {
               data={p}
               hiddenStar={true}
             />
-          ))}
+          )) : <span className={cx("no-result")}>Không có sản phẩm yêu thích</span>}
         </div>
       </div>
       <div className={cx("spacing-line")}>

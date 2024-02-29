@@ -1,9 +1,12 @@
 import httpRequests from "../utils/httpRequests";
 import tokenService from "../services/tokenService"
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logoutSuccess } from "../redux/authSlice";
 
 const useCustomFetch = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const refreshToken = async () => {
     try {
       const res = await httpRequests.post(`/Auth/refresh-token`);
@@ -25,7 +28,7 @@ const useCustomFetch = () => {
     }
   )
 
-  //nếu response trả về có lỗi và nếu lỗi là do unauthorize thì gửi một request yêu cầu refresh token sau khi có token sẽ thực hiện lại request origin với token mới.
+  //nếu response trả về có lỗi và nếu lỗi là do unauthorize thì gửi một request yêu cầu refresh token sau khi có token sẽ thực hiện lại request origin với token mới chỉ 1 lần.
   httpRequests.interceptors.response.use(
     (response) => {
       return response;
@@ -43,6 +46,18 @@ const useCustomFetch = () => {
         });
         return httpRequests(originalRequest);
       }
+
+      let expires = null;
+      let now = new Date();
+      now.setTime(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+      expires = 'expires=' + now.toUTCString();
+      document.cookie = 'refreshToken=' + document.cookie.split('=')[1] + ';' + expires;
+
+      tokenService.removeToken();
+      dispatch(logoutSuccess({
+        message: "logout successfully"
+      }))
+      navigate("/")
       return Promise.reject(error);
     }
   );

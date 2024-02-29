@@ -38,7 +38,6 @@
   }
 
   >span {
-    display: inline-block;
     position: absolute;
   }
 
@@ -64,19 +63,43 @@
     background-color: var(--white);
     border-radius: 50%;
     cursor: pointer;
+    transition: all .2s ease-in-out;
 
     >i {
       font-size: 21px;
     }
   }
+}
 
-  >.cart-review {
-    top: 55px;
+.cart-like:hover {
+  >i {
+    transition: all .2s ease-in-out;
+    color: var(--primary) !important;
   }
 }
+
+.cart-review {
+  top: 55px !important;
+}
+
+.cart-review:hover,
+.cart-trash:hover {
+  color: var(--white);
+  background-color: var(--primary);
+}
+
 .hidden-heart {
   top: 10px !important;
 }
+
+.active {
+  color: var(--primary);
+}
+
+.normal {
+  color: var(--black);
+}
+
 .cart-content {
   display: flex;
   flex-direction: column;
