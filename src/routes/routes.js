@@ -7,6 +7,8 @@ import Login from "../pages/Login";
 import User from "../pages/User";
 import Contact from "../pages/Contact";
 import WishList from "../components/WishList/WishList";
+import About from "../pages/About/About";
+import ProductDetail from "../components/ProductDetail/ProductDetail";
 
 const publicRoutes = [
   {
@@ -33,6 +35,14 @@ const publicRoutes = [
     path: config.routes.contact,
     element: Contact,
   },
+  {
+    path: config.routes.about,
+    element: About,
+  },
+  {
+    path: config.routes.productDetail,
+    element: ProductDetail
+  }
 ]
 
 export { publicRoutes }

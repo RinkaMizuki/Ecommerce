@@ -99,7 +99,7 @@ const Register = () => {
         toast.success(res.data.message, toastOptions)
       }
       else if (res.data.statusCode == 409) { //status code conflict state 
-        toast.error("Account already exist !!!", toastOptions)
+        toast.error("Account already exist !", toastOptions)
       }
       else {
         toast.error(res.data.message, toastOptions)
@@ -134,7 +134,9 @@ const Register = () => {
           </div>
         </form>
         <div>
-          <Button className={cx("btn-register")} lagre onClick={handleCreateAccount} ref={submitRef}>
+          <Button className={cx("btn-register")} lagre onClick={handleCreateAccount} ref={submitRef}
+            disable={!password || !userName || !email || !confirmPassword}
+          >
             {!isLoading ? "Create Account" : <Loading className={cx("custom-loading")} />}
           </Button>
           <Button className={cx("btn-google")}>

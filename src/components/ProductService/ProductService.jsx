@@ -3,9 +3,11 @@ import classNames from "classnames/bind"
 
 const cx = classNames.bind(styles);
 
-const ProductService = () => {
+const ProductService = ({ className }) => {
   return (
-    <div className={cx("product-service-wrapper")}>
+    <div className={cx("product-service-wrapper", {
+      [className]: className
+    })}>
       <div className={cx("product-service-item")}>
         <span><i className="fa-solid fa-truck"></i></span>
         <h1>FREE AND FAST DELIVERY</h1>
@@ -19,7 +21,7 @@ const ProductService = () => {
       <div className={cx("product-service-item")}>
         <span>
           <i className="fa-solid fa-shield"></i>
-          <i className={cx("fa-solid fa-check","icon-check")}></i>
+          <i className={cx("fa-solid fa-check", "icon-check")}></i>
         </span>
         <h1>MONEY BACK GUARANTEE</h1>
         <p>We reurn money within 30 days</p>

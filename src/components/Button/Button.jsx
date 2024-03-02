@@ -6,6 +6,7 @@ const cx = classNames.bind(styles)
 const Button = forwardRef(({ onClick, disable = false, to = "", href = "", className, children, small = false, medium = false, lagre = false, ...propsPass }, ref) => {
 
     const btnClass = cx({
+        disable: disable,
         [className]: className,
         btn: true,
         'btn-sm': small,

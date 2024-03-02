@@ -5,12 +5,23 @@ import Button from "../../components/Button"
 import google from "../../assets/images/google.png"
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
+import { ToastContainer, toast } from 'react-toastify';
 import { useDispatch, useSelector } from "react-redux";
 import useCustomFetch from "../../hooks/useCustomFetch";
 import { loginFailed, loginStart, loginSuccess } from "../../redux/authSlice";
 import tokenService from "../../services/tokenService"
 import Loading from "../../components/Loading";
 
+const toastOptions = {
+  position: "top-right",
+  autoClose: 2000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  theme: "colored",
+}
 const cx = classNames.bind(styles);
 
 const Login = () => {
@@ -54,6 +65,7 @@ const Login = () => {
       userNameOrEmail,
       password
     }
+
     dispatch(loginStart())
     try {
       const res = await loginService("/Auth/login", user);
@@ -61,18 +73,27 @@ const Login = () => {
         token: res.data.accessToken,
       })
 
+      toast.success("Login account successfully !", toastOptions);
+
       setTimeout(() => {
         dispatch(loginSuccess(res?.data))
         navigate("/")
       }, 1000);
 
     } catch (error) {
-      dispatch(loginFailed(res?.data))
+
+      if (error.response.status != 200) {
+        toast.error("Login failed. Please try to again !", toastOptions);
+      }
+      dispatch(loginFailed({
+        message: "login failed"
+      }))
     }
   }
 
   return (
     <div className={cx("login-wrapper")}>
+      <ToastContainer></ToastContainer>
       <div className={cx("login-image")}>
         <img src={ecommerceRegister} alt="Ecommerce" />
       </div>
@@ -89,7 +110,9 @@ const Login = () => {
           </div>
         </form>
         <div>
-          <Button className={cx("btn-login")} lagre onClick={handleLogin} ref={submitRef}>
+          <Button className={cx("btn-login")} lagre onClick={handleLogin} ref={submitRef}
+            disable={!userNameOrEmail || !password}
+          >
             {!isFetching ? "Log In" : <Loading className={cx("custom-loading")} />}
           </Button>
           <Button className={cx("btn-google")}>

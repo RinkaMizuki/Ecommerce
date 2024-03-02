@@ -47,17 +47,20 @@ const useCustomFetch = () => {
         return httpRequests(originalRequest);
       }
 
-      let expires = null;
-      let now = new Date();
-      now.setTime(now.getTime() - 3 * 24 * 60 * 60 * 1000);
-      expires = 'expires=' + now.toUTCString();
-      document.cookie = 'refreshToken=' + document.cookie.split('=')[1] + ';' + expires;
+      if (error.response?.status === 403) {
+        let expires = null;
+        let now = new Date();
+        now.setTime(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+        expires = 'expires=' + now.toUTCString();
+        document.cookie = 'refreshToken=' + document.cookie.split('=')[1] + ';' + expires;
 
-      tokenService.removeToken();
-      dispatch(logoutSuccess({
-        message: "logout successfully"
-      }))
-      navigate("/")
+        tokenService.removeToken();
+        dispatch(logoutSuccess({
+          message: "logout successfully"
+        }))
+        navigate("/")
+      }
+      
       return Promise.reject(error);
     }
   );

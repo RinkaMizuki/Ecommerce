@@ -1,0 +1,144 @@
+.main-container {
+  display: flex;
+  flex-direction: column;
+  font-family: "Poppins";
+  gap: 100px;
+}
+
+.wrapper-story {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.left-story {
+  max-width: 500px;
+}
+
+.left-story {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.title-story {
+  font-weight: 600;
+  font-size: 40px;
+}
+
+.description-story {
+  line-height: 1.5;
+  font-size: 17px;
+}
+
+.wapper-site {
+  display: flex;
+  justify-content: space-between;
+}
+
+.info-site {
+  transition: all .2s ease-in-out;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  border: 2px solid var(--text-gray-500);
+  padding: 15px;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: var(--primary);
+    color: var(--white);
+
+    >.icon-site {
+      background-color: var(--white);
+      border-color: #ffafaf;
+
+      >i {
+        color: var(--black);
+      }
+    }
+  }
+}
+
+.icon-site {
+  width: 80px;
+  height: 80px;
+  background-color: var(--black);
+  border: 10px solid var(--text-gray-500);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  >i {
+    color: var(--white);
+    font-size: 30px;
+  }
+}
+
+.quantity-site {
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.description-site {
+  font-weight: 400;
+}
+
+.wapper-member {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  max-height: 560px;
+}
+
+.member-item {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.member-background {
+  background-color: #f5f5f5;
+  object-position: top;
+  max-height: 500px !important;
+  overflow: hidden;
+
+  >img {
+    height: auto;
+  }
+}
+
+.member-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.member-name {
+  font-size: 25px;
+  font-weight: 500;
+}
+
+.member-social {
+  display: flex;
+  gap: 15px;
+
+  >i {
+    cursor: pointer;
+    font-size: 18px;
+  }
+}
+
+.custom-service {
+  margin-top: 20px;
+}
+
+.site-swiper {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}

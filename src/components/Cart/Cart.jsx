@@ -5,7 +5,7 @@ import { useSpring, animated, config } from "@react-spring/web"
 import StarRatings from "react-star-ratings";
 import { setLocalFavoriteProductId, getLocalFavoriteProductId } from "../../services/favoriteService";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const cx = classNames.bind(styles);
 
 const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false, isRemove = false, hiddenHeart = false }) => {
@@ -72,11 +72,18 @@ const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <img
-          src={img ?? data?.url}
-          alt={data?.image}
-          onLoad={handleImageLoad}
-        />
+        <Link
+          style={{
+            display: "block",
+          }}
+          to={`/product-detail/${data.id}`}
+        >
+          <img
+            src={img ?? data?.url}
+            alt={data?.image}
+            onLoad={handleImageLoad}
+          />
+        </Link>
         <span
           className={cx("cart-sale")}
         >-40%</span>

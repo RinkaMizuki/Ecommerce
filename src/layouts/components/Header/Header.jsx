@@ -4,7 +4,6 @@ import classNames from 'classnames/bind';
 import { useDispatch, useSelector } from "react-redux";
 import Tippy from "@tippyjs/react/headless";
 import 'tippy.js/dist/tippy.css';
-
 import { logoutFailed, logoutStart, logoutSuccess } from "../../../redux/authSlice";
 import useCustomFetch from "../../../hooks/useCustomFetch";
 import { useSpring, animated } from "@react-spring/web";
@@ -102,7 +101,9 @@ const Header = function () {
             <Link to="/contact" className={cx({
               "underline": location.pathname == "/contact"
             })}>Contact</Link>
-            <Link to="/about">About</Link>
+            <Link to="/about" className={cx({
+              "underline": location.pathname == "/about"
+            })}>About</Link>
             {!userLogin && <Link to="/register" className={cx({
               "underline": location.pathname == "/register"
             })}>Sign up</Link>}
