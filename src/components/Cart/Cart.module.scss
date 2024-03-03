@@ -28,15 +28,6 @@
   cursor: pointer;
   background-color: var(--bg-gray);
 
-  >img {
-    transform: scale(0.8);
-    transition: all .7s ease-in-out;
-  }
-
-  >img:hover {
-    transform: scale(1.0);
-  }
-
   >span {
     position: absolute;
   }
@@ -68,6 +59,18 @@
     >i {
       font-size: 21px;
     }
+  }
+}
+
+.lazyload-img {
+  width: 100% !important;
+}
+
+.link-detail {
+  width: 100%;
+
+  >span {
+    width: 100%;
   }
 }
 

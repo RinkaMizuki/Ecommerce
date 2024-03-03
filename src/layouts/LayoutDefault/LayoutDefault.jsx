@@ -6,15 +6,16 @@ import Footer from "../components/Footer";
 
 const cx = classNames.bind(styles);
 
-const LayoutDefault = ({children}) => {
+const LayoutDefault = ({ children }) => {
+
   return (
-    <div>
+    <>
       <Header />
       <div className={cx("content-wrapper")}>
         {children}
       </div>
       <Footer />
-    </div>
+    </>
   )
 };
 

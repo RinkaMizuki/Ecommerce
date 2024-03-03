@@ -5,6 +5,8 @@ import Countdown from "react-countdown"
 import { useEffect, useState } from "react";
 import queryString from "query-string";
 import useCustomFetch from "../../hooks/useCustomFetch";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 const cx = classNames.bind(styles)
 const countDownDate = new Date(2024, 4, 1).getTime();
@@ -77,7 +79,11 @@ const ProductFuture = () => {
         <Button small className={cx("custom-btn-enroll")}>Enroll Now!</Button >
       </div>
       <div className={cx("product-future-img")}>
-        <img src={productUpcoming?.url} alt={productUpcoming?.image} />
+        <LazyLoadImage
+          src={productUpcoming?.url}
+          alt={productUpcoming?.image}
+          effect="blur"
+        />
       </div>
     </div>
   )

@@ -27,7 +27,7 @@ const About = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      imglyRemoveBackground("http://localhost:5083/api/v1/Admin/slider/preview?sliderImage=sliderImage_280a689a-50d9-4f91-b486-4452e27bd7d5_who.jpg").then((blob) => {
+      imglyRemoveBackground("https://img.lovepik.com/free-png/20210919/lovepik-business-men-in-the-office-png-image_400383214_wh1200.png").then((blob) => {
 
         const url = URL.createObjectURL(blob);
         setListImages(url);
@@ -100,7 +100,7 @@ const About = () => {
       </div>
       <div className={cx("wapper-member")}>
         <Swiper
-          slidesPerView={3}
+          slidesPerView={4}
           spaceBetween={30}
           // pagination={{
           //   clickable: true,

@@ -11,12 +11,14 @@ import ProductService from "../../components/ProductService";
 import { toast, ToastContainer } from "react-toastify"
 import Snowfall from "react-snowfall";
 import ProductBestSeller from "../../components/ProductBestSeller/ProductBestSeller";
+import ScrollButton from "../../components/ScrollButton";
 
 const cx = classNames.bind(styles);
 
 const Home = () => {
+
   return (
-    <div>
+    <>
       {/* <Snowfall
         style={{
           position: 'fixed',
@@ -27,6 +29,7 @@ const Home = () => {
       /> */}
       <ToastContainer></ToastContainer>
       <div className={cx("wrapper")}>
+        <ScrollButton />
         <Sidebar />
         <Slider />
       </div>
@@ -37,7 +40,7 @@ const Home = () => {
       <ProductSuggest></ProductSuggest>
       <ProductArrival></ProductArrival>
       <ProductService></ProductService>
-    </div >
+    </ >
   )
 };
 

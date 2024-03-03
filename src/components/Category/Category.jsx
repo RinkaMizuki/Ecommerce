@@ -15,7 +15,7 @@ const Category = () => {
   };
   return (
     <div className={cx("container")}>
-      <ViewTitle label="Categories" title="Browser By Category" />
+      <ViewTitle label="Categories" title="Browser By Category" hiddenArrow={true} />
       <div className={cx("category-container")}>
         <div className={cx("category-item")}>
           <i className="fa-solid fa-mobile-screen"></i>

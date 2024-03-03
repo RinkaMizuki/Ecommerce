@@ -2,35 +2,58 @@
   font-family: "Poppins";
   display: flex;
   flex-direction: column;
-  gap: 50px;
+  gap: 60px;
 }
 
 .product-container {
   max-height: 600px;
   display: flex;
+  justify-content: center;
   gap: 50px;
 }
 
 .product-images {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 26px;
   justify-content: center;
+}
 
-  >img {
-    max-width: 170px;
-    max-height: 140px;
-  }
+.product-background {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 505px;
+  background-color: #f5f5f5;
+  align-self: center;
+}
+
+.product-background-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  height: 170px;
+  background-color: #f5f5f5;
+
+}
+
+.lazy-image {
+  max-width: 100%;
+  max-height: 120px;
+  object-fit: contain;
 }
 
 .product-thumbnail {
-  max-width: 500px;
-  max-height: 600px;
-  flex: 1;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   >img {
-    height: 100%;
-    width: 100%;
+    max-height: 435px;
+    max-width: 450px;
     object-fit: contain;
   }
 }
@@ -68,6 +91,7 @@
   font-weight: 400;
   font-size: 15px;
   line-height: 1.5;
+  margin-bottom: 20px;
 }
 
 .product-price-sale {
@@ -78,6 +102,8 @@
 }
 
 .product-colors {
+  margin-top: 20px;
+
   >span {
     margin-right: 10px;
   }
@@ -218,4 +244,12 @@ input[type='number']::-webkit-outer-spin-button {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+}
+
+.active {
+  color: var(--primary);
+}
+
+.normal {
+  color: var(--black);
 }

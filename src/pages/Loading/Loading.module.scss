@@ -1,0 +1,34 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  justify-content: center;
+}
+
+.fullsreen-loading {
+  gap: 1.25rem;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.loading-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+
+  >p {
+    font-family: "Poppins";
+    font-size: 1.875rem;
+    font-weight: 500;
+    line-height: 2.25rem;
+  }
+}
+
+.icon-loading {
+  border-color: var(--primary);
+  border-bottom-color: var(--white);
+}

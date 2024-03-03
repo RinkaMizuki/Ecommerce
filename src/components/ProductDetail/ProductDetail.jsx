@@ -5,10 +5,14 @@ import Link from '@mui/material/Link';
 import useCustomFetch from "../../hooks/useCustomFetch";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import productImage from "../../assets/images/playstation5white.png";
 import StarRatings from "react-star-ratings";
 import ReactHtmlParser from "react-html-parser"
 import Button from "../Button/Button";
+import ProductRelate from "../ProductRelate";
+import { useSelector } from "react-redux";
+import { getLocalFavoriteProductId, setLocalFavoriteProductId } from "../../services/favoriteService";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 const cx = classNames.bind(styles);
 
@@ -19,6 +23,8 @@ const ProductDetail = () => {
   const [product, setProduct] = useState({});
   const [color, setColor] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const userLogin = useSelector(state => state.auth.login.currentUser);
+  const [idFavorites, setIdFavorites] = useState(getLocalFavoriteProductId(userLogin?.user?.id));
   const params = useParams();
   const navigate = useNavigate();
 
@@ -31,6 +37,20 @@ const ProductDetail = () => {
       setProduct(productResponse.data)
     }
     fetchData();
+  }, [params.productId])
+
+  useEffect(() => {
+
+    const handleStorageChange = () => {
+      const ids = getLocalFavoriteProductId(userLogin?.user?.id);
+      setIdFavorites(ids);
+    }
+
+    window.addEventListener(`NewDataEvent_${userLogin?.user?.id}`, handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, [])
 
   const handleChooseColor = (e) => {
@@ -46,6 +66,14 @@ const ProductDetail = () => {
     else if (isExistRoute == "category") {
       navigate(`/category/${event.target.href.split("/").pop()}`)
     }
+  }
+
+  const handleSaveFavorite = (id) => {
+    if (!userLogin) {
+      navigate("/login")
+      return;
+    }
+    setLocalFavoriteProductId(id, userLogin.user.id)
   }
 
   return (
@@ -76,11 +104,24 @@ const ProductDetail = () => {
       <div className={cx("product-container")}>
         <div className={cx("product-images")}>
           {product?.productImages?.slice(0, 4).map(p => (
-            <img src={p.url} alt={p.image} key={p.productImageId} />
+            <div className={cx("product-background-image")} key={p.productImageId} >
+              <LazyLoadImage
+                src={p.url}
+                alt={p.image}
+                effect="blur"
+                className={cx("lazy-image")}
+              />
+            </div>
           ))}
         </div>
-        <div className={cx("product-thumbnail")}>
-          <img src={product?.url} alt={product?.image} />
+        <div className={cx("product-background")}>
+          <div className={cx("product-thumbnail")}>
+            <LazyLoadImage
+              src={product?.url}
+              alt={product?.image}
+              effect="blur"
+            />
+          </div>
         </div>
         <div className={cx("product-info")}>
           <h2 className={cx("product-title")}>
@@ -111,7 +152,7 @@ const ProductDetail = () => {
           <hr />
           <div className={cx("product-colors")}>
             <span>Colors: </span>
-            {product?.productColors?.map(c => (
+            {product?.productColors?.length ? product?.productColors?.map(c => (
               <div
                 style={{
                   backgroundColor: `#${c.colorCode}`,
@@ -123,7 +164,7 @@ const ProductDetail = () => {
                 onClick={(e) => handleChooseColor(e)}
                 key={c.colorId}
               />
-            ))}
+            )) : "No colors"}
           </div>
           <div className={cx("product-sell")}>
             <div className={cx("number-input")}>
@@ -145,8 +186,11 @@ const ProductDetail = () => {
               >+</button>
             </div>
             <Button className={cx("btn-buynow")}>Buy Now</Button>
-            <span className={cx("heart-wrapper")}>
-              <i className={cx("fa-regular fa-heart")}></i>
+            <span className={cx("heart-wrapper")}
+              onClick={() => { handleSaveFavorite(product.id) }}
+            >
+              {!idFavorites.includes(product?.id) || !userLogin ? <i className={cx("fa-regular fa-heart", "normal")}>
+              </i> : <i className={cx("fa-solid fa-heart", "active")}></i>}
             </span>
           </div>
           <div className={cx("product-delivery")}>
@@ -177,7 +221,10 @@ const ProductDetail = () => {
         </div>
       </div>
       <div className={cx("relate-container")}>
-        "asd"
+        {product?.categoryId && <ProductRelate categoryId={product?.categoryId}
+          currentId={product.id}
+          number={4}
+        />}
       </div>
     </div>
   )

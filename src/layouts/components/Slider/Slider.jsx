@@ -1,6 +1,5 @@
 import { Pagination, Navigation, Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-
 import "./Slider.css";
 import 'swiper/scss';
 import 'swiper/scss/pagination';
@@ -54,7 +53,10 @@ const Slider = () => {
         {listSlider.map((slide) => (
           <SwiperSlide key={slide.id}>
             <div className="swiper-zoom-container">
-              <img src={slide.url} alt={slide.image} />
+              <img
+                src={slide.url}
+                alt={slide.image}
+              />
             </div>
           </SwiperSlide>
         ))}

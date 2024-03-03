@@ -99,7 +99,8 @@ const WishList = () => {
   }
 
   return (
-    <div className={cx("main-container")}>
+    <div className={cx("main-container",)}
+    >
       {productSuggest?.map(p => {
         if (p.id == productId) {
           return (
@@ -154,7 +155,7 @@ const WishList = () => {
           ))}
         </div>
       </div>
-    </div >
+    </div>
   )
 };
 
