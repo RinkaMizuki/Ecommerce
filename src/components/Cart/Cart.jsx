@@ -10,7 +10,20 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css'
+import { toast } from "react-toastify";
+
 const cx = classNames.bind(styles);
+
+const toastOptions = {
+  position: "top-right",
+  autoClose: 1500,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  theme: "colored",
+}
 
 const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false, isRemove = false, hiddenHeart = false }) => {
   const cartRef = useRef(null);
@@ -43,11 +56,17 @@ const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false
       navigate("/login")
       return;
     }
-    setLocalFavoriteProductId(id, userInfo.user.id)
+    const isRemove = setLocalFavoriteProductId(id, userInfo.user.id)
+    if (!isRemove) {
+      toast.success("A product has been added to wishlist", toastOptions)
+    } else {
+      toast.error("A product has been removed from the favorites list", toastOptions)
+    }
   }
 
   const handleRemoveProductFavorite = (id) => {
     setLocalFavoriteProductId(id, userInfo.user.id)
+    toast.error("A product has been removed from the favorites list", toastOptions)
   }
 
   useEffect(() => {
@@ -67,7 +86,8 @@ const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false
   return (
     <div className={cx("cart-container", {
       [className]: className,
-    })}>
+    })}
+    >
       <animated.div className={cx("cart-img")}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}

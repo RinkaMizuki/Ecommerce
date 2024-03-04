@@ -8,6 +8,9 @@ const configRoutes = {
   contact: "/contact",
   about: "/about",
   productDetail: "/product-detail/:productId",
+  manager: "/manager",
+  profile: "/manager/profile",
+  error: "*",
 }
 
 export default configRoutes;

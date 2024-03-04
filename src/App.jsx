@@ -3,7 +3,8 @@ import { publicRoutes } from "./routes/routes.js";
 import { Fragment, useEffect, useState } from 'react';
 import LayoutDefault from "./layouts/LayoutDefault";
 import './App.css'
-import Loading from "./pages/Loading/Loading.jsx";
+import Loading from "./pages/Loading";
+import LayoutManagement from "./layouts/LayoutManagement";
 
 
 
@@ -25,10 +26,10 @@ function App() {
   }, [])
 
   return (<>
-    {loading ? <Loading /> : <BrowserRouter>
+    {false ? <Loading /> : <BrowserRouter>
       <Routes>
         {publicRoutes.map((route, index) => {
-          const Layout = route.layout === "admin" ? Fragment : LayoutDefault
+          const Layout = route?.layout === "management" ? LayoutManagement : LayoutDefault
           return (
             <Route
               key={index}

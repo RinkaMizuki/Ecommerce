@@ -1,0 +1,25 @@
+.main-container {
+  font-family: "Poppins";
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  padding: 30px 110px 0px 110px;
+  min-height: 100vh;
+}
+
+.breadcrumb {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.username {
+  >span:nth-of-type(2) {
+    color: var(--primary);
+  }
+}
+.manager-container {
+  display: flex;
+  gap: 200px;
+  flex: 1;
+}

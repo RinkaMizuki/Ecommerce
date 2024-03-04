@@ -8,6 +8,7 @@ const setLocalFavoriteProductId = (newId, userId = "") => {
   }
   localStorage.setItem(`favorites_${userId}`, JSON.stringify(listIds));
   window.dispatchEvent(new Event(`NewDataEvent_${userId}`));
+  return isExistId;
 }
 
 const getLocalFavoriteProductId = (userId = "") => {

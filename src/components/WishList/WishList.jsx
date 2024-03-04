@@ -6,7 +6,6 @@ import classNames from "classnames/bind";
 import queryString from "query-string";
 import useCustomFetch from "../../hooks/useCustomFetch";
 import { Lightbox } from "react-modal-image";
-import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getLocalFavoriteProductId } from "../../services/favoriteService";
 
@@ -18,9 +17,7 @@ const WishList = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [productId, setProductId] = useState("");
   const userLogin = useSelector(state => state.auth.login.currentUser);
-  const [listIdFavorite, setListIdFavorite] = useState(getLocalFavoriteProductId(userLogin.user.id));
-  const [isAuthenticated, setAuthenticated] = useState(false);
-  const navigate = useNavigate();
+  const [listIdFavorite, setListIdFavorite] = useState(getLocalFavoriteProductId(userLogin?.user?.id || []));
 
   const [get] = useCustomFetch();
 
@@ -68,7 +65,10 @@ const WishList = () => {
       const ids = getLocalFavoriteProductId(userLogin.user.id);
       setListIdFavorite(ids);
     }
-
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    })
     window.addEventListener(`NewDataEvent_${userLogin?.user?.id}`, handleStorageChange);
 
     return () => {
@@ -76,26 +76,8 @@ const WishList = () => {
     };
   }, [])
 
-  useEffect(() => {
-    const checkAuthentication = async () => {
-      // Thực hiện kiểm tra đăng nhập, có thể là một cuộc gọi API hoặc xác thực khác
-      const authenticated = !!userLogin;
-
-      setAuthenticated(authenticated);
-
-      if (!authenticated) {
-        navigate('/login');
-      }
-    };
-
-    checkAuthentication();
-  }, [])
-
   const closeLightBox = (id) => {
     setProductId(id);
-  }
-  if (!isAuthenticated) {
-    return null;
   }
 
   return (

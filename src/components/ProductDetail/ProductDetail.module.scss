@@ -46,16 +46,15 @@
 }
 
 .product-thumbnail {
-
   display: flex;
   justify-content: center;
   align-items: center;
+}
 
-  >img {
-    max-height: 435px;
-    max-width: 450px;
-    object-fit: contain;
-  }
+.lazy-thumbnail {
+  max-height: 435px;
+  max-width: 450px;
+  object-fit: contain;
 }
 
 .product-info {

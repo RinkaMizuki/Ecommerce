@@ -134,8 +134,18 @@ const Header = function () {
                 <animated.div className={cx("menu-container")} style={props} tabIndex="-1" {...attrs}>
                   <ul className={cx("menu-dropdown")}>
                     <li>
-                      <i className="fa-solid fa-user"></i>
-                      Manage My Account
+                      <Link style={{
+                        textDecoration: 'none',
+                      }}
+                      to="/manager/profile"
+                      >
+                        <i className="fa-solid fa-user"></i>
+                        <span
+                          style={{
+                            marginLeft: "15px"
+                          }}
+                        >Manage My Account</span>
+                      </Link>
                     </li>
                     <li>
                       <i className="fa-solid fa-bag-shopping"></i>

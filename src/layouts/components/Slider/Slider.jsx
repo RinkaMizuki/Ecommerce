@@ -27,11 +27,6 @@ const Slider = () => {
 
   }, [])
 
-  const row = [];
-  for (let i = 0; i < 5; i++) {
-    row.push();
-  }
-
   return (
     <div className="container">
       <Swiper
@@ -50,16 +45,24 @@ const Slider = () => {
         navigation={true} //cho phép click vào thanh điều hướng
         modules={[Pagination, Navigation, Autoplay]}
       >
-        {listSlider.map((slide) => (
+        {!isLoading ? listSlider.map((slide) => (
           <SwiperSlide key={slide.id}>
             <div className="swiper-zoom-container">
               <img
                 src={slide.url}
                 alt={slide.image}
+                loading="lazy"
               />
+              <div className="swiper-lazy-preloader"></div>
             </div>
           </SwiperSlide>
-        ))}
+        )) :
+          <SwiperSlide>
+            <div className="swiper-zoom-container">
+              <img className="skeleton" id="logo-img" alt="" />
+            </div>
+          </SwiperSlide>
+        }
       </Swiper>
     </div>
   )

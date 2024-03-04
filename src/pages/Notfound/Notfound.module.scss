@@ -1,0 +1,34 @@
+.main-container {
+  font-family: "Poppins";
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  position: relative;
+}
+
+.breadcrumb {
+  position: absolute;
+  left: 0;
+  top: 10px;
+}
+
+.error-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+
+  >h1 {
+    font-weight: 500;
+    font-size: 70px;
+  }
+
+  >.notfound-btn {
+    width: 255px;
+    height: 55px;
+    margin-top: 40px;
+  }
+}

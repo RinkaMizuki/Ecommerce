@@ -6,9 +6,12 @@ import Register from "../pages/Register";
 import Login from "../pages/Login";
 import User from "../pages/User";
 import Contact from "../pages/Contact";
-import WishList from "../components/WishList/WishList";
+import WishList from "../components/WishList";
 import About from "../pages/About/About";
-import ProductDetail from "../components/ProductDetail/ProductDetail";
+import ProductDetail from "../components/ProductDetail";
+import Notfound from "../pages/Notfound";
+import Profile from "../pages/Profile";
+import AuthRequired from "../HOC/AuthRequired";
 
 const publicRoutes = [
   {
@@ -29,7 +32,7 @@ const publicRoutes = [
   },
   {
     path: config.routes.favorite,
-    element: WishList,
+    element: AuthRequired(WishList),
   },
   {
     path: config.routes.contact,
@@ -42,6 +45,15 @@ const publicRoutes = [
   {
     path: config.routes.productDetail,
     element: ProductDetail
+  },
+  {
+    path: config.routes.profile,
+    element: AuthRequired(Profile),
+    layout: "management"
+  },
+  {
+    path: config.routes.error,
+    element: Notfound
   }
 ]
 

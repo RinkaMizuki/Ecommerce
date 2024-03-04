@@ -36,11 +36,16 @@ const ProductDetail = () => {
       setCategory(categoryResponse.data)
       setProduct(productResponse.data)
     }
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      })
+    }, 100);
     fetchData();
   }, [params.productId])
 
   useEffect(() => {
-
     const handleStorageChange = () => {
       const ids = getLocalFavoriteProductId(userLogin?.user?.id);
       setIdFavorites(ids);
@@ -117,6 +122,7 @@ const ProductDetail = () => {
         <div className={cx("product-background")}>
           <div className={cx("product-thumbnail")}>
             <LazyLoadImage
+              className={cx("lazy-thumbnail")}
               src={product?.url}
               alt={product?.image}
               effect="blur"

@@ -54,7 +54,7 @@ const ProductFlashSale = () => {
     }
 
     return (
-        <>
+        <div className={cx("flashsale-container")} >
             <ViewTitle
                 flashsale={true}
                 prevRef={prevRef}
@@ -110,8 +110,7 @@ const ProductFlashSale = () => {
                     <Button lagre={true}>View All Products</Button>
                 </div>
             </div>
-        </>
-
+        </div>
     )
 }
 export default ProductFlashSale;
