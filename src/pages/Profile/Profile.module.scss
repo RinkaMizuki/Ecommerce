@@ -21,8 +21,8 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 20px;
-
+  row-gap: 20px;
+  column-gap: 60px;
 }
 
 .info-personal-item {
@@ -30,6 +30,7 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
+  position: relative;
 
   >label {
     margin-bottom: 5px;
@@ -49,7 +50,7 @@
 .info-password {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px;
   width: 100%;
 
   >label {
@@ -102,6 +103,10 @@
 .personal-figure {
   width: 160px;
   height: 160px;
+
+  >span {
+    height: 100%;
+  }
 }
 
 .personal-avatar {
@@ -145,4 +150,41 @@
   transform: translate(-50%, -50%);
   width: 80px;
   height: 80px;
+}
+
+.loading {
+  position: absolute;
+  right: 5%;
+  top: 70%;
+}
+
+.checked,
+.cancel {
+  position: absolute;
+  right: 5%;
+  top: 59%;
+}
+
+.checked {
+  color: #0f2;
+}
+
+.cancel {
+  color: #f00;
+}
+
+.loading {
+  color: var(--primary);
+  animation: spinner 1s linear infinite;
+}
+
+@keyframes spinner {
+  from {
+    transform: translateY(-50%) rotate(0);
+  }
+
+  //giữ lại thuộc tính translate Y để cho nó k bị ghi đè
+  to {
+    transform: translateY(-50%) rotate(360deg);
+  }
 }

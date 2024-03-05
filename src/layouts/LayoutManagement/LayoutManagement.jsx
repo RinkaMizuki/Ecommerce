@@ -17,7 +17,7 @@ const LayoutManagement = ({ children }) => {
 
   function handleClick(event) {
     event.preventDefault();
-    if (!event.target.href.split("/")[3]) {
+    if (!event.target.href?.split("/")[3]) {
       navigate("/")
     }
   }

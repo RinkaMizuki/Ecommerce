@@ -49,7 +49,7 @@ const Login = () => {
   }
 
   useEffect(() => {
-    
+
     window.scrollTo({
       top: 0,
       behavior: "smooth"
@@ -99,8 +99,8 @@ const Login = () => {
 
   return (
     <div className={cx("login-wrapper")}>
-      <ToastContainer></ToastContainer>
       <div className={cx("login-image")}>
+        <ToastContainer></ToastContainer>
         <img src={ecommerceRegister} alt="Ecommerce" />
       </div>
       <div className={cx("login-form")}>
