@@ -60,7 +60,7 @@ const useCustomFetch = () => {
         }))
         navigate("/")
       }
-      
+
       return Promise.reject(error);
     }
   );
@@ -75,7 +75,12 @@ const useCustomFetch = () => {
     return res;
   }
 
-  return [get, post];
+  const put = async (path, data = {}, options = {}) => {
+    const res = await httpRequests.put(path, data, options);
+    return res;
+  }
+
+  return [get, post, put];
 };
 
 export default useCustomFetch;

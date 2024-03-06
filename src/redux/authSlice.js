@@ -19,7 +19,7 @@ const authSlice = createSlice({
       const { accessToken, ...newObj } = action.payload;
       state.login.currentUser = newObj;
       state.login.erorr = false;
-      state.login.message = action.payload.message;
+      state.login.message = "Login successfully";
     },
     loginFailed: (state, action) => {
       state.login.isFetching = false;
@@ -39,7 +39,7 @@ const authSlice = createSlice({
     logoutFailed: (state, action) => {
       state.login.isFetching = false;
       state.login.erorr = true;
-      state.login.message = action.payload.message;
+      state.login.message = "Logout failed";
     }
   }
 })

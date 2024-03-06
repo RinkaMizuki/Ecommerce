@@ -18,7 +18,7 @@ const Header = function () {
 
   const [listId, setListId] = useState(getLocalFavoriteProductId(userLogin?.user?.id));
 
-  const [, post] = useCustomFetch();
+  const [, post,] = useCustomFetch();
 
   const config = { tension: 300, friction: 20 };
   const initialStyles = { opacity: 0, transform: "scale(0.5)" };
@@ -49,14 +49,15 @@ const Header = function () {
 
   const handleLogout = async () => {
     dispatch(logoutStart())
+    let res
     try {
-      var res = await post(`/Auth/logout?userId=${userLogin.user.id}`, {}, {})
+      res = await post(`/Auth/logout?userId=${userLogin.user.id}`, {}, {})
       dispatch(logoutSuccess(res?.data))
       TokenService.removeToken("token");
       navigate("/")
       window.location.reload();
     } catch (error) {
-      dispatch(logoutFailed(res.data))
+      dispatch(logoutFailed(res?.data))
     }
   }
 
@@ -137,7 +138,7 @@ const Header = function () {
                       <Link style={{
                         textDecoration: 'none',
                       }}
-                      to="/manager/profile"
+                        to="/manager/profile"
                       >
                         <i className="fa-solid fa-user"></i>
                         <span

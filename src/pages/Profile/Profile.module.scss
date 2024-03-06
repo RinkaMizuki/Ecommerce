@@ -21,7 +21,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  row-gap: 20px;
+  row-gap: 35px;
   column-gap: 60px;
 }
 
@@ -50,8 +50,9 @@
 .info-password {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
   width: 100%;
+  position: relative;
 
   >label {
     font-weight: 500;
@@ -59,6 +60,7 @@
   }
 
   >input {
+    margin-bottom: 20px;
     width: 100% !important;
     flex: 1;
     border-radius: 5px;
@@ -68,6 +70,21 @@
     background-color: #F5F5F5 !important;
     font-weight: 300;
   }
+}
+
+.new-password-note,
+.confirm-password-note {
+  position: absolute;
+  font-size: 12px;
+  color: var(--text-gray-700);
+}
+
+.new-password-note {
+  bottom: 33%;
+}
+
+.confirm-password-note {
+  bottom: 2%;
 }
 
 ::placeholder {
@@ -89,6 +106,9 @@
 }
 
 .btn-saves {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 55px;
   width: 200px;
 }
@@ -126,6 +146,19 @@
   box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);
 }
 
+.email-note,
+.username-note {
+  position: absolute;
+  font-size: 12px;
+  bottom: -40%;
+  left: 5px;
+  color: var(--text-gray-700);
+}
+
+.username-note {
+  bottom: -25%;
+}
+
 .personal-figcaption {
   cursor: pointer;
   position: absolute;
@@ -158,6 +191,12 @@
   top: 70%;
 }
 
+.notifi-icon {
+  position: absolute;
+  right: 5%;
+  top: 52%;
+}
+
 .checked,
 .cancel {
   position: absolute;
@@ -187,4 +226,9 @@
   to {
     transform: translateY(-50%) rotate(360deg);
   }
+}
+.custom-loading {
+  width: 40px !important;
+  height: 40px !important;
+  border-width: 4px !important;
 }
