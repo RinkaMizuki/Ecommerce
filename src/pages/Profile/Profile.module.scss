@@ -22,7 +22,7 @@
   flex-wrap: wrap;
   justify-content: space-between;
   row-gap: 35px;
-  column-gap: 60px;
+  column-gap: 30px;
 }
 
 .info-personal-item {
@@ -190,11 +190,11 @@
   right: 5%;
   top: 70%;
 }
-
-.notifi-icon {
+.verify-status {
   position: absolute;
-  right: 5%;
-  top: 52%;
+  right: 3%;
+  top: 53%;
+  cursor: pointer;
 }
 
 .checked,

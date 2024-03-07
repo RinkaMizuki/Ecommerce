@@ -60,7 +60,6 @@ const useCustomFetch = () => {
         }))
         navigate("/")
       }
-
       return Promise.reject(error);
     }
   );

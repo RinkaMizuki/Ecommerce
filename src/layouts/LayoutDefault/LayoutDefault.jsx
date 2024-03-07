@@ -7,16 +7,17 @@ import { useLocation } from "react-router-dom";
 
 const cx = classNames.bind(styles);
 
-const LayoutDefault = ({ children }) => {
+const LayoutDefault = ({ toggleTopHeader, children }) => {
 
   const location = useLocation();
 
   return (
     <>
-      <Header />
+      <Header toggleTopHeader={toggleTopHeader} />
       <div className={cx("content-wrapper")}
         style={{
-          minHeight: `${location.pathname.includes("/product-detail") || location.pathname.includes("/favorite") ? "190vh" : "100vh"}`
+          minHeight: `${location.pathname.includes("/product-detail") || location.pathname.includes("/favorite") ? "190vh" : "100vh"}`,
+          marginTop: !toggleTopHeader ? "unset" : "76px"
         }}
       >
         {children}

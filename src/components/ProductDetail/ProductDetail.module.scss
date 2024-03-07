@@ -2,7 +2,7 @@
   font-family: "Poppins";
   display: flex;
   flex-direction: column;
-  gap: 60px;
+  gap: 90px;
 }
 
 .product-container {
@@ -61,7 +61,6 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
-  margin-top: 40px;
 }
 
 .product-title {
@@ -90,7 +89,9 @@
   font-weight: 400;
   font-size: 15px;
   line-height: 1.5;
-  margin-bottom: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .product-price-sale {
@@ -101,8 +102,6 @@
 }
 
 .product-colors {
-  margin-top: 20px;
-
   >span {
     margin-right: 10px;
   }

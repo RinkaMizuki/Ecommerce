@@ -12,39 +12,48 @@ import ProductDetail from "../components/ProductDetail";
 import Notfound from "../pages/Notfound";
 import Profile from "../pages/Profile";
 import AuthRequired from "../HOC/AuthRequired";
+import Confirm from "../pages/Confirm";
 
 const publicRoutes = [
   {
     path: config.routes.home,
     element: Home,
+    layout: "default"
   },
   {
     path: config.routes.register,
     element: Register,
+    layout: "default"
   },
   {
     path: config.routes.login,
     element: Login,
+    layout: "default"
   },
   {
     path: config.routes.user,
     element: User,
+    layout: "default"
   },
   {
     path: config.routes.favorite,
     element: AuthRequired(WishList),
+    layout: "default"
   },
   {
     path: config.routes.contact,
     element: Contact,
+    layout: "default"
   },
   {
     path: config.routes.about,
     element: About,
+    layout: "default"
   },
   {
     path: config.routes.productDetail,
-    element: ProductDetail
+    element: ProductDetail,
+    layout: "default"
   },
   {
     path: config.routes.profile,
@@ -52,8 +61,14 @@ const publicRoutes = [
     layout: "management"
   },
   {
+    path: config.routes.confirm,
+    element: AuthRequired(Confirm),
+    layout: null
+  },
+  {
     path: config.routes.error,
-    element: Notfound
+    element: Notfound,
+    layout: "default"
   }
 ]
 

@@ -6,10 +6,8 @@ import './App.css'
 import Loading from "./pages/Loading";
 import LayoutManagement from "./layouts/LayoutManagement";
 
-
-
 function App() {
-
+  const [toggleTopHeader, setToggleTopHeader] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -25,17 +23,34 @@ function App() {
     }
   }, [])
 
+  useEffect(() => {
+    const handleScroll = function (e) {
+      if (this.scrollY > 48) {
+        setToggleTopHeader(true);
+      } else {
+        setToggleTopHeader(false);
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll)
+
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+
   return (<>
     {false ? <Loading /> : <BrowserRouter>
       <Routes>
         {publicRoutes.map((route, index) => {
-          const Layout = route?.layout === "management" ? LayoutManagement : LayoutDefault
+          const Layout = route?.layout === "management" ? LayoutManagement : !route?.layout ? Fragment : LayoutDefault
           return (
             <Route
               key={index}
               path={route.path}
               element={
-                <Layout>
+                route?.layout ? <Layout toggleTopHeader={toggleTopHeader}>
+                  <route.element />
+                </Layout> : <Layout>
                   <route.element />
                 </Layout>
               }

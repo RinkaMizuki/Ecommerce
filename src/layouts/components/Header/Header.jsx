@@ -13,7 +13,30 @@ import { useEffect, useState } from "react";
 
 const cx = classNames.bind(styles);
 
-const Header = function () {
+const MENU = [
+  {
+    title: "Manage My Account",
+    icon: "fa-solid fa-user",
+    to: "/manager/profile"
+  },
+  {
+    title: "Manage My Orders",
+    icon: "fa-solid fa-bag-shopping",
+    to: "/manager/orders"
+  },
+  {
+    title: "Manage My Reviews",
+    icon: "fa-solid fa-star",
+    to: "/manager/reviews"
+  },
+  {
+    title: "Log out",
+    icon: "fa-solid fa-right-from-bracket",
+    to: null,
+  },
+];
+
+const Header = function ({ toggleTopHeader }) {
   const userLogin = useSelector(state => state.auth.login.currentUser);
 
   const [listId, setListId] = useState(getLocalFavoriteProductId(userLogin?.user?.id));
@@ -54,7 +77,7 @@ const Header = function () {
       res = await post(`/Auth/logout?userId=${userLogin.user.id}`, {}, {})
       dispatch(logoutSuccess(res?.data))
       TokenService.removeToken("token");
-      navigate("/")
+      navigate("/login")
       window.location.reload();
     } catch (error) {
       dispatch(logoutFailed(res?.data))
@@ -92,10 +115,12 @@ const Header = function () {
           </div>
         </div>
       </div>
-      <div className={cx("header-wrapper")}>
+      <div className={cx("header-wrapper", {
+        "hidden-top-header": toggleTopHeader
+      })}>
         <div className={cx("header-container")}>
           <div className={cx("left-header")}>
-            <Link to="/">Sun Store</Link>
+            <Link to="/">MT Store</Link>
             <Link to="/" className={cx({
               "underline": location.pathname == "/"
             })}>Home</Link>
@@ -134,36 +159,27 @@ const Header = function () {
               render={attrs => (
                 <animated.div className={cx("menu-container")} style={props} tabIndex="-1" {...attrs}>
                   <ul className={cx("menu-dropdown")}>
-                    <li>
-                      <Link style={{
-                        textDecoration: 'none',
-                      }}
-                        to="/manager/profile"
-                      >
-                        <i className="fa-solid fa-user"></i>
-                        <span
-                          style={{
-                            marginLeft: "15px"
+                    {MENU.map((item, i) => {
+                      return (
+                        item.to ? <li key={i}>
+                          <Link style={{
+                            textDecoration: 'none',
                           }}
-                        >Manage My Account</span>
-                      </Link>
-                    </li>
-                    <li>
-                      <i className="fa-solid fa-bag-shopping"></i>
-                      My Order
-                    </li>
-                    <li>
-                      <i className="fa-solid fa-circle-xmark"></i>
-                      My Cancellations
-                    </li>
-                    <li>
-                      <i className="fa-solid fa-star"></i>
-                      My Reviews
-                    </li>
-                    <li onClick={handleLogout}>
-                      <i className="fa-solid fa-right-from-bracket"></i>
-                      Log out
-                    </li>
+                            to={item.to}
+                          >
+                            <i className={item.icon}></i>
+                            <span
+                              style={{
+                                marginLeft: "15px"
+                              }}
+                            >{item.title}</span>
+                          </Link>
+                        </li> : <li onClick={handleLogout} key={i}>
+                          <i className={item.icon}></i>
+                          {item.title}
+                        </li>
+                      )
+                    })}
                   </ul>
                 </animated.div>
               )}

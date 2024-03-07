@@ -208,3 +208,11 @@ input::placeholder {
   color: var(--black);
   background-color: #fff;
 }
+
+.hidden-top-header {
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
+  top: 0;
+  background-color: var(--white);
+}

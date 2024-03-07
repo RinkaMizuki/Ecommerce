@@ -10,7 +10,7 @@ import Footer from "../components/Footer";
 
 const cx = classNames.bind(styles);
 
-const LayoutManagement = ({ children }) => {
+const LayoutManagement = ({ toggleTopHeader, children }) => {
 
   const userLogin = useSelector(state => state.auth.login.currentUser);
   const navigate = useNavigate();
@@ -24,8 +24,10 @@ const LayoutManagement = ({ children }) => {
 
   return (
     <>
-      <Header />
-      <div className={cx("main-container")}>
+      <Header toggleTopHeader={toggleTopHeader} />
+      <div className={cx("main-container")} style={{
+        marginTop: toggleTopHeader ? "76px" : "unset"
+      }}>
         <div role="presentation" onClick={handleClick} className={cx("breadcrumb")}
         >
           <Breadcrumbs aria-label="breadcrumb">

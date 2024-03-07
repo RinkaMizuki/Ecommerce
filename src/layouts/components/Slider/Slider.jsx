@@ -45,7 +45,7 @@ const Slider = () => {
         navigation={true} //cho phép click vào thanh điều hướng
         modules={[Pagination, Navigation, Autoplay]}
       >
-        {!isLoading ? listSlider.map((slide) => (
+        {true ? listSlider.map((slide) => (
           <SwiperSlide key={slide.id}>
             <div className="swiper-zoom-container">
               <img

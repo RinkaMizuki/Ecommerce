@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import { getLocalFavoriteProductId, setLocalFavoriteProductId } from "../../services/favoriteService";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+import ProductReview from "../ProductReview";
 
 const cx = classNames.bind(styles);
 
@@ -131,7 +132,7 @@ const ProductDetail = () => {
         </div>
         <div className={cx("product-info")}>
           <h2 className={cx("product-title")}>
-            Havic HV G-92 Gamepad
+            {product?.title}
           </h2>
           <div className={cx("product-reviews-wrapper")}>
             <StarRatings
@@ -226,6 +227,7 @@ const ProductDetail = () => {
           </div>
         </div>
       </div>
+      <ProductReview product={product}/>
       <div className={cx("relate-container")}>
         {product?.categoryId && <ProductRelate categoryId={product?.categoryId}
           currentId={product.id}

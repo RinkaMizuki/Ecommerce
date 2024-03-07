@@ -10,6 +10,7 @@ const configRoutes = {
   productDetail: "/product-detail/:productId",
   manager: "/manager",
   profile: "/manager/profile",
+  confirm: "/confirm-email",
   error: "*",
 }
 

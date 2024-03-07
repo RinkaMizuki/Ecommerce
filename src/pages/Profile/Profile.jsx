@@ -12,6 +12,8 @@ import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import NotificationsOffIcon from '@mui/icons-material/NotificationsOff';
 import { toast, ToastContainer } from "react-toastify";
 import { loginSuccess } from "../../redux/authSlice";
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
 import moment from "moment";
 import Loading from "../../components/Loading";
 
@@ -136,6 +138,22 @@ const Profile = () => {
     }
   }
 
+  useEffect(() => {
+
+    const handleLoadProfile = function (event) {
+      if (event.key === 'reloadEvent' && event.newValue === 'profile') {
+        window.location.reload();
+        // Đặt lại giá trị để tránh việc xử lý lặp lại
+        localStorage.setItem('reloadEvent', '');
+      }
+    }
+
+    window.addEventListener('storage', handleLoadProfile);
+    return () => {
+      window.removeEventListener("storage", handleLoadProfile);
+    }
+  }, [])
+
   const validateSaveChanges = () => {
     return isExistUserName || !email || !phone || (new Date(birth).getTime() >= new Date().getTime()) || !validatePhoneNumber(phone) || !validateEmail(email) || isDisable;
   }
@@ -149,8 +167,23 @@ const Profile = () => {
     }
   }
 
-  const debounced = useDebounce(userName, 500);
+  const handleVerifyEmail = async () => {
+    try {
+      if (!userLogin?.emailConfirm) {
+        const resendConfirmEmail = getUserInfo;
+        const response = await resendConfirmEmail(`/Auth/resend-confirm-email/${userLogin?.id}`);
+        toast.success(response?.data?.message, toastOptions);
+      }
+      else {
+        toast.info("Your email has been verified.", toastOptions);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.message, toastOptions);
+    }
+  }
 
+  const debounced = useDebounce(userName, 500);
   useEffect(() => {
 
     if (!debounced?.trim()) {
@@ -197,7 +230,9 @@ const Profile = () => {
 
   return (
     <div className={cx("profile-container")}>
-      <ToastContainer></ToastContainer>
+      <ToastContainer
+        style={{ marginTop: "120px" }}
+      ></ToastContainer>
       <h2>Edit Your Profile</h2>
       <div className={cx("info-wrapper")}>
         <div style={{
@@ -240,16 +275,21 @@ const Profile = () => {
                   isDisable && setIsDisable(false);
                 }}
               />
-              {!userLogin?.emailConfirm ? <NotificationsOffIcon className={cx("notifi-icon")}
-                style={{
-                  color: !userLogin?.emailConfirm && "#9d9d9d"
-                }}
-
-              /> : <NotificationsActiveIcon className={cx("notifi-icon")}
-                style={{
-                  color: userLogin?.emailConfirm && "#ffb100"
-                }}
-              />}
+              <Tippy content={<span style={{
+                fontFamily: "Poppins"
+              }}>{!userLogin?.emailConfirm ? "Unverified" : "Verified"}</span>}>
+                <span onClick={handleVerifyEmail} className={cx("verify-status")}>
+                  {!userLogin?.emailConfirm ? <NotificationsOffIcon className={cx("notifi-icon")}
+                    style={{
+                      color: !userLogin?.emailConfirm && "#9d9d9d",
+                    }}
+                  /> : <NotificationsActiveIcon className={cx("notifi-icon")}
+                    style={{
+                      color: userLogin?.emailConfirm && "#ffb100"
+                    }}
+                  />}
+                </span>
+              </Tippy>
               <span className={cx("email-note")}>You will need to verify your new email address after you change it.</span>
             </div>
             <div className={cx("info-personal-item")}>
