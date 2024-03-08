@@ -52,7 +52,7 @@ const ProductDetail = () => {
       setIdFavorites(ids);
     }
 
-    window.addEventListener(`NewDataEvent_${userLogin?.user?.id}`, handleStorageChange);
+    window.addEventListener(`FavoriteDataEvent_${userLogin?.user?.id}`, handleStorageChange);
 
     return () => {
       window.removeEventListener('storage', handleStorageChange);

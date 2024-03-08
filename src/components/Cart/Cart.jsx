@@ -4,6 +4,7 @@ import classNames from "classnames/bind";
 import { useSpring, animated, config } from "@react-spring/web"
 import StarRatings from "react-star-ratings";
 import { setLocalFavoriteProductId, getLocalFavoriteProductId } from "../../services/favoriteService";
+import { setLocalProductQuantity, getLocalProductQuantity } from "../../services/cartService";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { LazyLoadImage } from "react-lazy-load-image-component";
@@ -26,10 +27,18 @@ const toastOptions = {
 }
 
 const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false, isRemove = false, hiddenHeart = false }) => {
+
   const cartRef = useRef(null);
+  const addRef = useRef(null);
+
   const userInfo = useSelector(state => state.auth.login.currentUser);
   const navigate = useNavigate();
+
+  const quantityStore = getLocalProductQuantity(userInfo?.user?.id).find(p => p.id == data.id);
+
+  const [quantity, setQuantity] = useState(quantityStore?.quantity || 0);
   const [idFavorites, setIdFavorites] = useState(getLocalFavoriteProductId(userInfo?.user?.id));
+
   const [springs, api] = useSpring(() => (
     {
       from: { y: 43 },
@@ -64,6 +73,25 @@ const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false
     }
   }
 
+  const handleAddProduct = (id, quantity = 1) => {
+    if (!userInfo) {
+      navigate("/login")
+      return;
+    }
+    setLocalProductQuantity(id, userInfo?.user?.id, quantity, "add")
+    setQuantity(preQuantity => preQuantity + 1);
+  }
+  const handleRemoveProduct = (id) => {
+    if (!userInfo) {
+      navigate("/login")
+      return;
+    }
+    setLocalProductQuantity(id, userInfo?.user?.id, quantity, "remove")
+    if (quantity >= 1) {
+      setQuantity(preQuantity => preQuantity - 1);
+    }
+  }
+
   const handleRemoveProductFavorite = (id) => {
     setLocalFavoriteProductId(id, userInfo.user.id)
     toast.error("A product has been removed from the favorites list", toastOptions)
@@ -76,7 +104,7 @@ const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false
       setIdFavorites(ids);
     }
 
-    window.addEventListener(`NewDataEvent_${userInfo?.user?.id}`, handleStorageChange);
+    window.addEventListener(`FavoriteDataEvent_${userInfo?.user?.id}`, handleStorageChange);
 
     return () => {
       window.removeEventListener('storage', handleStorageChange);
@@ -129,8 +157,19 @@ const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false
           style={{ ...springs }}
           ref={cartRef}
         >
-          <i className="fa-solid fa-cart-shopping"></i>
-          <span style={{ marginLeft: "10px" }}>Add To Cart</span>
+          {quantity == 0 ? <>
+            <i className="fa-solid fa-cart-shopping"></i>
+            <span style={{ marginLeft: "10px" }} ref={addRef} onClick={() => handleAddProduct(data?.id)}>Add To Cart</span>
+          </>
+            : <div className={cx("btn-quantity-wrapper")}>
+              <button className={cx("minus-btn", "btn")}
+                onClick={() => handleRemoveProduct(data?.id)}
+              >-</button>
+              <span>{quantity}</span>
+              <button className={cx("plus-btn", "btn")}
+                onClick={() => handleAddProduct(data?.id)}
+              >+</button>
+            </div>}
         </animated.div>
       </animated.div>
       <div className={cx("cart-content")}>

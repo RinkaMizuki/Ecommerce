@@ -89,9 +89,13 @@
   font-weight: 400;
   font-size: 15px;
   line-height: 1.5;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  span {
+    overflow: hidden;
+    max-width: 468px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+  }
 }
 
 .product-price-sale {

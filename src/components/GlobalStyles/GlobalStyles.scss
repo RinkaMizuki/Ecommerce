@@ -1,6 +1,7 @@
 @import 'normalize.css';
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700&family=Poppins:wght@100;200;300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Playball&family=Roboto:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap');
+
 html,
 body,
 div,
@@ -174,6 +175,11 @@ img {
 }
 
 :root {
+  --form-control-color: rebeccapurple;
+  --form-control-disabled: #959495;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0px 0px 10px 1px rgba(25, 25, 25, .1);
+  --tw-shadow-colored: 0px 0px 10px 1px var(--tw-shadow-color);
   --black: #000;
   --primary: #fe2c55;
   --white: #fff;

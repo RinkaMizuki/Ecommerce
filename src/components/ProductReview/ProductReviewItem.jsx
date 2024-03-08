@@ -5,11 +5,14 @@ import useCustomFetch from "../../hooks/useCustomFetch";
 import { useState } from "react";
 import { useEffect } from "react";
 import moment from "moment";
+import { useSelector } from "react-redux";
 
 const cx = classNames.bind(styles)
 
 
 const ProductReviewItem = ({ pr }) => {
+
+  const userLogin = useSelector(state => state.auth.login?.currentUser?.user);
 
   const [getUserById] = useCustomFetch();
   const [user, setUser] = useState(null);
@@ -25,7 +28,9 @@ const ProductReviewItem = ({ pr }) => {
   return (
     <li>
       <div className={cx("review-name")}>
-        <span>{user?.userName}</span>
+        <span className={cx({
+          me: user?.userName == userLogin?.userName
+        })}>{user?.userName == userLogin?.userName ? "Me" : user?.userName}</span>
         <p>{moment(pr?.createdAt).format("DD-MM-YYYY")}</p>
       </div>
       <StarRatings

@@ -3,8 +3,6 @@ import ViewTitle from "../ViewTitle";
 import styles from "./ProductBestSeller.module.scss"
 import classNames from "classnames/bind";
 import { Lightbox } from "react-modal-image";
-
-import tannhietnuoc from "../../assets/images/tannhietnuoc.png";
 import { useEffect, useState } from "react";
 import useCustomFetch from "../../hooks/useCustomFetch";
 import queryString from "query-string";

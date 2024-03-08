@@ -138,6 +138,16 @@ const Profile = () => {
     }
   }
 
+  const handleResetChange = () => {
+    setUserName(userLogin?.userName);
+    setEmail(userLogin?.email);
+    setPhone(userLogin?.phone);
+    setBirth(moment(userLogin?.birthDate).format('YYYY-MM-DD'));
+    setConfirmPassword("");
+    setNewPassword("");
+    setCurrentPassword("");
+  }
+
   useEffect(() => {
 
     const handleLoadProfile = function (event) {
@@ -238,6 +248,7 @@ const Profile = () => {
         <div style={{
           display: "flex",
           gap: "110px",
+          marginTop: "20px"
         }}>
           <div className={cx("personal-image")}
             onClick={handleUploadAvatar}
@@ -344,7 +355,10 @@ const Profile = () => {
         </div>
       </div>
       <div className={cx("btn-wrapper")}>
-        <Button className={cx("btn-cancel")}>Cancel</Button>
+        <Button className={cx("btn-cancel")}
+          onClick={handleResetChange}
+          disable={loadingUpdateProfile}
+        >Cancel</Button>
         <Button className={cx("btn-saves")} disable={validateSaveChanges() || loadingUpdateProfile}
           onClick={handleSaveProfile}
         >{!loadingUpdateProfile ? "Save Changes" : <Loading className={cx("custom-loading")} />}</Button>

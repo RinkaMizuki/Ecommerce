@@ -14,6 +14,9 @@ import { TreeItem, treeItemClasses } from '@mui/x-tree-view/TreeItem';
 import { SvgIcon } from '@mui/material';
 import styles from "./AccountMenu.module.scss";
 import classNames from 'classnames/bind';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useState } from 'react';
 
 const cx = classNames.bind(styles);
 
@@ -113,6 +116,49 @@ function PlusSquare(props) {
 }
 
 export default function AccountMenu() {
+
+  const [selectedNode, setSelectedNode] = useState("0");
+
+  const navigate = useNavigate();
+  const location = useLocation()
+
+  const handleSelectNode = (e, nodeId) => {
+    console.log(nodeId);
+    if (nodeId == 5) {
+      navigate("/manager/profile")
+    }
+    else if (nodeId == 6) {
+      navigate("/manager/address")
+    }
+    else if (nodeId == 7) {
+      navigate("/manager/payments")
+    }
+    else if (nodeId == 10) {
+      navigate("/manager/returns")
+    }
+    else if (nodeId == 11) {
+      navigate("/manager/cancellations")
+    }
+  }
+
+  useEffect(() => {
+    if (location.pathname.includes("/profile")) {
+      setSelectedNode("5");
+    }
+    else if (location.pathname.includes("/address")) {
+      setSelectedNode("6");
+    }
+    else if (location.pathname.includes("/payments")) {
+      setSelectedNode("7");
+    }
+    else if (location.pathname.includes("/returns")) {
+      setSelectedNode("10");
+    }
+    else if (location.pathname.includes("/cancellations")) {
+      setSelectedNode("11");
+    }
+  }, [location.pathname])
+
   return (
     <div className={cx("menu-manager-container")}>
       <TreeView
@@ -129,8 +175,9 @@ export default function AccountMenu() {
             fontSize: "15px"
           }
         }}
-        defaultSelected="5"
-
+        defaultSelected={location.pathname.includes("/profile") ? "5" : "null"}
+        onNodeSelect={handleSelectNode}
+        selected={selectedNode}
       >
         <StyledTreeItem nodeId="3" labelText="Manage My Account" labelIcon={ManageAccountsIcon}
         >
@@ -166,17 +213,21 @@ export default function AccountMenu() {
 
       <TreeView
         aria-label="Orders management"
+        defaultExpanded={['8']}
         defaultCollapseIcon={<MinusSquare />}
         defaultExpandIcon={<PlusSquare />}
         defaultEndIcon={<div style={{ width: 24 }} />}
         sx={{
-          flexGrow: 1, maxWidth: 250, overflowY: 'auto', marginBottom: "10px",
+          flexGrow: 1, minWidth: 250, overflowY: 'auto', marginBottom: "10px",
           ".MuiBox-root ~ p": {
             fontFamily: "Poppins",
             fontWeight: 500,
             fontSize: "15px"
           }
         }}
+        defaultSelected={location.pathname.includes("/returns") ? "10" : null}
+        onNodeSelect={handleSelectNode}
+        selected={selectedNode}
       >
         <StyledTreeItem nodeId="8" labelText="Manage Orders" labelIcon={ManageHistoryIcon}>
           <StyledTreeItem

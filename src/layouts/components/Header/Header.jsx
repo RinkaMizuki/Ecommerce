@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Tippy from "@tippyjs/react/headless";
 import 'tippy.js/dist/tippy.css';
 import { logoutFailed, logoutStart, logoutSuccess } from "../../../redux/authSlice";
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import useCustomFetch from "../../../hooks/useCustomFetch";
 import { useSpring, animated } from "@react-spring/web";
 import TokenService from "../../../services/tokenService";
@@ -22,7 +23,7 @@ const MENU = [
   {
     title: "Manage My Orders",
     icon: "fa-solid fa-bag-shopping",
-    to: "/manager/orders"
+    to: "/manager/returns"
   },
   {
     title: "Manage My Reviews",
@@ -58,7 +59,7 @@ const Header = function ({ toggleTopHeader }) {
     }
 
     //khi login tk khác cần listen lại event(vì khác context)
-    window.addEventListener(`NewDataEvent_${userLogin?.user?.id}`, handleStorageChange);
+    window.addEventListener(`FavoriteDataEvent_${userLogin?.user?.id}`, handleStorageChange);
 
     return () => {
       window.removeEventListener('storage', handleStorageChange);
@@ -74,7 +75,7 @@ const Header = function ({ toggleTopHeader }) {
     dispatch(logoutStart())
     let res
     try {
-      res = await post(`/Auth/logout?userId=${userLogin.user.id}`, {}, {})
+      res = await post(`/Auth/logout?userId=${userLogin?.user?.id || 0}`, {}, {})
       dispatch(logoutSuccess(res?.data))
       TokenService.removeToken("token");
       navigate("/login")
@@ -148,7 +149,9 @@ const Header = function ({ toggleTopHeader }) {
                 <i className={cx("icon-heart", "fa-solid fa-heart", "active")}></i>
               </div>
             )}
-            <i className={cx("icon-cart", "fa-solid fa-cart-shopping")}></i>
+            <Link to="/cart">
+              <AddShoppingCartIcon className={cx("icon-cart")} />
+            </Link>
             {userLogin && <Tippy
               duration={500}
               animation={true}

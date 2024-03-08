@@ -129,6 +129,7 @@
 .review-wrapper {
   display: flex;
   flex-direction: column;
+  min-width: 400px;
   gap: 20px;
 }
 
@@ -167,4 +168,7 @@
     background-color: transparent;
     color: #0071e3;
   }
+}
+.me {
+  color: var(--primary) !important;
 }

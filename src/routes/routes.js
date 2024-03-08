@@ -13,6 +13,8 @@ import Notfound from "../pages/Notfound";
 import Profile from "../pages/Profile";
 import AuthRequired from "../HOC/AuthRequired";
 import Confirm from "../pages/Confirm";
+import Return from "../pages/Return";
+import Cart from "../pages/Cart";
 
 const publicRoutes = [
   {
@@ -61,9 +63,19 @@ const publicRoutes = [
     layout: "management"
   },
   {
+    path: config.routes.return,
+    element: AuthRequired(Return),
+    layout: "management"
+  },
+  {
     path: config.routes.confirm,
     element: AuthRequired(Confirm),
     layout: null
+  },
+  {
+    path: config.routes.cart,
+    element: AuthRequired(Cart),
+    layout: "default",
   },
   {
     path: config.routes.error,

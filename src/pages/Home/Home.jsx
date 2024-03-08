@@ -27,7 +27,9 @@ const Home = () => {
           zIndex: 2,
         }}
       /> */}
-      <ToastContainer></ToastContainer>
+      <ToastContainer style={{
+        marginTop: "60px"
+      }}></ToastContainer>
       <div className={cx("wrapper")}>
         <ScrollButton />
         <Sidebar />
