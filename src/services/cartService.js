@@ -23,10 +23,14 @@ const changeQuantity = (products, id, quantity, type) => {
   return products;
 }
 
-const setLocalProductQuantity = (newId, userId = "", quantity = 1, type = "add") => {
+const setLocalProductQuantity = (productId, userId = "", quantity = 1, type = "add", remove = false) => {
   let listProduct = getLocalProductQuantity(userId);
-
-  const productsFilter = changeQuantity(listProduct, newId, quantity, type);
+  let productsFilter;
+  if (remove) {
+    productsFilter = listProduct.filter(p => p.id != productId);
+  } else {
+    productsFilter = changeQuantity(listProduct, productId, quantity, type);
+  }
 
   localStorage.setItem(`cart_${userId}`, JSON.stringify(productsFilter));
   window.dispatchEvent(new Event(`CartDataEvent_${userId}`));

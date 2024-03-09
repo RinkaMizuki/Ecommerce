@@ -10,7 +10,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import Skeleton from "react-loading-skeleton";
-import 'react-loading-skeleton/dist/skeleton.css'
+import 'react-loading-skeleton/dist/skeleton.css';
 import { toast } from "react-toastify";
 
 const cx = classNames.bind(styles);
@@ -69,7 +69,7 @@ const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false
     if (!isRemove) {
       toast.success("A product has been added to wishlist", toastOptions)
     } else {
-      toast.error("A product has been removed from the favorites list", toastOptions)
+      toast.info("A product has been removed from the favorites list", toastOptions)
     }
   }
 
@@ -78,6 +78,7 @@ const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false
       navigate("/login")
       return;
     }
+    toast.success("A product has been added to cart", toastOptions)
     setLocalProductQuantity(id, userInfo?.user?.id, quantity, "add")
     setQuantity(preQuantity => preQuantity + 1);
   }
@@ -86,6 +87,7 @@ const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false
       navigate("/login")
       return;
     }
+      toast.info("A product has been removed from the cart", toastOptions)
     setLocalProductQuantity(id, userInfo?.user?.id, quantity, "remove")
     if (quantity >= 1) {
       setQuantity(preQuantity => preQuantity - 1);

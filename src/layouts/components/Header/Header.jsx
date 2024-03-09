@@ -10,6 +10,7 @@ import useCustomFetch from "../../../hooks/useCustomFetch";
 import { useSpring, animated } from "@react-spring/web";
 import TokenService from "../../../services/tokenService";
 import { getLocalFavoriteProductId } from "../../../services/favoriteService";
+import { getLocalProductQuantity } from "../../../services/cartService";
 import { useEffect, useState } from "react";
 
 const cx = classNames.bind(styles);
@@ -41,6 +42,7 @@ const Header = function ({ toggleTopHeader }) {
   const userLogin = useSelector(state => state.auth.login.currentUser);
 
   const [listId, setListId] = useState(getLocalFavoriteProductId(userLogin?.user?.id));
+  const [listProductId, setListProductId] = useState(getLocalProductQuantity(userLogin?.user?.id));
 
   const [, post,] = useCustomFetch();
 
@@ -50,16 +52,26 @@ const Header = function ({ toggleTopHeader }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-
   useEffect(() => {
-
     const handleStorageChange = () => {
       const ids = getLocalFavoriteProductId(userLogin?.user.id);
       setListId(ids);
     }
-
     //khi login tk khác cần listen lại event(vì khác context)
     window.addEventListener(`FavoriteDataEvent_${userLogin?.user?.id}`, handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [userLogin?.user?.id])
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const productIds = getLocalProductQuantity(userLogin?.user.id);
+      setListProductId(productIds);
+    }
+    //khi login tk khác cần listen lại event(vì khác context)
+    window.addEventListener(`CartDataEvent_${userLogin?.user?.id}`, handleStorageChange);
 
     return () => {
       window.removeEventListener('storage', handleStorageChange);
@@ -149,8 +161,13 @@ const Header = function ({ toggleTopHeader }) {
                 <i className={cx("icon-heart", "fa-solid fa-heart", "active")}></i>
               </div>
             )}
-            <Link to="/cart">
-              <AddShoppingCartIcon className={cx("icon-cart")} />
+            <Link to="/cart" className={cx("cart-icon")}>
+              <span className={cx("cart-quantity", {
+                "cart-quantity-active": location.pathname === "/cart",
+              })}>{listProductId.reduce((sum, elm) => sum + elm.quantity, 0) || 0}</span>
+              <AddShoppingCartIcon className={cx("icon-cart", {
+                "cart-icon-active": location.pathname === "/cart",
+              })} />
             </Link>
             {userLogin && <Tippy
               duration={500}

@@ -8,14 +8,26 @@ import ProductArrival from "../../components/ProductArrival";
 import Sidebar from "../../layouts/components/Sidebar";
 import Slider from "../../layouts/components/Slider";
 import ProductService from "../../components/ProductService";
-import { toast, ToastContainer } from "react-toastify"
+import { ToastContainer } from "react-toastify"
 import Snowfall from "react-snowfall";
 import ProductBestSeller from "../../components/ProductBestSeller/ProductBestSeller";
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ScrollButton from "../../components/ScrollButton";
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { useEffect } from "react";
 
 const cx = classNames.bind(styles);
 
 const Home = () => {
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    })
+  }, [])
 
   return (
     <>
@@ -27,9 +39,17 @@ const Home = () => {
           zIndex: 2,
         }}
       /> */}
-      <ToastContainer style={{
-        marginTop: "60px"
-      }}></ToastContainer>
+      <ToastContainer
+        icon={({ type }) => {
+          if (type === "info") return <RemoveCircleOutlineIcon />;
+          else if (type === "success") return <AddCircleOutlineIcon />;
+          else if (type === "error") return <HighlightOffIcon />;
+          else return <WarningAmberIcon />
+        }}
+        style={{
+          marginTop: "60px",
+        }}
+      ></ToastContainer>
       <div className={cx("wrapper")}>
         <ScrollButton />
         <Sidebar />

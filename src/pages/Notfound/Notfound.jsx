@@ -45,7 +45,7 @@ const Notfound = () => {
         <Button
           className={cx("notfound-btn")}
           onClick={handleBackToHome}
-        >Back to home page</Button>
+        >Back To Home</Button>
       </div>
     </div>
   )
