@@ -40,7 +40,7 @@ const LayoutManagement = ({ toggleTopHeader, children }) => {
               href="/manager"
               aria-current="page"
             >
-              My Account
+              Account
             </Link>
           </Breadcrumbs>
           <div className={cx("username")}>

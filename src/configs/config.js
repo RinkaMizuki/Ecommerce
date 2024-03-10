@@ -13,6 +13,7 @@ const configRoutes = {
   return: "/manager/returns",
   confirm: "/confirm-email",
   cart: "/cart",
+  address: "/manager/address",
   error: "*",
 }
 

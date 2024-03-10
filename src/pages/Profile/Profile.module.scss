@@ -51,7 +51,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: 100%;
+  width: 63%;
   position: relative;
 
   >label {
@@ -190,6 +190,7 @@
   right: 5%;
   top: 70%;
 }
+
 .verify-status {
   position: absolute;
   right: 3%;
@@ -227,6 +228,7 @@
     transform: translateY(-50%) rotate(360deg);
   }
 }
+
 .custom-loading {
   width: 40px !important;
   height: 40px !important;

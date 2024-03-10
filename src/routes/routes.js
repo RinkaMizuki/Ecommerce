@@ -15,6 +15,7 @@ import AuthRequired from "../HOC/AuthRequired";
 import Confirm from "../pages/Confirm";
 import Return from "../pages/Return";
 import Cart from "../pages/Cart";
+import Address from "../pages/Address";
 
 const publicRoutes = [
   {
@@ -65,6 +66,11 @@ const publicRoutes = [
   {
     path: config.routes.return,
     element: AuthRequired(Return),
+    layout: "management"
+  },
+  {
+    path: config.routes.address,
+    element: AuthRequired(Address),
     layout: "management"
   },
   {

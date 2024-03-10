@@ -123,7 +123,6 @@ export default function AccountMenu() {
   const location = useLocation()
 
   const handleSelectNode = (e, nodeId) => {
-    console.log(nodeId);
     if (nodeId == 5) {
       navigate("/manager/profile")
     }
@@ -179,11 +178,11 @@ export default function AccountMenu() {
         onNodeSelect={handleSelectNode}
         selected={selectedNode}
       >
-        <StyledTreeItem nodeId="3" labelText="Manage My Account" labelIcon={ManageAccountsIcon}
+        <StyledTreeItem nodeId="3" labelText="Manage Account" labelIcon={ManageAccountsIcon}
         >
           <StyledTreeItem
             nodeId="5"
-            labelText="My Profile"
+            labelText="Profile"
             labelIcon={AccountBoxIcon}
             color="#1a73e8"
             bgColor="#e8f0fe"
@@ -201,7 +200,7 @@ export default function AccountMenu() {
           />
           <StyledTreeItem
             nodeId="7"
-            labelText="My Payment Options"
+            labelText="Payment Options"
             labelIcon={PaymentIcon}
             color="#a250f5"
             bgColor="#f3e8fd"
@@ -232,7 +231,7 @@ export default function AccountMenu() {
         <StyledTreeItem nodeId="8" labelText="Manage Orders" labelIcon={ManageHistoryIcon}>
           <StyledTreeItem
             nodeId="10"
-            labelText="My Returns"
+            labelText="Returns"
             labelIcon={RecyclingIcon}
             labelInfo="10"
             color="#a250f5"
@@ -242,7 +241,7 @@ export default function AccountMenu() {
           />
           <StyledTreeItem
             nodeId="11"
-            labelText="My Cancellations"
+            labelText="Cancellations"
             labelIcon={DisabledByDefaultIcon}
             labelInfo="5"
             color="#e3742f"

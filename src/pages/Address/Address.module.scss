@@ -1,0 +1,121 @@
+.address-container {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  flex: 1;
+  font-family: "Montserrat";
+  margin-top: 10px;
+  margin-bottom: 100px;
+}
+
+.address-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 rgba(0, 0, 0, 0)), var(--tw-ring-shadow, 0 0 rgba(0, 0, 0, 0)), var(--tw-shadow);
+  padding: 20px 30px;
+}
+
+.address-title {
+  font-weight: 500;
+  font-size: 19px;
+}
+
+.btn-add {
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.address-content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 rgba(0, 0, 0, 0)), var(--tw-ring-shadow, 0 0 rgba(0, 0, 0, 0)), var(--tw-shadow);
+  padding: 20px 30px;
+  color: var(--text-gray-700);
+}
+
+.address-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+
+  &:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 0.5px;
+    background-color: var(--text-gray-500);
+    left: 0;
+    display: block;
+    bottom: -15px;
+  }
+}
+
+.info-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.info-detail {
+  display: flex;
+  gap: 10px;
+
+  >span:first-child {
+    color: var(--black);
+    font-weight: 500;
+  }
+}
+
+.address-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  >p {
+    max-width: 400px;
+    text-wrap: wrap;
+    line-height: 1.5;
+  }
+}
+
+.btn-settings {
+  background-color: var(--white) !important;
+  color: var(--text-gray-700) !important;
+  border: 1px solid var(--text-gray-700);
+  padding: 5px 10px;
+}
+
+.btn-update {
+  background-color: transparent;
+  color: #08f;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.address-role {
+  display: flex;
+  gap: 5px;
+}
+
+.btn-role {
+  font-family: "Montserrat";
+  background-color: transparent;
+  color: var(--text-gray-700);
+  border: 1px solid var(--text-gray-700);
+  padding: 5px;
+  cursor: text !important;
+}
+
+.active {
+  border: 1px solid var(--primary);
+  color: var(--primary);
+}
