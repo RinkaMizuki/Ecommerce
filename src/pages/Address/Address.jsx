@@ -3,7 +3,7 @@ import styles from "./Address.module.scss";
 import Button from "../../components/Button";
 import AddIcon from '@mui/icons-material/Add';
 import { useContext } from "react";
-import { ModalContext } from "../../context/ModelContext";
+import { ModalContext } from "../../context/ModalContext";
 
 const cx = classNames.bind(styles)
 

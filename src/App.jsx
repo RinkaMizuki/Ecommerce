@@ -5,7 +5,7 @@ import LayoutDefault from "./layouts/LayoutDefault";
 import './App.css'
 import Loading from "./pages/Loading";
 import LayoutManagement from "./layouts/LayoutManagement";
-import ModalContextProvider from "./context/ModelContext.jsx";
+import ModalContextProvider from "./context/ModalContext.jsx";
 
 function App() {
   const [toggleTopHeader, setToggleTopHeader] = useState(false);

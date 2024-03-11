@@ -5,4 +5,8 @@ const httpRequests = axios.create({
   withCredentials: true,
 })
 
+export const httpRequestAddress = axios.create({
+  baseURL: import.meta.env.VITE_ECOMMERCE_PROVINCES_BASE_URL,
+})
+
 export default httpRequests;

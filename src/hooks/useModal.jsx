@@ -8,8 +8,12 @@ const useModal = (Modal) => {
 
   const handleHideModalForm = () => {
     setIsShowing(false);
+    document.body.style.height = "unset";
+    document.body.style.overflow = "unset";
   };
   const handleShowModalForm = () => {
+    document.body.style.height = "100%";
+    document.body.style.overflow = "hidden";
     setIsShowing(true);
   };
 
