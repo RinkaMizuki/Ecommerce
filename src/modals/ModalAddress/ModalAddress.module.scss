@@ -112,6 +112,10 @@
     display: flex;
     justify-content: center;
   }
+
+  >span:first-child {
+    cursor: pointer;
+  }
 }
 
 .address-list {
@@ -127,7 +131,6 @@
 
 .address-active {
   width: 33.3333%;
-  transform: translate(0%, 0px);
   transition: transform .3s;
   margin-top: -2px;
   border-bottom: 2px solid var(--primary);
@@ -135,6 +138,16 @@
 
 .header-active {
   color: var(--primary) !important;
+  cursor: pointer;
+}
+
+.clear-icon {
+
+  width: 16px;
+  height: 16px;
+  margin-right: 3px;
+  cursor: pointer;
+  align-self: stretch;
 }
 
 .address-info {

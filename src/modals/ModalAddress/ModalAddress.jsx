@@ -3,17 +3,30 @@ import styles from "./ModalAddress.module.scss";
 import Button from "../../components/Button"
 import { useEffect, useRef, useState } from "react";
 import { getAddress } from "../../services/addressService";
+import { useClickOutside } from "../../hooks/useClickOutside";
 
 const cx = classNames.bind(styles)
 
 const ModalAddress = ({ onHideModal }) => {
 
-  const [addresses, setAddresses] = useState([]);
+  const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
   const [searchAddress, setSearchAddress] = useState("");
+  const [tabActive, setTabActive] = useState("province");
   const [toggleInput, setToggleInput] = useState(true);
   const addressPlaceholderRef = useRef(null);
   const addressListRef = useRef(null);
   const addressInputRef = useRef(null);
+  const wrapperRef = useRef(null);
+
+  const handleRemoveList = () => {
+    addressListRef.current.style.display = "none";
+    addressPlaceholderRef.current.style.display = "block";
+    setToggleInput(true);
+  };
+
+  useClickOutside(wrapperRef, handleRemoveList);
 
   const handleChooseAddress = () => {
     addressListRef.current.style.display = "flex";
@@ -22,21 +35,62 @@ const ModalAddress = ({ onHideModal }) => {
     setToggleInput(false);
   };
 
-  const handleRemoveList = () => {
-    addressListRef.current.style.display = "none";
-    addressPlaceholderRef.current.style.display = "block";
-    setToggleInput(true);
-  };
 
-  const handleChooseProvicen = (code) => {
+  const handleChooseProvince = async (provinceID, provinceName) => {
+    const fetchData = async () => {
+      try {
+        const response = await getAddress("/district", {
+          params: {
+            province_id: provinceID
+          }
+        });
+        setSearchAddress(provinceName)
+        setDistricts(response.data);
+        setTabActive("district")
+      }
+      catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+    fetchData();
+  }
 
+  const handleChooseDistrict = async (districtId, districtName) => {
+    const fetchData = async () => {
+      try {
+        const response = await getAddress("/ward", {
+          params: {
+            district_id: districtId
+          }
+        });
+        setSearchAddress(preAddress => `${preAddress}, ${districtName}`)
+        setWards(response.data);
+        setTabActive("ward")
+      }
+      catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+    fetchData();
+  }
+
+  const handleChooseWard = (wardName) => {
+    setSearchAddress(preAddress => `${preAddress}, ${wardName}`);
+    handleRemoveList();
+  }
+
+  const handleClearInput = () => {
+    setSearchAddress("");
+    setDistricts([]);
+    setWards([]);
+    setTabActive("province");
   }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await getAddress("/province");
-        setAddresses(response.data);
+        setProvinces(response.data);
       }
       catch (error) {
         console.error('Error fetching data:', error);
@@ -44,6 +98,29 @@ const ModalAddress = ({ onHideModal }) => {
     }
     fetchData();
   }, [])
+
+  useEffect(() => {
+    if (searchAddress) {
+      addressPlaceholderRef.current.innerHTML = searchAddress;
+    } else {
+      addressPlaceholderRef.current.innerHTML = "Tỉnh/ Thành phố, Quận/Huyện, Phường/Xã";
+    }
+  }, [toggleInput])
+
+  const handleClickProvinceHeader = () => {
+    setTabActive("province");
+
+  };
+  const handleClickDistrictHeader = () => {
+    if (districts.length) {
+      setTabActive("district");
+    }
+  };
+  const handleClickWardHeader = () => {
+    if (wards.length) {
+      setTabActive("ward")
+    }
+  };
 
   return (
     <div className={cx("modal-address-container")}>
@@ -59,7 +136,7 @@ const ModalAddress = ({ onHideModal }) => {
                 <input type="text" placeholder="Number Phone" />
               </div>
             </div>
-            <div className={cx("address-info-wrapper")}>
+            <div className={cx("address-info-wrapper")} ref={wrapperRef}>
               <div className={cx("address-info")} onClick={handleChooseAddress}
               >
                 <div className={cx("address-placeholder-hide")}>Tỉnh/ Thành phố, Quận/Huyện, Phường/Xã</div>
@@ -69,32 +146,78 @@ const ModalAddress = ({ onHideModal }) => {
                   autoComplete="user-administrative-divisions" className={cx("input-address", {
                     "input-select": toggleInput
                   })} type="text" placeholder="Tỉnh/ Thành phố, Quận/Huyện, Phường/Xã" value={searchAddress} onChange={
-                    (e) => setSearchAddress(e.target.value)
+                    (e) => {
+                      if (!e.target.value) {
+                        setTabActive("province")
+                        setSearchAddress(e.target.value)
+                        setDistricts([]);
+                        setWards([]);
+                      }
+                    }
                   } />
                 <div className={cx("address-filter")}>
                   <div className={cx("address-search")}>
-                    <svg viewBox="0 0 16 16" fill="none" width="16" height="16" color="rgba(0, 0, 0, 0.54)" ><path fillRule="evenodd" clipRule="evenodd" d="M12.492 7.246A5.246 5.246 0 112 7.246a5.246 5.246 0 0110.492 0zm-1.2 4.758a6.246 6.246 0 11.728-.731l2.998 2.997-.73.73-2.996-2.996z" fill="currentColor"></path></svg>
+                    <svg viewBox="0 0 16 16" fill="none" width="16" height="16" color="rgba(0, 0, 0, 0.54)" ><path fillRule="evenodd" clipRule="evenodd" d="M12.492 7.246A5.246 5.246 0 112 7.246a5.246 5.246 0 0110.492 0zm-1.2 4.758a6.246 6.246 0 11.728-.731l2.998 2.997-.73.73-2.996-2.996z" fill="currentColor"></path>
+                    </svg>
                   </div>
+                  {searchAddress && <svg onClick={handleClearInput} viewBox="0 0 20 20" fill="none" width="140" height="140" color="rgba(0, 0, 0, 0.26)" className={cx("clear-icon")}><path fillRule="evenodd" clipRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM6.041 7.102L8.94 10l-2.898 2.898 1.06 1.06L10 11.062l2.898 2.898 1.06-1.06-2.896-2.9 2.898-2.898-1.06-1.06L10 8.938 7.102 6.041l-1.06 1.06z" fill="currentColor"></path>
+                  </svg>}
                   <div className={cx("address-select")}>
                   </div>
                 </div>
               </div>
               <div className={cx("address-select-wrapper")} ref={addressListRef}>
                 <div className={cx("address-header")}>
-                  <span className={cx("header-active")}>Tỉnh/Thành Phố</span>
-                  <span>Quận/Huyện</span>
-                  <span>Phường/Xã</span>
+                  <span className={cx({
+                    "header-active": tabActive === "province"
+                  })}
+                    onClick={handleClickProvinceHeader}
+                  >
+                    Tỉnh/Thành Phố
+                  </span>
+                  <span
+                    onClick={handleClickDistrictHeader}
+                    className={cx({
+                      "header-active": tabActive === "district"
+                    })}
+                    style={{
+                      cursor: !districts.length ? "not-allowed" : "pointer"
+                    }}
+                  >
+                    Quận/Huyện
+                  </span>
+                  <span
+                    onClick={handleClickWardHeader}
+                    style={{
+                      cursor: !wards.length ? "not-allowed" : "pointer"
+                    }}
+                    className={cx({
+                      "header-active": tabActive === "ward"
+                    })}
+                  >
+                    Phường/Xã
+                  </span>
                 </div>
-                <div className={cx("address-active")}></div>
+                <div className={cx("address-active")} style={{
+                  transform: tabActive === "district" ? "translateX(100%)" : tabActive === "province" ? "translateX(0%)" : "translateX(200%)"
+                }}></div>
                 <div className={cx("address-list")}>
-                  {addresses?.map(province => (
-                    <div key={province.Code} className={cx("address-item")} onClick={() => handleChooseProvicen(province.Code)}>{province.ProvinceName}</div>
-                  ))}
+                  {!districts.length || tabActive === "province" ? provinces?.map(province => (
+                    <div key={province.ProvinceID} className={cx("address-item")} onClick={() => handleChooseProvince(province.ProvinceID, province.ProvinceName)}>{province.ProvinceName}</div>
+                  )) :
+                    !wards.length || tabActive === "district" ?
+                      districts?.map(district => (
+                        <div key={district.DistrictID} className={cx("address-item")} onClick={() => handleChooseDistrict(district.DistrictID, district.DistrictName)}>{district.DistrictName}</div>
+                      ))
+                      : wards?.map(ward => (
+                        <div key={ward.WardName} className={cx("address-item")} onClick={() => handleChooseWard(ward.WardName)}>{ward.WardName}</div>
+                      ))
+                  }
                 </div>
               </div>
             </div>
             <div className={cx("address-detail")}>
-              <textarea className={cx("address-detail-area")} rows="2" placeholder="Address Detail" autoComplete="user-street-address" maxLength="128" disabled={true}></textarea>
+              <textarea className={cx("address-detail-area")} rows="2" placeholder="Address Detail" autoComplete="user-street-address" maxLength="128" disabled={searchAddress.split(",").length < 3}></textarea>
             </div>
             <div className={cx("map-wrapper")}>
               <div className={cx("not-allowed")}>
