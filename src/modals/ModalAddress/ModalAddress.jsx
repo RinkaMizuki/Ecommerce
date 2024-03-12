@@ -4,6 +4,7 @@ import Button from "../../components/Button"
 import { useEffect, useRef, useState } from "react";
 import { getAddress } from "../../services/addressService";
 import { useClickOutside } from "../../hooks/useClickOutside";
+import initMap from "../../lib/map";
 
 const cx = classNames.bind(styles)
 
@@ -13,12 +14,23 @@ const ModalAddress = ({ onHideModal }) => {
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
   const [searchAddress, setSearchAddress] = useState("");
+  const [fullname, setFullname] = useState("");
+  const [numberphone, setNumberphone] = useState("");
+  const [detailAddress, setDetailAddress] = useState("");
+
   const [tabActive, setTabActive] = useState("province");
   const [toggleInput, setToggleInput] = useState(true);
   const addressPlaceholderRef = useRef(null);
   const addressListRef = useRef(null);
   const addressInputRef = useRef(null);
   const wrapperRef = useRef(null);
+  const wrapperNameRef = useRef(null);
+  const wrapperPhoneRef = useRef(null);
+  const labelFullnameRef = useRef(null);
+  const labelNumberphoneRef = useRef(null);
+  const alertFullnameRef = useRef(null);
+  const alertNumberphoneRef = useRef(null);
+  const fullnameInputRef = useRef(null);
 
   const handleRemoveList = () => {
     addressListRef.current.style.display = "none";
@@ -79,6 +91,10 @@ const ModalAddress = ({ onHideModal }) => {
     handleRemoveList();
   }
 
+  const handleSaveAddress = () => {
+
+  }
+
   const handleClearInput = () => {
     setSearchAddress("");
     setDistricts([]);
@@ -86,7 +102,28 @@ const ModalAddress = ({ onHideModal }) => {
     setTabActive("province");
   }
 
+  const validatePhoneNumber = (phone) => {
+    const regexPhoneNumber = /(84|0[3|5|7|8|9])+([0-9]{8})\b/g;
+    return phone.match(regexPhoneNumber) ? true : false;
+  }
+
   useEffect(() => {
+    const script = document.createElement('script');
+
+    window.initMap = initMap
+
+    script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyD2qEnYC3HPcLKPVDbT4LFsh7YLWV8IL0k&callback=initMap&libraries=places&v=weekly&solution_channel=GMP_CCS_autocomplete_v1";
+    script.async = true;
+
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    }
+  }, []);
+
+  useEffect(() => {
+    fullnameInputRef.current.focus();
     const fetchData = async () => {
       try {
         const response = await getAddress("/province");
@@ -122,6 +159,48 @@ const ModalAddress = ({ onHideModal }) => {
     }
   };
 
+  const handleValidateFullname = () => {
+    if (!fullname || !(fullname.split(" ").length >= 2) || (fullname.split(" ")[1] === "")) {
+      alertFullnameRef.current.style.display = "block";
+      wrapperNameRef.current.style.border = "1px solid var(--primary)";
+      labelFullnameRef.current.style.color = "var(--primary)";
+    }
+  }
+
+  const handleRevalidateFullname = () => {
+    labelFullnameRef.current.style.color = "unset";
+    alertFullnameRef.current.style.display = "none";
+    wrapperNameRef.current.style.border = "1px solid rgba(0, 0, 0, 0.14)";
+  }
+
+  const handleValidateNumberphone = () => {
+    if (!numberphone || !validatePhoneNumber(numberphone)) {
+      alertNumberphoneRef.current.style.display = "block";
+      wrapperPhoneRef.current.style.border = "1px solid var(--primary)";
+      labelNumberphoneRef.current.style.color = "var(--primary)";
+    }
+  }
+
+  const handleRevalidateNumberphone = () => {
+    labelNumberphoneRef.current.style.color = "unset";
+    alertNumberphoneRef.current.style.display = "none";
+    wrapperPhoneRef.current.style.border = "1px solid rgba(0, 0, 0, 0.14)";
+  }
+
+  const handleFullnameChange = (e) => {
+    if (e.target.value) {
+      labelFullnameRef.current.style.display = "block";
+    }
+    else {
+      labelFullnameRef.current.style.display = "none";
+    }
+    setFullname(e.target.value)
+  }
+
+  const handleMapAddressChange = (e) => {
+    setDetailAddress(e.target.value)
+  }
+
   return (
     <div className={cx("modal-address-container")}>
       <p>New Address</p>
@@ -129,11 +208,37 @@ const ModalAddress = ({ onHideModal }) => {
         <div className={cx("form-container")}>
           <div className={cx("form-info")}>
             <div className={cx("person-info")}>
-              <div>
-                <input type="text" placeholder="Full Name" />
+              <div ref={wrapperNameRef}>
+                <div className={cx("label")} ref={labelFullnameRef}>Full Name</div>
+                <input
+                  ref={fullnameInputRef}
+                  type="text"
+                  placeholder="Full Name"
+                  onChange={(e) => handleFullnameChange(e)}
+                  value={fullname}
+                  onBlur={handleValidateFullname}
+                  onFocus={handleRevalidateFullname}
+                />
+                <span ref={alertFullnameRef} className={cx("alert")} role="alert">Vui lòng điền Họ &amp; Tên</span>
               </div>
-              <div>
-                <input type="text" placeholder="Number Phone" />
+              <div ref={wrapperPhoneRef}>
+                <div className={cx("label")} ref={labelNumberphoneRef}>Number Phone</div>
+                <input
+                  type="text"
+                  placeholder="Number Phone"
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      labelNumberphoneRef.current.style.display = "block";
+                    } else {
+                      labelNumberphoneRef.current.style.display = "none";
+                    }
+                    setNumberphone(e.target.value)
+                  }}
+                  value={numberphone}
+                  onFocus={handleRevalidateNumberphone}
+                  onBlur={handleValidateNumberphone}
+                />
+                <span ref={alertNumberphoneRef} className={cx("alert")} role="alert">Số điện thoại không hợp lệ</span>
               </div>
             </div>
             <div className={cx("address-info-wrapper")} ref={wrapperRef}>
@@ -181,7 +286,7 @@ const ModalAddress = ({ onHideModal }) => {
                       "header-active": tabActive === "district"
                     })}
                     style={{
-                      cursor: !districts.length ? "not-allowed" : "pointer"
+                      cursor: !districts?.length ? "not-allowed" : "pointer"
                     }}
                   >
                     Quận/Huyện
@@ -189,7 +294,7 @@ const ModalAddress = ({ onHideModal }) => {
                   <span
                     onClick={handleClickWardHeader}
                     style={{
-                      cursor: !wards.length ? "not-allowed" : "pointer"
+                      cursor: !wards?.length ? "not-allowed" : "pointer"
                     }}
                     className={cx({
                       "header-active": tabActive === "ward"
@@ -202,31 +307,81 @@ const ModalAddress = ({ onHideModal }) => {
                   transform: tabActive === "district" ? "translateX(100%)" : tabActive === "province" ? "translateX(0%)" : "translateX(200%)"
                 }}></div>
                 <div className={cx("address-list")}>
-                  {!districts.length || tabActive === "province" ? provinces?.map(province => (
-                    <div key={province.ProvinceID} className={cx("address-item")} onClick={() => handleChooseProvince(province.ProvinceID, province.ProvinceName)}>{province.ProvinceName}</div>
+                  {!districts?.length || tabActive === "province" ? provinces?.map(province => (
+                    <div key={province.ProvinceID} className={cx("address-item", {
+                      "selected": searchAddress.toLowerCase().includes(province.ProvinceName.toLowerCase())
+                    })} onClick={() => handleChooseProvince(province.ProvinceID, province.ProvinceName)}>{province.ProvinceName}</div>
                   )) :
                     !wards.length || tabActive === "district" ?
                       districts?.map(district => (
-                        <div key={district.DistrictID} className={cx("address-item")} onClick={() => handleChooseDistrict(district.DistrictID, district.DistrictName)}>{district.DistrictName}</div>
+                        <div key={district.DistrictID} className={cx("address-item", {
+                          "selected": searchAddress.toLowerCase().includes(district.DistrictName.toLowerCase())
+                        })} onClick={() => handleChooseDistrict(district.DistrictID, district.DistrictName)}>{district.DistrictName}</div>
                       ))
                       : wards?.map(ward => (
-                        <div key={ward.WardName} className={cx("address-item")} onClick={() => handleChooseWard(ward.WardName)}>{ward.WardName}</div>
+                        <div key={ward.WardName} className={cx("address-item", {
+                          "selected": searchAddress.toLowerCase().includes(ward.WardName.toLowerCase())
+                        })} onClick={() => handleChooseWard(ward.WardName)}>{ward.WardName}</div>
                       ))
                   }
                 </div>
               </div>
             </div>
             <div className={cx("address-detail")}>
-              <textarea className={cx("address-detail-area")} rows="2" placeholder="Address Detail" autoComplete="user-street-address" maxLength="128" disabled={searchAddress.split(",").length < 3}></textarea>
+              <input id="pac-input" className={cx("address-detail-area")} placeholder="Address Detail" autoComplete="user-street-address" disabled={searchAddress.split(",").length < 3}
+                onChange={handleMapAddressChange}
+              />
             </div>
             <div className={cx("map-wrapper")}>
               <div className={cx("not-allowed")}>
-                <svg fill="none" viewBox="0 0 440 120" preserveAspectRatio="xMidYMid slice" className="HRK22t"><g clipPath="url(#clip0)"><path fill="#F7F8F9" d="M0 0h440v120H0z"></path><g filter="url(#filter0_d)" stroke="#FBFBFC"><path strokeWidth="10" d="M-6.779-.48l123 61"></path><path strokeWidth="12" d="M11.524 124.548l30-67"></path><path strokeWidth="10" d="M-7.796 33.512l112 55"></path><path strokeWidth="12" d="M103.473 88.664l41-97"></path><path strokeWidth="10" d="M322.96 33.054l35-48m5.078 109.853l-51-10M442.064 94l-78 1"></path><path strokeWidth="12" d="M410.037 130.663l-4-36"></path><path strokeWidth="11" d="M73.36 39.047l28-44"></path><path strokeWidth="12" d="M31.552 19.486l12-26"></path><path strokeWidth="10" d="M116.01 60.422l41 18"></path><path strokeWidth="12" d="M140.286 123.17l41-128"></path><path strokeWidth="10" d="M164.244 42.682l-32-12"></path><path strokeWidth="11" d="M256.298 124.068l-89-81"></path><path strokeWidth="10" d="M242.102 24.626l-78-32M273.319-4.26l-80 71m26.348 26.974l-82 29m184.93-91.441l-102 62"></path><path strokeWidth="11" d="M144.386 123.146l-39-34"></path><path strokeWidth="12" d="M79.949 125.762l25-39"></path><path d="M241.5-7c18 8 70.203 32.864 82 39.5 16 9 39.5 35 39.5 61 0 27-18 34.5-28.5 42.5" strokeWidth="10"></path><path d="M240 23.5c31 25.5 74 52 72.5 62s-51.5 28.333-77 41M337.5 13s23.5-7 28-8S445 7.5 445 7.5" strokeWidth="10"></path><path d="M413 4c-1 13-3.4 40.5-5 42.5s-39.667 9-56 12" strokeWidth="11"></path></g></g><defs><clipPath id="clip0"><path fill="#fff" d="M0 0h440v120H0z"></path></clipPath><filter id="filter0_d" x="-14" y="-21.892" width="463.232" height="165.869" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB"><feFlood floodOpacity="0" result="BackgroundImageFix"></feFlood><feColorMatrix in="SourceAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"></feColorMatrix><feOffset></feOffset><feGaussianBlur stdDeviation="2"></feGaussianBlur><feComposite in2="hardAlpha" operator="out"></feComposite><feColorMatrix values="0 0 0 0 0.960784 0 0 0 0 0.964706 0 0 0 0 0.968627 0 0 0 1 0"></feColorMatrix><feBlend in2="BackgroundImageFix" result="effect1_dropShadow"></feBlend><feBlend in="SourceGraphic" in2="effect1_dropShadow" result="shape"></feBlend></filter></defs>
-                </svg>
-                <button className={cx("btn-map")} disabled={true}><svg viewBox="0 0 10 10" className="Hn994c"><path stroke="none" d="m10 4.5h-4.5v-4.5h-1v4.5h-4.5v1h4.5v4.5h1v-4.5h4.5z"></path>
+                {/* <div className={cx("pac-card")} id="pac-card">
+                  <div>
+                    <div id="type-selector" className={cx("pac-controls")}>
+                      <input
+                        type="radio"
+                        name="type"
+                        id="changetype-all"
+                        checked="checked"
+                      />
+                      <label htmlFor="changetype-all">All</label>
+
+                      <input type="radio" name="type" id="changetype-establishment" />
+                      <label htmlFor="changetype-establishment">establishment</label>
+
+                      <input type="radio" name="type" id="changetype-address" />
+                      <label htmlFor="changetype-address">address</label>
+
+                      <input type="radio" name="type" id="changetype-geocode" />
+                      <label htmlFor="changetype-geocode">geocode</label>
+
+                      <input type="radio" name="type" id="changetype-cities" />
+                      <label htmlFor="changetype-cities">(cities)</label>
+
+                      <input type="radio" name="type" id="changetype-regions" />
+                      <label htmlFor="changetype-regions">(regions)</label>
+                    </div>
+                    <br />
+                    <div id="strict-bounds-selector" className={cx("pac-controls")}>
+                      <input type="checkbox" id="use-location-bias" value="" checked />
+                      <label htmlFor="use-location-bias">Bias to map viewport</label>
+
+                      <input type="checkbox" id="use-strict-bounds" value="" />
+                      <label htmlFor="use-strict-bounds">Strict bounds</label>
+                    </div>
+                  </div>
+                  <div id="pac-container">
+                    <input id="pac-input" type="text" placeholder="Enter a location" />
+                  </div>
+                </div> */}
+                <div id="map" className={cx("map")}></div>
+                <div id="infowindow-content">
+                  {/* <span id="place-name" className={cx("title")}></span><br /> */}
+                  <span id="place-address"></span>
+                </div>
+                {/* <button className={cx("btn-map")} disabled={true}><svg viewBox="0 0 10 10" className="Hn994c"><path stroke="none" d="m10 4.5h-4.5v-4.5h-1v4.5h-4.5v1h4.5v4.5h1v-4.5h4.5z"></path>
                 </svg>
                   Thêm vị trí
-                </button>
+                </button> */}
               </div>
             </div>
             <div className={cx("address-options")}>
@@ -246,7 +401,7 @@ const ModalAddress = ({ onHideModal }) => {
           </div>
           <div className={cx("form-action")}>
             <Button onClick={onHideModal}>Cancel</Button>
-            <Button>Save Changes</Button>
+            <Button disable={searchAddress.split(",").length < 3 || !fullname || !numberphone || !validatePhoneNumber(numberphone) || !detailAddress} onClick={() => handleSaveAddress()}>Save Changes</Button>
           </div>
         </div>
       </form>
