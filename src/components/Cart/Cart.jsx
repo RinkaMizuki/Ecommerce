@@ -87,7 +87,7 @@ const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false
       navigate("/login")
       return;
     }
-      toast.info("A product has been removed from the cart", toastOptions)
+    toast.info("A product has been removed from the cart", toastOptions)
     setLocalProductQuantity(id, userInfo?.user?.id, quantity, "remove")
     if (quantity >= 1) {
       setQuantity(preQuantity => preQuantity - 1);
@@ -109,7 +109,7 @@ const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false
     window.addEventListener(`FavoriteDataEvent_${userInfo?.user?.id}`, handleStorageChange);
 
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener(`FavoriteDataEvent_${userInfo?.user?.id}`, handleStorageChange);
     };
   }, [])
 

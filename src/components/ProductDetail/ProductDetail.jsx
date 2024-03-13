@@ -55,7 +55,7 @@ const ProductDetail = () => {
     window.addEventListener(`FavoriteDataEvent_${userLogin?.user?.id}`, handleStorageChange);
 
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener(`FavoriteDataEvent_${userLogin?.user?.id}`, handleStorageChange);
     };
   }, [])
 

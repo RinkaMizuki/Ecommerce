@@ -5,6 +5,9 @@ import { useEffect, useRef, useState } from "react";
 import { getAddress } from "../../services/addressService";
 import { useClickOutside } from "../../hooks/useClickOutside";
 import initMap from "../../lib/map";
+import { postUserAddress } from "../../services/userAddressServcice";
+import { useDispatch, useSelector } from "react-redux";
+import { saveUserAddress } from "../../redux/addressSlice";
 
 const cx = classNames.bind(styles)
 
@@ -17,7 +20,6 @@ const ModalAddress = ({ onHideModal }) => {
   const [fullname, setFullname] = useState("");
   const [numberphone, setNumberphone] = useState("");
   const [detailAddress, setDetailAddress] = useState("");
-
   const [tabActive, setTabActive] = useState("province");
   const [toggleInput, setToggleInput] = useState(true);
   const addressPlaceholderRef = useRef(null);
@@ -31,6 +33,14 @@ const ModalAddress = ({ onHideModal }) => {
   const alertFullnameRef = useRef(null);
   const alertNumberphoneRef = useRef(null);
   const fullnameInputRef = useRef(null);
+  const defaultCheckRef = useRef(null);
+  const returnCheckRef = useRef(null);
+  const pickupCheckRef = useRef(null);
+
+  const userLogin = useSelector(state => state.auth.login.currentUser.user);
+  const isFetching = useSelector(state => state.address.isFetching);
+  const listAddress = useSelector(state => state.address.listAddress);
+  const dispatch = useDispatch();
 
   const handleRemoveList = () => {
     addressListRef.current.style.display = "none";
@@ -75,7 +85,7 @@ const ModalAddress = ({ onHideModal }) => {
             district_id: districtId
           }
         });
-        setSearchAddress(preAddress => `${preAddress}, ${districtName}`)
+        setSearchAddress(preAddress => `${preAddress.split(",")[0]}, ${districtName}`)
         setWards(response.data);
         setTabActive("ward")
       }
@@ -87,12 +97,53 @@ const ModalAddress = ({ onHideModal }) => {
   }
 
   const handleChooseWard = (wardName) => {
-    setSearchAddress(preAddress => `${preAddress}, ${wardName}`);
+    setSearchAddress(preAddress => `${preAddress.split(",")[0]}, ${preAddress.split(",")[1]}, ${wardName}`);
     handleRemoveList();
   }
 
-  const handleSaveAddress = () => {
+  const handleSaveAddress = async (e) => {
+    try {
+      e.stopPropagation();
 
+      const localAddress = JSON.parse(localStorage.getItem("address")).split(",");
+      const country = localAddress[localAddress.length - 1];
+      const state = searchAddress.split(",")[0];
+      const city = searchAddress.split(",")[1];
+      const district = searchAddress.split(",")[2];
+
+      const addressData = {
+        name: fullname,
+        phone: numberphone,
+        country,
+        state,
+        city,
+        district,
+        address: localAddress[0],
+        town: "",
+        IsDeliveryAddress: defaultCheckRef.current.checked,
+        IsPickupAddress: pickupCheckRef.current.checked,
+        IsReturnAddress: returnCheckRef.current.checked,
+      }
+
+      await postUserAddress(`/Address/post/${userLogin.id}`, addressData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      dispatch(saveUserAddress(!isFetching));
+      defaultCheckRef.current.checked = false;
+      pickupCheckRef.current.checked = false;
+      returnCheckRef.current.checked = false;
+      addressPlaceholderRef.current.innerHTML = "Tỉnh/ Thành phố, Quận/Huyện, Phường/Xã";
+      setDetailAddress("");
+      setSearchAddress("");
+      setFullname("");
+      setNumberphone("");
+
+    } catch (error) {
+
+      console.log(error);
+    }
   }
 
   const handleClearInput = () => {
@@ -143,6 +194,18 @@ const ModalAddress = ({ onHideModal }) => {
       addressPlaceholderRef.current.innerHTML = "Tỉnh/ Thành phố, Quận/Huyện, Phường/Xã";
     }
   }, [toggleInput])
+
+  useEffect(() => {
+    const handleAddressChange = () => {
+      const addressChange = JSON.parse(localStorage.getItem("address"));
+      setDetailAddress(addressChange);
+    }
+    window.addEventListener("AddressDataEvent", handleAddressChange);
+
+    return () => {
+      window.removeEventListener("AddressDataEvent", handleAddressChange)
+    }
+  }, [])
 
   const handleClickProvinceHeader = () => {
     setTabActive("province");
@@ -199,6 +262,11 @@ const ModalAddress = ({ onHideModal }) => {
 
   const handleMapAddressChange = (e) => {
     setDetailAddress(e.target.value)
+    localStorage.setItem("address", JSON.stringify(e.target.value));
+  }
+
+  const handleCheckDefault = () => {
+    return listAddress.some(p => p.isDeliveryAddress);
   }
 
   return (
@@ -334,74 +402,32 @@ const ModalAddress = ({ onHideModal }) => {
             </div>
             <div className={cx("map-wrapper")}>
               <div className={cx("not-allowed")}>
-                {/* <div className={cx("pac-card")} id="pac-card">
-                  <div>
-                    <div id="type-selector" className={cx("pac-controls")}>
-                      <input
-                        type="radio"
-                        name="type"
-                        id="changetype-all"
-                        checked="checked"
-                      />
-                      <label htmlFor="changetype-all">All</label>
-
-                      <input type="radio" name="type" id="changetype-establishment" />
-                      <label htmlFor="changetype-establishment">establishment</label>
-
-                      <input type="radio" name="type" id="changetype-address" />
-                      <label htmlFor="changetype-address">address</label>
-
-                      <input type="radio" name="type" id="changetype-geocode" />
-                      <label htmlFor="changetype-geocode">geocode</label>
-
-                      <input type="radio" name="type" id="changetype-cities" />
-                      <label htmlFor="changetype-cities">(cities)</label>
-
-                      <input type="radio" name="type" id="changetype-regions" />
-                      <label htmlFor="changetype-regions">(regions)</label>
-                    </div>
-                    <br />
-                    <div id="strict-bounds-selector" className={cx("pac-controls")}>
-                      <input type="checkbox" id="use-location-bias" value="" checked />
-                      <label htmlFor="use-location-bias">Bias to map viewport</label>
-
-                      <input type="checkbox" id="use-strict-bounds" value="" />
-                      <label htmlFor="use-strict-bounds">Strict bounds</label>
-                    </div>
-                  </div>
-                  <div id="pac-container">
-                    <input id="pac-input" type="text" placeholder="Enter a location" />
-                  </div>
-                </div> */}
                 <div id="map" className={cx("map")}></div>
                 <div id="infowindow-content">
-                  {/* <span id="place-name" className={cx("title")}></span><br /> */}
                   <span id="place-address"></span>
                 </div>
-                {/* <button className={cx("btn-map")} disabled={true}><svg viewBox="0 0 10 10" className="Hn994c"><path stroke="none" d="m10 4.5h-4.5v-4.5h-1v4.5h-4.5v1h4.5v4.5h1v-4.5h4.5z"></path>
-                </svg>
-                  Thêm vị trí
-                </button> */}
               </div>
             </div>
             <div className={cx("address-options")}>
               <label className={cx("address-default")}>
-                <input className={cx("address-check")} type="checkbox" role="checkbox" aria-checked="false" aria-disabled="false" />
+                <input className={cx("address-check")} type="checkbox" role="checkbox" aria-checked="false" aria-disabled="false" ref={defaultCheckRef} disabled={handleCheckDefault()} checked={!listAddress.length} style={{
+                  opacity: !listAddress.length ? 0.5 : 1
+                }} />
                 <span>Đặt làm địa chỉ mặc đinh</span>
               </label>
               <label className={cx("address-get")}>
-                <input className={cx("address-check")} type="checkbox" role="checkbox" aria-checked="false" aria-disabled="false" />
+                <input className={cx("address-check")} type="checkbox" role="checkbox" aria-checked="false" aria-disabled="false" ref={pickupCheckRef} />
                 <span>Đặt làm địa chỉ lấy hàng</span>
               </label>
               <label className={cx("address-return")}>
-                <input className={cx("address-check")} type="checkbox" role="checkbox" aria-checked="false" aria-disabled="false" />
+                <input className={cx("address-check")} type="checkbox" role="checkbox" aria-checked="false" aria-disabled="false" ref={returnCheckRef} />
                 <span>Đặt làm địa chỉ trả hàng</span>
               </label>
             </div>
           </div>
           <div className={cx("form-action")}>
-            <Button onClick={onHideModal}>Cancel</Button>
-            <Button disable={searchAddress.split(",").length < 3 || !fullname || !numberphone || !validatePhoneNumber(numberphone) || !detailAddress} onClick={() => handleSaveAddress()}>Save Changes</Button>
+            <Button type="button" onClick={onHideModal}>Cancel</Button>
+            <Button type="button" disable={searchAddress.split(",").length < 3 || !fullname || !numberphone || !validatePhoneNumber(numberphone) || !detailAddress} onClick={handleSaveAddress}>Save Changes</Button>
           </div>
         </div>
       </form>

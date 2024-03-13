@@ -57,7 +57,9 @@ function initMap() {
     // infowindowContent.children["place-name"].textContent = place.name;
     infowindowContent.children["place-address"].textContent =
       place.formatted_address;
-    input.value = formatAddress(place.formatted_address)
+    localStorage.setItem("address", JSON.stringify(place.formatted_address));
+    input.value = formatAddress(place.formatted_address);
+    window.dispatchEvent(new Event(`AddressDataEvent`));
     infowindow.open(map, marker);
   });
 

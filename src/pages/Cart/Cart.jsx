@@ -59,7 +59,7 @@ const Cart = () => {
     window.addEventListener(`CartDataEvent_${userLogin?.user?.id}`, handleStorageChange);
 
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener(`CartDataEvent_${userLogin?.user?.id}`, handleStorageChange);
     };
   }, [])
 

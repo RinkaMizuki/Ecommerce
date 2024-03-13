@@ -61,7 +61,7 @@ const Header = function ({ toggleTopHeader }) {
     window.addEventListener(`FavoriteDataEvent_${userLogin?.user?.id}`, handleStorageChange);
 
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener(`FavoriteDataEvent_${userLogin?.user?.id}`, handleStorageChange);
     };
   }, [userLogin?.user?.id])
 
@@ -74,7 +74,7 @@ const Header = function ({ toggleTopHeader }) {
     window.addEventListener(`CartDataEvent_${userLogin?.user?.id}`, handleStorageChange);
 
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener(`CartDataEvent_${userLogin?.user?.id}`, handleStorageChange);
     };
   }, [userLogin?.user?.id])
 
