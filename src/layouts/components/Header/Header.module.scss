@@ -229,7 +229,7 @@ input::placeholder {
 .hidden-top-header {
   position: fixed;
   width: 100%;
-  z-index: 1000;
+  z-index: 90;
   top: 0;
   background-color: var(--white);
 }

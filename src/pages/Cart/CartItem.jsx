@@ -5,7 +5,7 @@ import "react-lazy-load-image-component/src/effects/blur.css";
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css'
 import { getLocalProductQuantity, setLocalProductQuantity } from "../../services/cartService";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const toastOptions = {
@@ -21,12 +21,13 @@ const toastOptions = {
 
 const cx = classNames.bind(styles)
 
-const CartItem = ({ p, userId }) => {
+const CartItem = ({ p, userId, index, checkedItems, handleCheckboxChange }) => {
 
   const productsLocal = getLocalProductQuantity(userId);
   const quantityLocal = productsLocal.find(prod => prod.id === p.id)?.quantity;
 
   const [quantity, setQuantity] = useState(quantityLocal || 0);
+
 
   const handleAddProduct = (id, quantity = 1) => {
     if (!userId) {
@@ -48,6 +49,9 @@ const CartItem = ({ p, userId }) => {
       setQuantity(preQuantity => preQuantity - 1);
     }
   }
+  useEffect(() => {
+
+  }, [])
 
   return (
     <div className={cx("card-product-item")} key={p.id}>
@@ -89,7 +93,7 @@ const CartItem = ({ p, userId }) => {
         <span className={cx("product-price-sale")}>{((p?.price * quantity) * (1 - p?.discount / 100)).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</span>
       </div>
       <label className={cx("form-control")}>
-        <input type="checkbox" name="checkbox" />
+        <input type="checkbox" name="checkbox" onChange={() => handleCheckboxChange(index)} checked={checkedItems[index]} />
       </label>
     </div>
   )

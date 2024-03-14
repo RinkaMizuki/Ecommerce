@@ -11,6 +11,8 @@ import { useNavigate, Link } from "react-router-dom";
 import Button from "../../components/Button";
 import CartItem from "./CartItem";
 import { ToastContainer } from "react-toastify";
+import { filter } from "lodash";
+import { useRef } from "react";
 
 const cx = classNames.bind(styles)
 
@@ -21,8 +23,17 @@ const Cart = () => {
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState([]);
   const [getListProduct] = useCustomFetch();
+  const inputCouponRef = useRef(null);
+
+  const [checkedItems, setCheckedItems] = useState(listProductId.map(item => true));
 
   const navigate = useNavigate();
+
+  const handleCheckboxChange = (index) => {
+    const newCheckedItems = [...checkedItems];
+    newCheckedItems[index] = !newCheckedItems[index];
+    setCheckedItems(newCheckedItems);
+  };
 
   useEffect(() => {
 
@@ -73,20 +84,24 @@ const Cart = () => {
   const calcSubtotal = () => {
 
     listProductId.forEach(p => {
-      const matchingProduct = products.find(prod => prod.id === p.id);
+      const matchingProduct = products.find((prod, index) => prod.id === p.id && checkedItems[index]);
       if (matchingProduct) {
         matchingProduct.cartQuantity = p.quantity;
       }
     })
 
-    return products?.reduce((sum, p) => (sum + ((p?.price * p.cartQuantity) * (1 - p?.discount / 100))), 0).toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+    return products?.filter((p, index) => checkedItems[index])?.reduce((sum, p) => (sum + ((p?.price * p.cartQuantity) * (1 - p?.discount / 100))), 0).toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+  }
+
+  const handleApplyCoupon = () => {
+    console.log(products.filter((p,index) => checkedItems[index]));
   }
 
   return (
     <div className={cx("cart-container")}>
       <ToastContainer
         style={{
-          marginTop: "120px"
+          marginTop: "70px"
         }}
       ></ToastContainer>
       <div role="presentation" onClick={handleClick} className={cx("breadcrumb")}>
@@ -112,9 +127,9 @@ const Cart = () => {
           <span>Subtotal</span>
         </div>
         <div className={cx("card-product")}>
-          {products?.length !== 0 ? products?.map(p => {
+          {products?.length !== 0 ? products?.map((p, index) => {
             return (
-              <CartItem p={p} key={p.id} userId={userLogin?.user?.id} />
+              <CartItem p={p} key={p.id} userId={userLogin?.user?.id} index={index} checkedItems={checkedItems} handleCheckboxChange={handleCheckboxChange} />
             )
           }) : <span className={cx("not-available")}>The product is not available in the shopping cart.</span>
           }
@@ -128,8 +143,8 @@ const Cart = () => {
       </section>
       <section className={cx("total-section")}>
         <div className={cx("coupon-wrapper")}>
-          <input type="text" placeholder="Coupon Code" />
-          <Button className={cx("btn-apply")}>Apply coupon</Button>
+          <input type="text" placeholder="Coupon Code" ref={inputCouponRef}/>
+          <Button className={cx("btn-apply")} onClick={handleApplyCoupon}>Apply coupon</Button>
         </div>
         <div className={cx("cart-total")}>
           <h3 className={cx("cart-title")}>Cart total</h3>

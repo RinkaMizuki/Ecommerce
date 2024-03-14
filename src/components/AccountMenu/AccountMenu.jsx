@@ -17,6 +17,7 @@ import classNames from 'classnames/bind';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 const cx = classNames.bind(styles);
 
@@ -118,6 +119,7 @@ function PlusSquare(props) {
 export default function AccountMenu() {
 
   const [selectedNode, setSelectedNode] = useState("0");
+  const listAddress = useSelector(state => state.address.listAddress);
 
   const navigate = useNavigate();
   const location = useLocation()
@@ -191,6 +193,7 @@ export default function AccountMenu() {
           />
           <StyledTreeItem
             nodeId="6"
+            labelInfo={listAddress.length}
             labelText="Address Book"
             labelIcon={HomeIcon}
             color="#e3742f"

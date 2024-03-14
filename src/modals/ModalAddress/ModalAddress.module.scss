@@ -42,6 +42,7 @@
   display: flex;
   gap: 15px;
   margin-bottom: 10px;
+
   >div {
     flex: 1;
     position: relative;
@@ -265,7 +266,7 @@
   outline: none;
   font-size: 14px;
   min-width: 0;
-  color: #222;
+  color: var(--black);
   border: 0;
   resize: none;
   overflow: auto;
@@ -297,6 +298,16 @@
     font-size: 14px;
     color: var(--text-gray-700);
   }
+}
+
+.modal-mask {
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  position: fixed;
+  z-index: 100;
 }
 
 .form-action {

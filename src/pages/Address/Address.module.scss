@@ -91,13 +91,26 @@
 }
 
 .btn-settings {
-  background-color: var(--white) !important;
-  color: var(--text-gray-700) !important;
+  background-color: var(--white);
+  color: var(--black);
   border: 1px solid var(--text-gray-700);
   padding: 5px 10px;
+  transition: all .2s ease-in-out;
+
+  &:hover {
+    border-color: rgb(125, 129, 132);
+    color: rgb(125, 129, 132);
+  }
 }
 
-.btn-update {
+.btn-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-update,
+.btn-delete {
   background-color: transparent;
   color: #08f;
 
@@ -129,6 +142,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
   >span {
     color: var(--black);
     font-size: 1rem;
