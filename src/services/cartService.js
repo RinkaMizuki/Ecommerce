@@ -1,4 +1,3 @@
-
 const changeQuantity = (products, id, quantity, type) => {
   const product = products.find(function (p) {
     return p.id === id;

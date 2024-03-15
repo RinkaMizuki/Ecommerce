@@ -21,7 +21,7 @@ const toastOptions = {
 
 const cx = classNames.bind(styles)
 
-const CartItem = ({ p, userId, index, checkedItems, handleCheckboxChange }) => {
+const CartItem = ({ p, userId, index, checkedItems, handleCheckboxChange, setTotalPrice, setCouponCode }) => {
 
   const productsLocal = getLocalProductQuantity(userId);
   const quantityLocal = productsLocal.find(prod => prod.id === p.id)?.quantity;
@@ -37,8 +37,11 @@ const CartItem = ({ p, userId, index, checkedItems, handleCheckboxChange }) => {
     toast.info("Shopping cart successfully updated.", toastOptions)
     setLocalProductQuantity(id, userId, quantity, "add")
     setQuantity(preQuantity => preQuantity + 1);
+    setTotalPrice(0);
+    setCouponCode("");
   }
   const handleRemoveProduct = (id, remove = false) => {
+    setCouponCode("");
     if (!userId) {
       navigate("/login")
       return;
@@ -48,10 +51,9 @@ const CartItem = ({ p, userId, index, checkedItems, handleCheckboxChange }) => {
     if (quantity >= 1) {
       setQuantity(preQuantity => preQuantity - 1);
     }
+    setTotalPrice(0);
+    setCouponCode("");
   }
-  useEffect(() => {
-
-  }, [])
 
   return (
     <div className={cx("card-product-item")} key={p.id}>

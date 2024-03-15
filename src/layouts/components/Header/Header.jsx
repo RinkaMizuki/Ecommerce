@@ -43,7 +43,6 @@ const Header = function ({ toggleTopHeader }) {
 
   const [listId, setListId] = useState(getLocalFavoriteProductId(userLogin?.user?.id));
   const [listProductId, setListProductId] = useState(getLocalProductQuantity(userLogin?.user?.id));
-
   const [, post,] = useCustomFetch();
 
   const config = { tension: 300, friction: 20 };
@@ -82,6 +81,12 @@ const Header = function ({ toggleTopHeader }) {
     const ids = getLocalFavoriteProductId(userLogin?.user?.id);
     setListId(ids);
   }, [userLogin?.user?.id])
+
+  useEffect(() => {
+    const ids = getLocalProductQuantity(userLogin?.user?.id);
+    setListProductId(ids);
+  }, [userLogin?.user?.id])
+
 
   const handleLogout = async () => {
     dispatch(logoutStart())
@@ -161,14 +166,18 @@ const Header = function ({ toggleTopHeader }) {
                 <i className={cx("icon-heart", "fa-solid fa-heart", "active")}></i>
               </div>
             )}
-            <Link to="/cart" className={cx("cart-icon")}>
+            {userLogin ? <Link to="/cart" className={cx("cart-icon")}>
               <span className={cx("cart-quantity", {
                 "cart-quantity-active": location.pathname === "/cart",
-              })}>{listProductId.reduce((sum, elm) => sum + elm.quantity, 0) || 0}</span>
+              })}>{listProductId?.reduce((sum, elm) => sum + elm.quantity, 0) || 0}</span>
               <AddShoppingCartIcon className={cx("icon-cart", {
                 "cart-icon-active": location.pathname === "/cart",
               })} />
-            </Link>
+            </Link> : <Link to="/login" className={cx("cart-icon")}>
+              <span className={cx("cart-quantity")}>{0}</span> <AddShoppingCartIcon className={cx("icon-cart", {
+                "cart-icon-active": location.pathname === "/cart",
+              })} />
+            </Link>}
             {userLogin && <Tippy
               duration={500}
               animation={true}

@@ -18,6 +18,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { getListUserAddress } from '../../services/userAddressServcice';
 
 const cx = classNames.bind(styles);
 
@@ -117,8 +118,9 @@ function PlusSquare(props) {
 }
 
 export default function AccountMenu() {
-
   const [selectedNode, setSelectedNode] = useState("0");
+  const [addresses, setAddresses] = useState([]);
+  const userLogin = useSelector(state => state.auth.login.currentUser.user);
   const listAddress = useSelector(state => state.address.listAddress);
 
   const navigate = useNavigate();
@@ -160,6 +162,19 @@ export default function AccountMenu() {
     }
   }, [location.pathname])
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getListUserAddress(`/Address/${userLogin.id}`);
+        setAddresses(response.data);
+      }
+      catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData();
+  }, [])
+
   return (
     <div className={cx("menu-manager-container")}>
       <TreeView
@@ -193,7 +208,7 @@ export default function AccountMenu() {
           />
           <StyledTreeItem
             nodeId="6"
-            labelInfo={listAddress.length}
+            labelInfo={listAddress.length || addresses.length}
             labelText="Address Book"
             labelIcon={HomeIcon}
             color="#e3742f"

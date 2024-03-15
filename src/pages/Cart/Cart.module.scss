@@ -1,3 +1,17 @@
+:root {
+  --vc-card-left-border-color: var(--primary);
+  --vc-card-left-fill-color: var(--primary);
+  --vc-icon-text-font-size: 0.75rem;
+  --vc-icon-text-line-height: 0.875rem;
+  --vc-icon-text-margin-top: 0.25rem;
+  --vc-icon-text-max-height: 1.75rem;
+  --vc-card-right-border-color: #e8e8e8;
+  --vc-main-title-font-size: 0.875rem;
+  --vc-main-title-line-height: 1rem;
+  --vc-radio-button-border: 0.0625rem solid rgba(0, 0, 0, .14);
+  --vc-logo-size: 3.5rem;
+}
+
 .breadcrumb {
   margin-top: 10px;
 }
@@ -234,34 +248,65 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  max-height: 389px;
 }
 
 .coupon-wrapper {
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 rgba(0, 0, 0, 0)), var(--tw-ring-shadow, 0 0 rgba(0, 0, 0, 0)), var(--tw-shadow);
   display: flex;
-  gap: 1.5rem;
   align-items: center;
+  flex-direction: column;
+  gap: 20px;
+  align-self: stretch;
+  overflow: hidden;
+  padding: 20px 20px 0px 20px;
+  border-radius: 4px;
 
-  >input {
-    padding: 0.75rem;
-    transition-duration: .3s;
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-    transition-timing-function: cubic-bezier(.4, 0, .2, 1);
-    font-size: 1rem;
-    line-height: 1.5rem;
-    border-color: var(--black);
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 4px;
-    width: 20rem;
-    font-family: "Poppins";
+  .coupon-input {
+    display: flex;
+    gap: 20px;
 
-    &::placeholder {
-      font-size: 18px;
-      font-weight: 400;
-      color: var(--text-gray-700);
+    >input {
+      padding: 0.75rem;
+      transition-duration: .3s;
+      transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+      transition-timing-function: cubic-bezier(.4, 0, .2, 1);
+      font-size: 1rem;
+      line-height: 1.5rem;
+      border-color: var(--black);
+      border-width: 1px;
+      border-style: solid;
+      border-radius: 4px;
+      width: 20rem;
       font-family: "Poppins";
+
+      &::placeholder {
+        font-size: 18px;
+        font-weight: 400;
+        color: var(--text-gray-700);
+        font-family: "Poppins";
+      }
     }
   }
+}
+
+.coupon-list-wrapper {
+  font-family: "Montserrat";
+  width: 100%;
+  flex-grow: 1;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  overflow: overlay;
+}
+
+.coupon-list {
+  overflow: scroll;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
 }
 
 .btn-apply {
@@ -276,7 +321,6 @@
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
   color: var(--white);
   font-size: 1.125rem;
-  line-height: 1.75rem;
 
   &:hover {
     background-color: rgb(224 117 117);
@@ -284,6 +328,7 @@
 }
 
 .cart-total {
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 rgba(0, 0, 0, 0)), var(--tw-ring-shadow, 0 0 rgba(0, 0, 0, 0)), var(--tw-shadow);
   padding-top: 2.5rem;
   padding-bottom: 2.5rem;
   padding-left: 2.5rem;
@@ -365,6 +410,175 @@
     background-color: unset !important;
     cursor: default;
   }
+}
+
+.coupon-cart {
+  height: 7.375rem;
+  position: relative;
+  width: 28.375rem
+}
+
+.cart-left {
+  background: linear-gradient(180deg, var(--vc-card-left-border-color, #e8e8e8) var(--vc-card-sawtooth-margin, 0.25rem), transparent 0, transparent calc(100% - var(--vc-card-sawtooth-margin, 0.25rem)), var(--vc-card-left-border-color, #e8e8e8) calc(100% - var(--vc-card-sawtooth-margin, 0.25rem))) 0 0 / 0.0625rem 100% no-repeat, linear-gradient(180deg, var(--vc-card-left-fill-color, #fff) var(--vc-card-sawtooth-margin, 0.25rem), transparent 0, transparent calc(100% - var(--vc-card-sawtooth-margin, 0.25rem)), var(--vc-card-left-fill-color, #fff) calc(100% - var(--vc-card-sawtooth-margin, 0.25rem))) 0 0 / 100% 100% no-repeat;
+  border-bottom: 0.0625rem solid var(--vc-card-left-border-color, #e8e8e8);
+  border-bottom-left-radius: 0.125rem;
+  border-top: 0.0625rem solid var(--vc-card-left-border-color, #e8e8e8);
+  border-top-left-radius: 0.125rem;
+  box-sizing: border-box;
+  height: 100%;
+  left: 0;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  width: var(--vc-card-height, 7.375rem);
+}
+
+.sawtooth {
+  background: linear-gradient(180deg, transparent calc(var(--vc-card-radius, 0.25rem)* 2), var(--vc-card-left-border-color, #e8e8e8) 0) 0 0.0625rem / 0.0625rem calc(var(--vc-card-radius, 0.25rem)* 2 + var(--vc-card-gap, 0.125rem)) repeat-y, radial-gradient(circle at 0 var(--vc-card-radius, 0.25rem), transparent 0, transparent calc(var(--vc-card-radius, 0.25rem) - 0.0625rem), var(--vc-card-left-border-color, #e8e8e8) 0, var(--vc-card-left-border-color, #e8e8e8) var(--vc-card-radius, 0.25rem), var(--vc-card-left-fill-color, #fff) 0) 0 0.0625rem / 100% calc(var(--vc-card-radius, 0.25rem)* 2 + var(--vc-card-gap, 0.125rem)) repeat-y;
+  bottom: calc(var(--vc-card-sawtooth-margin, 0.25rem) - 0.0625rem);
+  position: absolute;
+  top: calc(var(--vc-card-sawtooth-margin, 0.25rem) - 0.0625rem);
+  width: 100%;
+}
+
+.cart-right {
+  background-color: var(--white);
+  border: 0.0625rem solid var(--vc-card-right-border-color, #e8e8e8);
+  border-bottom-right-radius: 0.125rem;
+  border-left: none;
+  border-top-right-radius: 0.125rem;
+  box-sizing: border-box;
+  height: 100%;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: calc(100% - var(--vc-card-height, 7.375rem));
+}
+
+.coupon-hidden {
+  border: 0.0625rem solid transparent;
+  border-radius: 0.125rem;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.coupon-cart-item {
+  border: 0.0625rem solid transparent;
+  border-left: none;
+  box-shadow: var(--vc-template-box-shadow, 0.125rem 0.125rem 0.3125rem rgba(0, 0, 0, .07));
+  box-sizing: border-box;
+  display: flex;
+  height: 100%;
+  position: relative;
+  transition: all 1s ease;
+}
+
+.coupon-template-left {
+  align-items: center;
+  border-right: 0.0625rem dashed #e8e8e8;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  width: var(--vc-card-height, 7.375rem);
+
+  >p {
+    color: var(--vc-icon-text-color, rgba(0, 0, 0, .87));
+    font-size: var(--vc-icon-text-font-size, .75rem);
+    line-height: var(--vc-icon-text-line-height, .875rem);
+    margin-top: var(--vc-icon-text-margin-top, 0.3125rem);
+    max-height: var(--vc-icon-text-max-height, 1.75rem);
+    max-width: 90%;
+    opacity: var(--vc-icon-text-opacity, 1);
+    padding: 0 0.25rem;
+    text-align: center;
+    white-space: var(--vc-icon-text-white-space, unset);
+    word-break: break-word;
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--white);
+  }
+}
+
+.coupon-logo {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+
+  >img {
+    border-radius: 50%;
+    display: block;
+    height: var(--vc-logo-size, 3.5rem);
+    width: var(--vc-logo-size, 3.5rem);
+  }
+}
+
+.coupon-template-middle {
+  display: flex;
+  flex: 1;
+  gap: 5px;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  padding-left: 0.75rem;
+  position: relative;
+
+  >p {
+    display: -webkit-box;
+    color: var(--vc-main-title-color, rgba(0, 0, 0, .8));
+    font-size: var(--vc-main-title-font-size, 1rem);
+    font-weight: 500;
+    line-height: var(--vc-main-title-line-height, 1.25rem);
+    white-space: normal;
+    word-break: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.coupon-template-right {
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.75rem;
+  position: relative;
+}
+
+.coupon-checkbox-wrapper {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.coupon-checkbox {
+  fill: currentColor;
+  stroke: currentColor;
+  align-items: center;
+  border: var(--vc-radio-button-border, 1px solid rgba(0, 0, 0, .14)) !important;
+  border-radius: 50%;
+  box-shadow: var(--vc-radio-button-box-shadow, rgba(0, 0, 0, .02) 0 2px 0 0);
+  box-sizing: border-box;
+  cursor: pointer;
+  display: flex;
+  height: 1.125rem;
+  justify-content: center;
+  width: 1.125rem;
+  position: relative;
+}
+
+.icon-check {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--primary);
 }
 
 input[type="checkbox"] {
