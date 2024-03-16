@@ -1,0 +1,136 @@
+.modal-mask {
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  font-family: "Montserrat";
+  position: fixed;
+  z-index: 100;
+}
+
+.review-container {
+  background-color: #fff;
+  border-radius: 20px;
+  min-width: 500px;
+  text-align: center;
+  padding: 0px 30px 30px 30px;
+
+  ::-webkit-scrollbar-thumb {
+    background: #0071e3;
+  }
+
+}
+
+.review-header {
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid #f5f5f7;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 20px;
+  padding: 22px;
+  position: relative;
+}
+
+.review-close {
+  cursor: pointer;
+  height: 20px;
+  position: absolute;
+  right: 0px;
+  top: 20px;
+  width: 20px;
+
+  &:hover {
+    &::before {
+      background-color: #a4a4a5;
+    }
+
+    &::after {
+      background-color: #a4a4a5;
+    }
+  }
+
+  &::before {
+    transition: all .2s ease-in-out;
+    background-color: #3e3e3f;
+    border-radius: 3px;
+    content: '';
+    position: absolute;
+    height: 20px;
+    width: 3px;
+    transform: rotate(-45deg);
+  }
+
+  &::after {
+    transition: all .2s ease-in-out;
+    background-color: #3e3e3f;
+    border-radius: 3px;
+    content: '';
+    position: absolute;
+    transform: rotate(45deg);
+    height: 20px;
+    width: 3px;
+  }
+}
+
+.product-image {
+  max-width: 100px;
+}
+
+.rewview-product-info {
+  margin: 20px 0px;
+
+  >p {
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 23px;
+    margin: 20px 20px 10px;
+  }
+}
+
+.review-feel {
+  margin-top: 5px;
+  margin-left: 10px;
+  display: flex;
+  gap: 20px;
+  font-size: 18px;
+  justify-content: center;
+  align-items: center;
+}
+
+.review-content {
+  padding: 5px;
+  position: relative;
+  padding-bottom: 20px;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+
+  >textarea {
+    border: none;
+    color: #323232;
+    font-size: 16px;
+    height: 80px;
+    line-height: 17px;
+    padding: 10px;
+    resize: none;
+    outline: none;
+    width: 100%;
+  }
+}
+
+.btn-send {
+  padding: 10px;
+  width: 100%;
+  margin-top: 30px;
+  background-color: #0071e3;
+  transition: all .2s ease-in-out;
+  &:hover {
+    opacity: .7;
+  }
+}
+
+.star-active {
+  color: #ff9f00 !important;
+  font-weight: 500;
+}

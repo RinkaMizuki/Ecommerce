@@ -7,7 +7,7 @@ import { saveUserAddress } from "../../redux/addressSlice";
 
 const cx = classNames.bind(styles);
 
-const ModalConfirm = ({ onHideModal, addressData }) => {
+const ModalConfirm = ({ onHideModal, data }) => {
 
   const isFetching = useSelector(state => state.address.isFetching);
   const dispatch = useDispatch();
@@ -31,7 +31,7 @@ const ModalConfirm = ({ onHideModal, addressData }) => {
         </div>
         <div className={cx("confirm-action")}>
           <Button type="button" onClick={onHideModal}>Cancel</Button>
-          <Button type="button" onClick={() => handleDeleteAddress(addressData?.id)}>Delete</Button>
+          <Button type="button" onClick={() => handleDeleteAddress(data?.id)}>Delete</Button>
         </div>
       </div>
     </div>

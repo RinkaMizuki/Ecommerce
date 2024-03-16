@@ -5,6 +5,7 @@ import useCustomFetch from "../../hooks/useCustomFetch";
 import { useState } from "react";
 import { useEffect } from "react";
 import moment from "moment";
+import VerifiedIcon from '@mui/icons-material/Verified';
 import { useSelector } from "react-redux";
 
 const cx = classNames.bind(styles)
@@ -33,19 +34,29 @@ const ProductReviewItem = ({ pr }) => {
         })}>{user?.userName == userLogin?.userName ? "Me" : user?.userName}</span>
         <p>{moment(pr?.createdAt).format("DD-MM-YYYY")}</p>
       </div>
-      <StarRatings
-        rating={pr.star}
-        starRatedColor="#ff9f00"
-        numberOfStars={5}
-        starDimension="17px"
-        starSpacing="1px"
-        name='rating'
-      />
-      <p>{pr?.content}</p>
-      <div className={cx("like-wrapper")}>
-        <i className="fa-regular fa-thumbs-up"></i>
-        <span>Useful (4)</span>
+      <div className={cx("reviwe-content")}>
+        <StarRatings
+          rating={pr.star}
+          starRatedColor="#ff9f00"
+          numberOfStars={5}
+          starDimension="17px"
+          starSpacing="1px"
+          name='rating'
+        />
+        <p>{pr?.content}</p>
+        <div className={cx("like-wrapper")}>
+          <i className="fa-regular fa-thumbs-up"></i>
+          <span>Useful (4)</span>
+        </div>
       </div>
+      {pr.feedbackRate && <div className={cx("feedback-wrapper")}>
+        <div className={cx("feedback-admin")}>
+          <span>{pr.feedbackRate.createdBy}
+          </span>
+          <VerifiedIcon className={cx("admin-icon")} />
+        </div>
+        <p>{pr?.feedbackRate?.content}</p>
+      </div>}
     </li>
   )
 };

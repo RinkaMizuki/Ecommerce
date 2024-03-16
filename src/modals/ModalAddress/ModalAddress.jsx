@@ -11,17 +11,17 @@ import { saveUserAddress } from "../../redux/addressSlice";
 
 const cx = classNames.bind(styles)
 
-const ModalAddress = ({ onHideModal, addressData = null }) => {
+const ModalAddress = ({ onHideModal, data = null }) => {
 
-  const addressBinding = addressData?.district && addressData?.city && addressData?.state ? `${addressData?.state}, ${addressData?.city}, ${addressData?.district}` : "";
+  const addressBinding = data?.district && data?.city && data?.state ? `${data?.state}, ${data?.city}, ${data?.district}` : "";
 
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
   const [searchAddress, setSearchAddress] = useState(addressBinding);
-  const [fullname, setFullname] = useState(addressData?.name || "");
-  const [numberphone, setNumberphone] = useState(addressData?.phone || "");
-  const [detailAddress, setDetailAddress] = useState(addressData?.address || "");
+  const [fullname, setFullname] = useState(data?.name || "");
+  const [numberphone, setNumberphone] = useState(data?.phone || "");
+  const [detailAddress, setDetailAddress] = useState(data?.address || "");
   const [tabActive, setTabActive] = useState("province");
   const [toggleInput, setToggleInput] = useState(true);
   const addressPlaceholderRef = useRef(null);
@@ -112,7 +112,7 @@ const ModalAddress = ({ onHideModal, addressData = null }) => {
       const city = searchAddress.split(",")[1].trim();
       const district = searchAddress.split(",")[2].trim();
 
-      const addressData = {
+      const data = {
         name: fullname,
         phone: numberphone,
         country,
@@ -126,7 +126,7 @@ const ModalAddress = ({ onHideModal, addressData = null }) => {
         IsReturnAddress: returnCheckRef.current.checked,
       }
 
-      await postUserAddress(`/Address/post/${userLogin.id}`, addressData, {
+      await postUserAddress(`/Address/post/${userLogin.id}`, data, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -155,7 +155,7 @@ const ModalAddress = ({ onHideModal, addressData = null }) => {
       const city = searchAddress.split(",")[1].trim();
       const district = searchAddress.split(",")[2].trim();
 
-      const addressData = {
+      const data = {
         name: fullname,
         phone: numberphone,
         country,
@@ -169,7 +169,7 @@ const ModalAddress = ({ onHideModal, addressData = null }) => {
         IsReturnAddress: returnCheckRef.current.checked,
       }
 
-      await updateUserAddress(`/Address/update/${addressId}`, addressData, {
+      await updateUserAddress(`/Address/update/${addressId}`, data, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -245,12 +245,12 @@ const ModalAddress = ({ onHideModal, addressData = null }) => {
       const addressChange = JSON.parse(localStorage.getItem("address"));
       setDetailAddress(addressChange);
     }
-    localStorage.setItem("address", JSON.stringify(`${addressData?.district}, ${addressData?.city}, ${addressData?.state}, ${addressData?.country}`));
+    localStorage.setItem("address", JSON.stringify(`${data?.district}, ${data?.city}, ${data?.state}, ${data?.country}`));
     window.addEventListener("AddressDataEvent", handleAddressChange);
 
-    defaultCheckRef.current.checked = addressData?.isDeliveryAddress;
-    pickupCheckRef.current.checked = addressData?.isPickupAddress;
-    returnCheckRef.current.checked = addressData?.isReturnAddress;
+    defaultCheckRef.current.checked = data?.isDeliveryAddress;
+    pickupCheckRef.current.checked = data?.isPickupAddress;
+    returnCheckRef.current.checked = data?.isReturnAddress;
 
     return () => {
       window.removeEventListener("AddressDataEvent", handleAddressChange)
@@ -368,7 +368,7 @@ const ModalAddress = ({ onHideModal, addressData = null }) => {
   return (
     <div className={cx("modal-mask")}>
       <div className={cx("modal-address-container")}>
-        <p>{!addressData ? "New Address" : "Update Address"}</p>
+        <p>{!data ? "New Address" : "Update Address"}</p>
         <form>
           <div className={cx("form-container")}>
             <div className={cx("form-info")}>
@@ -526,7 +526,7 @@ const ModalAddress = ({ onHideModal, addressData = null }) => {
             </div>
             <div className={cx("form-action")}>
               <Button type="button" onClick={onHideModal}>Cancel</Button>
-              <Button type="button" disable={searchAddress.split(",").length < 3 || !fullname || !numberphone || !validatePhoneNumber(numberphone) || !detailAddress} onClick={!addressData ? handleSaveAddress : () => { handleUpdateAddress(addressData.id) }}>Save Changes</Button>
+              <Button type="button" disable={searchAddress.split(",").length < 3 || !fullname || !numberphone || !validatePhoneNumber(numberphone) || !detailAddress} onClick={!data ? handleSaveAddress : () => { handleUpdateAddress(data.id) }}>Save Changes</Button>
             </div>
           </div>
         </form>
