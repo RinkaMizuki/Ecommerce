@@ -6,6 +6,7 @@ import './App.css'
 import Loading from "./pages/Loading";
 import LayoutManagement from "./layouts/LayoutManagement";
 import ModalContextProvider from "./context/ModalContext.jsx";
+import LayoutFilter from "./layouts/LayoutFilter";
 
 function App() {
   const [toggleTopHeader, setToggleTopHeader] = useState(false);
@@ -44,7 +45,7 @@ function App() {
       <ModalContextProvider>
         <Routes>
           {publicRoutes.map((route, index) => {
-            const Layout = route?.layout === "management" ? LayoutManagement : !route?.layout ? Fragment : LayoutDefault
+            const Layout = route?.layout === "management" ? LayoutManagement : !route?.layout ? Fragment : route?.layout === "filter" ? LayoutFilter : LayoutDefault
             return (
               <Route
                 key={index}

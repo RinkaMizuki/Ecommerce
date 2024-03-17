@@ -16,6 +16,7 @@ import Confirm from "../pages/Confirm";
 import Return from "../pages/Return";
 import Cart from "../pages/Cart";
 import Address from "../pages/Address";
+import CategoryDetail from "../components/CategoryDetail";
 
 const publicRoutes = [
   {
@@ -57,6 +58,11 @@ const publicRoutes = [
     path: config.routes.productDetail,
     element: ProductDetail,
     layout: "default"
+  },
+  {
+    path: config.routes.category,
+    element: CategoryDetail,
+    layout: "filter"
   },
   {
     path: config.routes.profile,

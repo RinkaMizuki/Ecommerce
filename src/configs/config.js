@@ -8,6 +8,7 @@ const configRoutes = {
   contact: "/contact",
   about: "/about",
   productDetail: "/product-detail/:productId",
+  category: "/category/:title",
   manager: "/manager",
   profile: "/manager/profile",
   return: "/manager/returns",
