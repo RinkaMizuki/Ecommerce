@@ -12,7 +12,17 @@
 }
 
 .filter-status {
-  padding-top: 15px;
+  padding-top: 25px;
+}
+
+.active {
+  background-color: var(--white) !important;
+  border: 1px solid var(--primary) !important;
+  color: var(--primary) !important;
+
+  >.icon {
+    fill: var(--primary);
+  }
 }
 
 .filter-title {
@@ -48,7 +58,7 @@
   align-items: center;
   min-height: 1.5rem;
   padding-left: 1.7rem;
-
+  cursor: pointer;
 
   >input {
     display: none;
@@ -84,6 +94,14 @@
     border-radius: 0.2rem;
     border: 1px solid #cad1d7;
   }
+}
+
+.custom-checkbox input:checked~.fa:before {
+  z-index: 2;
+  background-size: 80%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url("../../assets/images/checked.png");
 }
 
 .filter-price {
@@ -159,10 +177,22 @@
   font-size: 28px;
 }
 
+.remove-sort-icon {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: all .2s ease-in-out;
+  &:hover {
+    color: var(--primary)
+  }
+}
 
 .button-sort {
   align-items: center;
+  position: relative;
   background: #f3f4f6;
+  gap: 5px;
   border: 1px solid #e5e7eb;
   border-radius: 10px;
   color: #444;
@@ -177,7 +207,6 @@
 .icon {
   align-items: center;
   display: flex;
-  margin-right: 6px;
   width: 15px;
   height: 1.5rem;
   justify-content: center;
@@ -186,7 +215,12 @@
 .product-wrapper {
   display: flex;
   flex-wrap: wrap;
-  column-gap: 30px;
-  row-gap: 30px;
+  justify-content: space-between;
   margin-top: 30px;
+  gap: 50px;
+}
+
+.title-wrapper {
+  display: flex;
+  gap: 20px;
 }

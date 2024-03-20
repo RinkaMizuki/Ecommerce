@@ -2,19 +2,32 @@ import classNames from "classnames/bind";
 import styles from "./CategoryDetail.module.scss";
 import Button from "../Button";
 import { Slider } from "@mui/material";
-import { useState } from "react";
+import { forwardRef, useImperativeHandle, useState } from "react";
 
 const cx = classNames.bind(styles);
-const minDistance = 10;
+const minDistance = 5;
 let priceDistance = 1000000;
 
-const Aside = ({ data = [] }) => {
-
+const Aside = forwardRef(({ handleFilter }, ref) => {
   const [value, setValue] = useState([0, 100]);
+  const [saleFilter, setSaleFilter] = useState("");
   const [price, setPrice] = useState({
     priceLeft: value[0] * priceDistance,
     priceRight: value[1] * priceDistance,
   })
+
+  const [selected, setSelected] = useState(null);
+
+  useImperativeHandle(ref, () => {
+    return {
+      getCurrentFilterValue() {
+        return {
+          price,
+          saleFilter,
+        }
+      }
+    }
+  }, [price, saleFilter])
 
   const handleChange = (event, newValue, activeThumb) => {
     if (!Array.isArray(newValue)) {
@@ -46,6 +59,18 @@ const Aside = ({ data = [] }) => {
     }
   };
 
+  const handleFilterSale = (type, i) => {
+    setSelected((prev) => (i === prev ? null : i));
+    if (i === selected) {
+      handleFilter("", price);
+      setSaleFilter("");
+    }
+    else {
+      handleFilter(type, price);
+      setSaleFilter(type);
+    }
+  }
+
   return (
     <div className={cx("aside-container")}>
       <aside className={cx("filter-status")}>
@@ -56,8 +81,10 @@ const Aside = ({ data = [] }) => {
           <ul>
             <li className={cx("filter-item filter-item--check-box")} >
               <span>
-                <label className={cx("custom-checkbox")} htmlFor="filter-acer">
-                  <input type="checkbox" id="filter-acer" data-group="PRODUCT_VENDOR" data-field="vendor.filter_key" data-text="" value="(&quot;Acer&quot;)" data-operator="OR" />
+                <label className={cx("custom-checkbox")} htmlFor="filter-hot">
+                  <input type="checkbox" id="filter-hot" name="sale" data-group="PRODUCT_VENDOR" data-field="vendor.filter_key" data-text="" value="hot" data-operator="OR" onChange={() => handleFilterSale("hot", 1)}
+                    checked={1 === selected}
+                  />
                   <i className={cx("fa")} ></i>
                   Hot
                 </label>
@@ -65,8 +92,8 @@ const Aside = ({ data = [] }) => {
             </li>
             <li className={cx("filter-item filter-item--check-box")} >
               <span>
-                <label className={cx("custom-checkbox")} htmlFor="filter-acer">
-                  <input type="checkbox" id="filter-acer" data-group="PRODUCT_VENDOR" data-field="vendor.filter_key" data-text="" value="(&quot;Acer&quot;)" data-operator="OR" />
+                <label className={cx("custom-checkbox")} htmlFor="filter-flashSale">
+                  <input type="checkbox" id="filter-flashSale" name="sale" data-group="PRODUCT_VENDOR" data-field="vendor.filter_key" data-text="" value="flashSale" data-operator="OR" onChange={() => handleFilterSale("flashSale", 2)} checked={2 === selected} />
                   <i className={cx("fa")} ></i>
                   Flash Sale
                 </label>
@@ -74,8 +101,8 @@ const Aside = ({ data = [] }) => {
             </li>
             <li className={cx("filter-item filter-item--check-box")} >
               <span>
-                <label className={cx("custom-checkbox")} htmlFor="filter-acer">
-                  <input type="checkbox" id="filter-acer" data-group="PRODUCT_VENDOR" data-field="vendor.filter_key" data-text="" value="(&quot;Acer&quot;)" data-operator="OR" />
+                <label className={cx("custom-checkbox")} htmlFor="filter-new">
+                  <input type="checkbox" id="filter-new" name="sale" data-group="PRODUCT_VENDOR" data-field="vendor.filter_key" data-text="" value="new" data-operator="OR" onChange={() => handleFilterSale("new", 3)} checked={3 === selected} />
                   <i className={cx("fa")} ></i>
                   New
                 </label>
@@ -99,11 +126,11 @@ const Aside = ({ data = [] }) => {
             <span className={cx("line")}> - </span>
             <span className={cx("end-price")}>{price.priceRight.toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</span>
           </div>
-          <Button className={cx("btn-filter")}>Filter Price</Button>
+          <Button className={cx("btn-filter")} onClick={() => handleFilter(saleFilter, price)}>Filter Price</Button>
         </div>
       </aside>
     </div >
   )
-};
+});
 
 export default Aside;

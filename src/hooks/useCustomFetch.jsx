@@ -56,7 +56,7 @@ const useCustomFetch = () => {
 
         tokenService.removeToken();
         dispatch(logoutSuccess({
-          message: "logout successfully"
+          message: "Logout successfully"
         }))
         navigate("/")
       }
