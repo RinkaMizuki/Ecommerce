@@ -5,6 +5,7 @@ const addressSlice = createSlice({
   initialState: {
     isFetching: false,
     listAddress: [],
+    idAddressSelected: "",
   },
   reducers: {
     saveUserAddress: (state, action) => {
@@ -12,13 +13,17 @@ const addressSlice = createSlice({
     },
     listUserAddress: (state, action) => {
       state.listAddress = action.payload;
+    },
+    chooseIdAddress: (state, action) => {
+      state.idAddressSelected = action.payload;
     }
   }
 })
 
 export const {
   saveUserAddress,
-  listUserAddress
+  listUserAddress,
+  chooseIdAddress
 } = addressSlice.actions
 
 export default addressSlice.reducer

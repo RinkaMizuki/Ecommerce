@@ -1,6 +1,6 @@
 import classNames from "classnames/bind";
 import styles from "./Cart.module.scss";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { getLocalProductQuantity } from "../../services/cartService";
 import { useSelector } from "react-redux";
 import useCustomFetch from "../../hooks/useCustomFetch";
@@ -56,7 +56,11 @@ const Cart = () => {
         if (listProductId.length !== 0) {
           setLoading(true);
 
-          const queryStringData = queryString.stringify({ filter: JSON.stringify({ id: listProductId?.map(p => p.id) }) })
+          const queryStringData = queryString.stringify({
+            filter: JSON.stringify({ id: listProductId?.map(p => p.id) }),
+            sort: JSON.stringify(["", "ASC"]),
+            range: JSON.stringify([0, listProductId.length - 1]),
+          })
 
           const response = await getListProduct(`/Admin/products?${queryStringData}`);
 
@@ -284,7 +288,14 @@ const Cart = () => {
               <p>{totalPrice ? totalPrice?.toLocaleString('it-IT', { style: 'currency', currency: 'VND' }) : calcSubtotal().toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</p>
             </div>
           </div>
-          <Button to="/cart/checkout" className={cx("btn-checkout")}>Process To Checkout</Button>
+          <Button to={{
+            pathname: "/cart/checkout",
+          }}
+            state={{
+              products,
+              price: totalPrice || calcSubtotal()
+            }}
+            className={cx("btn-checkout")}>Process To Checkout</Button>
         </div>
       </section >
     </div >

@@ -1,0 +1,137 @@
+.modal-mask {
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  position: fixed;
+  z-index: 100;
+}
+
+.modal-delivery-container {
+  position: relative;
+  background-color: #fff;
+  border-radius: 0.1875rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, .54);
+  box-sizing: border-box;
+  padding: 1.875rem;
+  display: flex;
+  flex-direction: column;
+  font-family: "Montserrat";
+  gap: 25px;
+}
+
+.delivery-item {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+
+  >svg {
+    cursor: pointer;
+  }
+}
+
+.active {
+  fill: var(--primary);
+}
+
+.delivery-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  color: var(--text-gray-700);
+}
+
+.delivery-info {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+
+  >span:first-child {
+    color: var(--black);
+    font-weight: 500;
+  }
+}
+
+.delivery-address {
+  max-width: 500px;
+  line-height: 1.5;
+}
+
+.delivery-action {
+  background: linear-gradient(hsla(0, 0%, 100%, .7), #fff);
+  display: flex;
+  gap: 20px;
+  justify-content: flex-end;
+
+  &>button {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    outline: none;
+    padding: 10px;
+    border: 0;
+    border-radius: 2px;
+    min-width: 140px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all .2s ease-in-out;
+  }
+
+  &>button:last-child {
+    &:hover {
+      background-color: rgb(224, 117, 117);
+    }
+  }
+
+  &>button:first-child {
+    background-color: transparent;
+    color: var(--black);
+
+    &:hover {
+      background-color: #f8f8f8;
+      opacity: .9;
+    }
+  }
+}
+
+.btn-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  >p {
+    font-size: 20px;
+    font-weight: 500;
+  }
+}
+
+.btn-add {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  outline: none;
+  padding: 10px;
+  border: 0;
+  border-radius: 2px;
+  max-width: 180px;
+  gap: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all .2s ease-in-out;
+
+  &:hover {
+    background-color: rgb(224, 117, 117);
+  }
+}
+
+.btn-role {
+  font-family: "Montserrat";
+  background-color: transparent;
+  padding: 5px;
+  max-width: 100px;
+  align-self: flex-end;
+  cursor: text !important;
+  border: 1px solid var(--primary);
+  color: var(--primary);
+}

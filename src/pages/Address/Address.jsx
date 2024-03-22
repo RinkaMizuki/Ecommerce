@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import AddressItem from "./AddressItem";
 import { getListUserAddress } from "../../services/userAddressServcice";
 import { listUserAddress } from "../../redux/addressSlice";
+import { useLocation } from "react-router-dom";
 
 const cx = classNames.bind(styles)
 
@@ -18,6 +19,7 @@ const Address = () => {
   const isFetching = useSelector(state => state.address.isFetching);
   const userLogin = useSelector(state => state.auth.login.currentUser.user);
   const dispatch = useDispatch();
+  const location = useLocation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,6 +34,20 @@ const Address = () => {
     }
     fetchData();
   }, [isFetching])
+
+  useEffect(() => {
+    if (location?.state?.clicked) {
+      handleShowModalFormAddress(null)
+    }
+  }, [])
+
+  useEffect(() => {
+    window.scrollTo({
+      behavior: "smooth",
+      top: 0,
+    })
+  }, []);
+
 
   return (
     <div className={cx("address-container")}>

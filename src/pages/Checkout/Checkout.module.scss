@@ -1,0 +1,169 @@
+.breadcrumb {
+  position: absolute;
+  top: 10px;
+  left: 0;
+}
+
+.checkout-container {
+  padding: 120px 30px;
+  display: flex;
+  justify-content: space-between;
+  font-family: "Poppins";
+  position: relative;
+}
+
+.bill-wrapper {
+  display: flex;
+  flex: 1;
+  margin-bottom: 100px;
+  align-items: center;
+  gap: 100px;
+}
+
+.bill-info {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+
+  >h1 {
+    color: var(--black);
+    margin-bottom: 20px;
+    font-size: 36px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 30px;
+    letter-spacing: 1.44px;
+  }
+
+  input {
+    border-radius: 5px;
+    width: 470px;
+    height: 50px;
+    padding: 0 35px 0px 10px;
+    background-color: #F5F5F5 !important;
+    font-weight: 300;
+  }
+}
+
+.fullname-input,
+.numberphone-input,
+.email-input,
+.address-input,
+.ward-input,
+.district-input,
+.province-input {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+
+  >label {
+    color: var(--text-gray-700)
+  }
+}
+
+.bill-product {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  gap: 32px;
+}
+
+.bill-product-list {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.bill-product-item {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+
+  >div {
+    display: flex;
+    align-items: center;
+    gap: 210px;
+
+    >p {
+      min-width: 170px;
+    }
+  }
+}
+
+.bill-price-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.bill-price {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  >span {
+    width: 100%;
+    height: 0.5px;
+    background-color: var(--text-gray-500);
+  }
+}
+
+.bill-sub,
+.bill-ship,
+.bill-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 50px;
+}
+
+.payment-cash,
+.payment-vnpay {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.order-btn {
+  display: flex;
+  padding: 16px 48px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  transition: all .2s ease-in-out;
+
+  &:hover {
+    background-color: rgb(224, 117, 117);
+  }
+}
+
+.btn-address {
+  padding: 10px;
+  max-width: 200px;
+}
+
+.bill-note {
+  >textarea {
+    min-height: 130px;
+    background-image: linear-gradient(#F1F1F1 50%, #F9F9F9 50%);
+    background-size: 100% 4rem;
+    border: 1px solid #CCC;
+    width: 100%;
+    line-height: 2rem;
+    border-radius: 4px;
+    margin: 0 auto;
+    padding: 4px 8px;
+    resize: none;
+    outline: none;
+    transition: all .2s ease-in-out;
+
+    &:focus {
+      border-color: var(--black);
+    }
+  }
+}

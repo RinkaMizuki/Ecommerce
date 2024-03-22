@@ -3,7 +3,7 @@ import Countdown from "react-countdown";
 import classNames from "classnames/bind"
 
 const cx = classNames.bind(styles);
-const countDownDate = new Date(2023, 11, 22).getTime();
+const countDownDate = new Date(2024, 3, 23).getTime();
 const CountDown = () => {
 
   // Renderer callback with condition

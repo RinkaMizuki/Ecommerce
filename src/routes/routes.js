@@ -17,6 +17,8 @@ import Return from "../pages/Return";
 import Cart from "../pages/Cart";
 import Address from "../pages/Address";
 import CategoryDetail from "../components/CategoryDetail";
+import Checkout from "../pages/Checkout";
+import Payment from "../pages/Payment";
 
 const publicRoutes = [
   {
@@ -87,6 +89,16 @@ const publicRoutes = [
   {
     path: config.routes.cart,
     element: AuthRequired(Cart),
+    layout: "default",
+  },
+  {
+    path: config.routes.checkout,
+    element: AuthRequired(Checkout),
+    layout: "default",
+  },
+  {
+    path: config.routes.payment,
+    element: AuthRequired(Payment),
     layout: "default",
   },
   {

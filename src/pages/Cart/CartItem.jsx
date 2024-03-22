@@ -30,7 +30,7 @@ const CartItem = ({ p, userId, index, checkedItems, handleCheckboxChange, setTot
   const [quantity, setQuantity] = useState(quantityLocal || 0);
 
   const navigate = useNavigate();
-  
+
   const handleAddProduct = (id, quantity = 1) => {
     if (!userId) {
       navigate("/login")
@@ -64,8 +64,9 @@ const CartItem = ({ p, userId, index, checkedItems, handleCheckboxChange, setTot
   return (
     <div className={cx("card-product-item")} key={p.id}>
       <div className={cx("product-image")}>
-        <div className={cx("product-image-wrapper")} onClick={() => handleRedirectDetail(p.id)}>
+        <div className={cx("product-image-wrapper")}>
           <LazyLoadImage
+            onClick={() => handleRedirectDetail(p.id)}
             className={cx("product-thumb")}
             src={p.url}
             effect="blur"

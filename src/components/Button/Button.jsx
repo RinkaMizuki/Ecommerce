@@ -4,7 +4,7 @@ import classNames from "classnames/bind";
 import { Link } from "react-router-dom";
 
 const cx = classNames.bind(styles)
-const Button = forwardRef(({ onClick, disable = false, to = "", href = "", className, children, small = false, medium = false, lagre = false, ...propsPass }, ref) => {
+const Button = forwardRef(({ onClick, disable = false, to = "", state = null, href = "", className, children, small = false, medium = false, lagre = false, ...propsPass }, ref) => {
 
     const btnClass = cx({
         to: to,
@@ -27,6 +27,7 @@ const Button = forwardRef(({ onClick, disable = false, to = "", href = "", class
 
     if (to) {
         props.to = to;
+        props.state = state;
         Cpn = Link;
     } else if (href) {
         props.href = href;

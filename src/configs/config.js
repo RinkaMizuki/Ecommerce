@@ -15,6 +15,8 @@ const configRoutes = {
   confirm: "/confirm-email",
   cart: "/cart",
   address: "/manager/address",
+  checkout: "/cart/checkout",
+  payment: "/payment",
   error: "*",
 }
 
