@@ -1,11 +1,15 @@
 const changeQuantity = (products, id, quantity, type) => {
+  console.log(id);
   const product = products.find(function (p) {
     return p.id === id;
   });
-
+  console.log(products);
   // Nếu tìm thấy đối tượng, thay đổi thuộc tính
   if (product && type === "add") {
     product.quantity += 1;
+  }
+  else if (product && type == "addMany") {
+    product.quantity += quantity;
   }
   else if (product && type !== "add") {
     product.quantity -= 1;

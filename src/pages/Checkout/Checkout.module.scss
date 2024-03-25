@@ -82,13 +82,10 @@
   gap: 24px;
 
   >div {
+    width: 100%;
     display: flex;
     align-items: center;
     gap: 210px;
-
-    >p {
-      min-width: 170px;
-    }
   }
 }
 
@@ -98,6 +95,26 @@
   gap: 16px;
   width: 100%;
   max-width: 420px;
+}
+
+.product-price {
+  justify-content: center;
+  align-items: flex-end;
+  min-width: 170px;
+  flex-direction: column;
+  display: flex;
+  flex: 1;
+  font-size: 16px;
+  line-height: 1.75rem;
+
+  >.product-price-sale {
+    color: var(--primary);
+  }
+  
+  >.product-price-real {
+    text-decoration-line: line-through;
+    color: rgb(125 129 132);
+  }
 }
 
 .bill-price {

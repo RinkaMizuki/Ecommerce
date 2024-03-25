@@ -293,7 +293,8 @@ const Cart = () => {
           }}
             state={{
               products,
-              price: totalPrice || calcSubtotal()
+              price: totalPrice || calcSubtotal(),
+              coupon: coupons.find(c => c.couponCode == couponCode),
             }}
             className={cx("btn-checkout")}>Process To Checkout</Button>
         </div>

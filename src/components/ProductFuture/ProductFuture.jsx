@@ -80,6 +80,7 @@ const ProductFuture = () => {
       </div>
       <div className={cx("product-future-img")}>
         <LazyLoadImage
+          className={cx("img-wrapper")}
           src={productUpcoming?.url}
           alt={productUpcoming?.image}
           effect="blur"

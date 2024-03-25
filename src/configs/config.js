@@ -1,4 +1,3 @@
-
 const configRoutes = {
   home: "/",
   register: "/register",

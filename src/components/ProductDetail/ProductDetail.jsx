@@ -14,8 +14,21 @@ import { getLocalFavoriteProductId, setLocalFavoriteProductId } from "../../serv
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import ProductReview from "../ProductReview";
+import { ToastContainer, toast } from "react-toastify";
+import { setLocalProductQuantity } from "../../services/cartService";
 
 const cx = classNames.bind(styles);
+
+const toastOptions = {
+  position: "top-right",
+  autoClose: 1500,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  theme: "colored",
+}
 
 const ProductDetail = () => {
 
@@ -31,11 +44,20 @@ const ProductDetail = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const productResponse = await getData(`Admin/products/${params.productId}`);
-      const categoryResponse = await getData(`Admin/categories/${productResponse.data.categoryId}`);
-
-      setCategory(categoryResponse.data)
-      setProduct(productResponse.data)
+      try {
+        const productResponse = await getData(`Admin/products/${params.productId}`);
+        const categoryResponse = await getData(`Admin/categories/${productResponse.data.categoryId}`);
+        setCategory(categoryResponse.data)
+        setProduct(productResponse.data)
+      }
+      catch (error) {
+        if (error.response?.status === 404) {
+          navigate("/error", {
+            replace: true,
+          })
+        }
+        console.log(error);
+      }
     }
     setTimeout(() => {
       window.scrollTo({
@@ -82,8 +104,15 @@ const ProductDetail = () => {
     setLocalFavoriteProductId(id, userLogin.user.id)
   }
 
+  const handleClickBuy = () => {
+    const currentProductId = params.productId;
+    toast.info("Products has been added to cart", toastOptions)
+    setLocalProductQuantity(currentProductId, userLogin?.user?.id, quantity, "addMany")
+  }
+
   return (
     <div className={cx("main-container")}>
+      <ToastContainer></ToastContainer>
       <div role="presentation" onClick={handleClick} style={{ marginTop: "10px" }}>
         <Breadcrumbs aria-label="breadcrumb">
           <Link underline="hover" color="inherit" href="/">
@@ -177,6 +206,10 @@ const ProductDetail = () => {
             <div className={cx("number-input")}>
               <button
                 className={cx("minus")}
+                disabled={quantity == 1}
+                style={{
+                  cursor: quantity == 1 ? "not-allowed" : "pointer"
+                }}
                 onClick={() => {
                   quantity > 1 && setQuantity(quantity - 1)
                 }}>-</button>
@@ -192,7 +225,7 @@ const ProductDetail = () => {
                 onClick={() => setQuantity(quantity + 1)}
               >+</button>
             </div>
-            <Button className={cx("btn-buynow")}>Buy Now</Button>
+            <Button className={cx("btn-buynow")} onClick={handleClickBuy}>Buy Now</Button>
             <span className={cx("heart-wrapper")}
               onClick={() => { handleSaveFavorite(product.id) }}
             >
@@ -227,7 +260,7 @@ const ProductDetail = () => {
           </div>
         </div>
       </div>
-      <ProductReview product={product}/>
+      <ProductReview product={product} />
       <div className={cx("relate-container")}>
         {product?.categoryId && <ProductRelate categoryId={product?.categoryId}
           currentId={product.id}

@@ -10,15 +10,18 @@
   padding: 70px 50px;
   margin-bottom: 70px;
 }
+
 .product-future-desc {
   display: flex;
   flex-direction: column;
   gap: 50px;
-  > .upcoming {
+
+  >.upcoming {
     font-weight: 500;
     color: var(--bg-green);
   }
-  > h1 {
+
+  >h1 {
     color: var(--white);
     font-weight: 500;
     max-width: 443px;
@@ -26,16 +29,19 @@
     font-size: 50px;
   }
 }
+
 .custom-btn-enroll {
   background-color: var(--bg-green);
   width: 170px;
   height: 56px;
   color: var(--white);
 }
+
 .product-future-time {
   display: flex;
   gap: 20px;
-  > .product-future-time-item {
+
+  >.product-future-time-item {
     width: 62px;
     height: 62px;
     border-radius: 50%;
@@ -44,15 +50,22 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    > p {
+
+    >p {
       font-weight: 700;
     }
-    > span {
+
+    >span {
       font-size: 12px;
       font-weight: 400;
     }
   }
 }
+
 .product-future-img {
   width: 600px;
+}
+
+.img-wrapper {
+  border-radius: 5px;
 }
