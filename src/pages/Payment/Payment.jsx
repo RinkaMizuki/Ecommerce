@@ -3,14 +3,14 @@ import classNames from "classnames/bind";
 import { useNavigate } from "react-router-dom";
 import { Breadcrumbs } from "@mui/material";
 import { default as LinkMui } from "@mui/material/Link";
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import useCustomFetch from "../../hooks/useCustomFetch";
 
 const cx = classNames.bind(styles);
 
 const Payment = () => {
 
-  const [getPaymentReturn] = useCustomFetch();
+  const [, postPaymentReturn] = useCustomFetch();
   const navigate = useNavigate();
   const [invoiceData, setInvoiceData] = useState(null);
 
@@ -27,11 +27,15 @@ const Payment = () => {
     const queryString = window.location.href.split("?")[1];
     const fetchData = async () => {
       try {
-        const response = await getPaymentReturn(`/Payment?${queryString}`);
+        const tranId = localStorage.getItem('tranId') ?? "";
+        const response = await postPaymentReturn(`/Payment?${queryString}`, {
+          tranId
+        });
         setInvoiceData(response.data);
-        console.log(response.data);
+        localStorage.setItem('tranId', response.data?.tranId || "");
       }
       catch (err) {
+        console.log(err);
         if (err?.response?.status === 500) {
           navigate("/payment/error", {
             state: {

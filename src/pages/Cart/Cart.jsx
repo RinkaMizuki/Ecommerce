@@ -104,6 +104,7 @@ const Cart = () => {
 
     return () => {
       window.removeEventListener(`CartDataEvent_${userLogin?.user?.id}`, handleStorageChange);
+      localStorage.setItem('tranId', "");
     };
   }, [])
 
