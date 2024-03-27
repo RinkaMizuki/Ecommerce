@@ -14,7 +14,7 @@ const ModalDelivery = ({ onHideModal, data }) => {
 
   const currIdAddress = useSelector(state => state.address.idAddressSelected);
 
-  const [idSelected, setIdSelected] = useState(data?.find(a => currIdAddress ? a.id === currIdAddress : a.isDeliveryAddress).id);
+  const [idSelected, setIdSelected] = useState(data?.find(a => currIdAddress ? a.id === currIdAddress : a.isDeliveryAddress)?.id);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

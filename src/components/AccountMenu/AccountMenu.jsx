@@ -121,7 +121,7 @@ export default function AccountMenu() {
   const [selectedNode, setSelectedNode] = useState("0");
   const [addresses, setAddresses] = useState([]);
   const userLogin = useSelector(state => state.auth.login.currentUser.user);
-  const listAddress = useSelector(state => state.address.listAddress);
+  const isFetching = useSelector(state => state.address.isFetching);
 
   const navigate = useNavigate();
   const location = useLocation()
@@ -173,7 +173,7 @@ export default function AccountMenu() {
       }
     }
     fetchData();
-  }, [])
+  }, [isFetching])
 
   return (
     <div className={cx("menu-manager-container")}>
@@ -208,7 +208,7 @@ export default function AccountMenu() {
           />
           <StyledTreeItem
             nodeId="6"
-            labelInfo={listAddress.length || addresses.length}
+            labelInfo={addresses.length}
             labelText="Address Book"
             labelIcon={HomeIcon}
             color="#e3742f"

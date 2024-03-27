@@ -297,7 +297,9 @@ const Cart = () => {
               price: totalPrice || calcSubtotal(),
               coupon: coupons.find(c => c.couponCode == couponCode),
             }}
-            className={cx("btn-checkout")}>Process To Checkout</Button>
+            className={cx("btn-checkout")}
+            disable={checkedItems.every(bool => !bool)}
+          >Process To Checkout</Button>
         </div>
       </section >
     </div >

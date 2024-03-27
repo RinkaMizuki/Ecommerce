@@ -1,4 +1,4 @@
-.main-container {
+.payment-error-container {
   font-family: "Poppins";
   display: flex;
   flex-direction: column;
@@ -8,13 +8,13 @@
   height: 100vh;
 
   >img {
-    max-width: 300px;
-    max-height: 300px;
+    max-width: 400px;
+    max-height: 400px;
     object-fit: cover;
   }
 }
 
-.error-content {
+.payment-error-content {
   display: flex;
   flex-direction: column;
   justify-content: center;

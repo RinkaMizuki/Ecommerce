@@ -16,6 +16,7 @@ const configRoutes = {
   address: "/manager/address",
   checkout: "/cart/checkout",
   payment: "/payment",
+  paymentError: "/payment/error",
   error: "*",
 }
 

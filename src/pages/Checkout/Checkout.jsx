@@ -5,6 +5,8 @@ import { Breadcrumbs } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useContext, useEffect, useRef, useState } from "react";
 import Button from "../../components/Button";
+import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
+import AddLocationIcon from '@mui/icons-material/AddLocation';
 import useCustomFetch from "../../hooks/useCustomFetch";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { getListUserAddress } from "../../services/userAddressServcice";
@@ -22,12 +24,14 @@ const Checkout = () => {
   const [listDes, setListDes] = useState([]);
   const [desId, setDesId] = useState("");
   const [email, setEmail] = useState("");
+  const [isValidEmail, setIsValidEmail] = useState(true);
   const [noteContent, setNoteContent] = useState("");
   const emailInputRef = useRef(null);
 
   const idAddress = useSelector(state => state.address.idAddressSelected);
   const userLogin = useSelector(state => state.auth.login.currentUser.user);
-  const { handleShowModalDelivery } = useContext(ModalContext);
+  const isFetching = useSelector(state => state.address.isFetching);
+  const { handleShowModalFormAddress, handleShowModalDelivery } = useContext(ModalContext);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -46,12 +50,10 @@ const Checkout = () => {
   const handleFindDefaultAddress = () => {
     return listUserAddress?.find(add => idAddress ? add.id == idAddress : add.isDeliveryAddress);
   }
-
   const handleChoosePaymentMethod = (e) => {
     const payment = e.target.getAttribute("datapay");
     const desId = e.target.getAttribute("dataid");
     setDesId(desId);
-    console.log(desId);
     setPaymentMethod(payment);
   }
 
@@ -60,7 +62,7 @@ const Checkout = () => {
       behavior: "smooth",
       top: 0,
     })
-    emailInputRef.current.focus();
+    emailInputRef.current?.focus();
   }, []);
 
   useEffect(() => {
@@ -74,7 +76,7 @@ const Checkout = () => {
       }
     }
     fetchData();
-  }, []);
+  }, [isFetching]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -116,6 +118,24 @@ const Checkout = () => {
       }, {});
     });
   }
+
+  const validateEmail = (email) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
+  const handleValidateEmail = () => {
+    if (validateEmail(email)) {
+      setIsValidEmail(true)
+    }
+    else {
+      setIsValidEmail(false)
+    }
+  }
+
   const handlePayment = async () => {
     try {
       switch (paymentMethod) {
@@ -185,7 +205,7 @@ const Checkout = () => {
         </Breadcrumbs>
       </div>
       <div className={cx("bill-wrapper")}>
-        <div className={cx("bill-info")}>
+        {listUserAddress.length ? <div className={cx("bill-info")}>
           <h1>Billing Details</h1>
           <div className={cx("fullname-input")}>
             <label htmlFor="name">Full Name*</label>
@@ -195,9 +215,12 @@ const Checkout = () => {
             <label htmlFor="numberphone">Numer Phone*</label>
             <input type="text" id="numberphone" value={handleFindDefaultAddress()?.phone} disabled />
           </div>
-          <div className={cx("email-input")}>
+          <div className={cx("email-input", {
+            'valid-email': !isValidEmail,
+          })}>
             <label htmlFor="email">Email*</label>
-            <input ref={emailInputRef} type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <input ref={emailInputRef} type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} onBlur={handleValidateEmail} onFocus={() => setIsValidEmail(true)} />
+            {!isValidEmail && <span>The Email Invalid</span>}
           </div>
           <div className={cx("address-input")}>
             <label htmlFor="address">Address Detail*</label>
@@ -215,8 +238,15 @@ const Checkout = () => {
             <label htmlFor="province">Province/City*</label>
             <input type="text" id="province" value={handleFindDefaultAddress()?.state} disabled />
           </div>
-          <Button className={cx("btn-address")} onClick={() => handleShowModalDelivery(listUserAddress)}>Change Address</Button>
-        </div>
+          <Button className={cx("btn-address")} onClick={() => handleShowModalDelivery(listUserAddress)}>
+            <ChangeCircleIcon />
+            Change Address</Button>
+        </div> : <div className={cx("add-address-wrapper")}>
+          <p>You don't have an address yet. Please create a new address.</p>
+          <Button className={cx("btn-address")} onClick={() => handleShowModalFormAddress(null)}>
+            <AddLocationIcon />
+            Add Address</Button>
+        </div>}
         <div className={cx("bill-product")}>
           <div className={cx("bill-product-list")}>
             {location.state?.products?.map(p => (
@@ -286,7 +316,11 @@ const Checkout = () => {
               height: "30px"
             }} datapay="vnpay" dataid={handleFindPaymentId()} />
           </div>
-          <Button className={cx("order-btn")} onClick={handlePayment}>Place Order</Button>
+          <Button
+            className={cx("order-btn")}
+            onClick={handlePayment}
+            disable={!validateEmail(email) || !email}
+          >Place Order</Button>
         </div>
       </div>
     </div>

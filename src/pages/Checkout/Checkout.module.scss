@@ -110,7 +110,7 @@
   >.product-price-sale {
     color: var(--primary);
   }
-  
+
   >.product-price-real {
     text-decoration-line: line-through;
     color: rgb(125 129 132);
@@ -160,6 +160,10 @@
 }
 
 .btn-address {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
   padding: 10px;
   max-width: 200px;
 }
@@ -182,5 +186,37 @@
     &:focus {
       border-color: var(--black);
     }
+  }
+}
+
+.add-address-wrapper {
+  padding: 10px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+  > p {
+    font-size: 22px;
+    text-align: center;
+  }
+  > .btn-address {
+    width: 100%;
+  }
+}
+
+.valid-email {
+  position: relative;
+  > label {
+    color: var(--primary);
+  }
+  > span {
+    bottom: -15px;
+    left: 0;
+    position: absolute;
+    color: var(--primary);
+    font-size: 12px;
   }
 }

@@ -28,7 +28,7 @@ const Payment = () => {
     const fetchData = async () => {
       try {
         const tranId = localStorage.getItem('tranId') ?? "";
-        const response = await postPaymentReturn(`/Payment?${queryString}`, {
+        const response = await postPaymentReturn(`/Payment/return?${queryString}`, {
           tranId
         });
         setInvoiceData(response.data);
@@ -39,7 +39,7 @@ const Payment = () => {
         if (err?.response?.status === 500) {
           navigate("/payment/error", {
             state: {
-              errorMessage: err?.response?.data
+              error: err?.response?.data,
             }
           })
         }

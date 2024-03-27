@@ -18,6 +18,7 @@ import Address from "../pages/Address";
 import CategoryDetail from "../components/CategoryDetail";
 import Checkout from "../pages/Checkout";
 import Payment from "../pages/Payment";
+import PaymentError from "../pages/PaymentError";
 
 const publicRoutes = [
   {
@@ -101,9 +102,14 @@ const publicRoutes = [
     layout: "default",
   },
   {
+    path: config.routes.paymentError,
+    element: AuthRequired(PaymentError),
+    layout: null,
+  },
+  {
     path: config.routes.error,
     element: Notfound,
-    layout: "default"
+    layout: null,
   }
 ]
 

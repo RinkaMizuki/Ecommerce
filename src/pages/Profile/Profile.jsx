@@ -165,7 +165,7 @@ const Profile = () => {
   }, [])
 
   const validateSaveChanges = () => {
-    return isExistUserName || !email || !phone || (new Date(birth).getTime() >= new Date().getTime()) || !validatePhoneNumber(phone) || !validateEmail(email) || isDisable;
+    return isExistUserName || !email || (new Date(birth).getTime() >= new Date().getTime()) || !validatePhoneNumber(phone) || !phone || !validateEmail(email) || isDisable;
   }
 
   const handleAvatarChange = (e) => {
@@ -173,7 +173,7 @@ const Profile = () => {
       const blob = URL.createObjectURL(e.target.files[0]);
       setBlob(blob);
       setFile(e.target.files[0]);
-      isDisable && setIsDisable(false);
+      setIsDisable(false);
     }
   }
 
