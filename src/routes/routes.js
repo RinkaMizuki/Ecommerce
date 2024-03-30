@@ -19,6 +19,7 @@ import CategoryDetail from "../components/CategoryDetail";
 import Checkout from "../pages/Checkout";
 import Payment from "../pages/Payment";
 import PaymentError from "../pages/PaymentError";
+import GoogleLogin from "../pages/GoogleLogin";
 
 const publicRoutes = [
   {
@@ -34,6 +35,11 @@ const publicRoutes = [
   {
     path: config.routes.login,
     element: Login,
+    layout: "default"
+  },
+  {
+    path: config.routes.googleLogin,
+    element: GoogleLogin,
     layout: "default"
   },
   {

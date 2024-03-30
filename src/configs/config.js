@@ -2,6 +2,7 @@ const configRoutes = {
   home: "/",
   register: "/register",
   login: "/login",
+  googleLogin: "signin-google",
   user: "/user",
   favorite: "/favorite",
   contact: "/contact",

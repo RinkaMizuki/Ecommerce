@@ -11,6 +11,7 @@ import useCustomFetch from "../../hooks/useCustomFetch";
 import { loginFailed, loginStart, loginSuccess } from "../../redux/authSlice";
 import tokenService from "../../services/tokenService"
 import Loading from "../../components/Loading";
+import queryString from "query-string";
 
 const toastOptions = {
   position: "top-right",
@@ -29,7 +30,7 @@ const Login = () => {
   const [userNameOrEmail, setUserNameOrEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isHidePassword, setIsHidePassword] = useState(true);
-  const [get, loginService] = useCustomFetch();
+  const [, loginService] = useCustomFetch();
   const passwordRef = useRef(null);
   const submitRef = useRef(null);
   const dispatch = useDispatch();
@@ -46,6 +47,26 @@ const Login = () => {
       passwordRef.current.setAttribute("type", "password")
       setIsHidePassword(true)
     }
+  }
+
+  function handleCredentialResponse(response) {
+    // The rest of the code for handling the login response and sending data to the backend remains the same
+    console.log(response);
+  }
+
+  const handleGoogleAuth = () => {
+
+    const queryStringData = queryString.stringify({
+      display: "page",
+      client_id: import.meta.env.VITE_ECOMMERCE_CLIENT_ID,
+      redirect_uri: import.meta.env.VITE_ECOMMERCE_GOOGLE_REDIRECT_URI,
+      scope: "openid profile email",
+      response_type: "token id_token",
+      prompt: "consent",
+      nonce: 'n-0S6_WzA2Mj'
+    });
+    const googleAuthUrl = `${import.meta.env.VITE_ECOMMERCE_GOOGLE_BASE_URL}?${queryStringData}`;
+    window.location.href = googleAuthUrl;
   }
 
   useEffect(() => {
@@ -121,7 +142,7 @@ const Login = () => {
           >
             {!isFetching ? "Log In" : <Loading className={cx("custom-loading")} />}
           </Button>
-          <Button className={cx("btn-google")}>
+          <Button className={cx("btn-google")} onClick={handleGoogleAuth}>
             <div>
               <img src={google} alt="google" />
               <span>Sign in with Google</span>

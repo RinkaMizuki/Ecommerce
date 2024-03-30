@@ -142,7 +142,7 @@ const Checkout = () => {
         case "vnpay":
           const paymentData = {
             destinationId: desId,
-            merchantId: import.meta.env.VITE_MERCHANT_ECOMMERCE_ID,
+            merchantId: import.meta.env.VITE_ECOMMERCE_MERCHANT_ID,
             email,
             fullName: handleFindDefaultAddress()?.name,
             phone: handleFindDefaultAddress()?.phone,
