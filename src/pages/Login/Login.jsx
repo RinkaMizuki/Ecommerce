@@ -49,19 +49,14 @@ const Login = () => {
     }
   }
 
-  function handleCredentialResponse(response) {
-    // The rest of the code for handling the login response and sending data to the backend remains the same
-    console.log(response);
-  }
-
   const handleGoogleAuth = () => {
 
     const queryStringData = queryString.stringify({
-      display: "page",
       client_id: import.meta.env.VITE_ECOMMERCE_CLIENT_ID,
       redirect_uri: import.meta.env.VITE_ECOMMERCE_GOOGLE_REDIRECT_URI,
       scope: "openid profile email",
-      response_type: "token id_token",
+      response_type: "code",
+      access_type: "offline",
       prompt: "consent",
       nonce: 'n-0S6_WzA2Mj'
     });
@@ -70,7 +65,6 @@ const Login = () => {
   }
 
   useEffect(() => {
-
     window.scrollTo({
       top: 0,
       behavior: "smooth"
@@ -103,7 +97,10 @@ const Login = () => {
       toast.success("Login account successfully !", toastOptions);
 
       setTimeout(() => {
-        dispatch(loginSuccess(res?.data))
+        dispatch(loginSuccess({
+          ...res?.data,
+          type: "default"
+        }))
         navigate("/")
       }, 1000);
 

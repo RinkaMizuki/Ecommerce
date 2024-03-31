@@ -8,7 +8,7 @@ import { logoutFailed, logoutStart, logoutSuccess } from "../../../redux/authSli
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import useCustomFetch from "../../../hooks/useCustomFetch";
 import { useSpring, animated } from "@react-spring/web";
-import TokenService from "../../../services/tokenService";
+import tokenService from "../../../services/tokenService";
 import { getLocalFavoriteProductId } from "../../../services/favoriteService";
 import { getLocalProductQuantity } from "../../../services/cartService";
 import { useEffect, useState } from "react";
@@ -40,6 +40,7 @@ const MENU = [
 
 const Header = function ({ toggleTopHeader }) {
   const userLogin = useSelector(state => state.auth.login.currentUser);
+  const typeLogin = useSelector(state => state.auth.login.type);
 
   const [listId, setListId] = useState(getLocalFavoriteProductId(userLogin?.user?.id));
   const [listProductId, setListProductId] = useState(getLocalProductQuantity(userLogin?.user?.id));
@@ -83,6 +84,7 @@ const Header = function ({ toggleTopHeader }) {
   }, [userLogin?.user?.id])
 
   useEffect(() => {
+
     const ids = getLocalProductQuantity(userLogin?.user?.id);
     setListProductId(ids);
   }, [userLogin?.user?.id])
@@ -92,9 +94,17 @@ const Header = function ({ toggleTopHeader }) {
     dispatch(logoutStart())
     let res
     try {
-      res = await post(`/Auth/logout?userId=${userLogin?.user?.id || 0}`, {}, {})
-      dispatch(logoutSuccess(res?.data))
-      TokenService.removeToken("token");
+      if (typeLogin === "default") {
+        res = await post(`/Auth/logout?userId=${userLogin?.user?.id || 0}`, {}, {})
+        dispatch(logoutSuccess(res?.data))
+      }
+      else {
+        localStorage.removeItem("refresh_token");
+        dispatch(logoutSuccess({
+          message: "Logout successfully."
+        }))
+      }
+      tokenService.removeToken("token");
       navigate("/login")
       window.location.reload();
     } catch (error) {

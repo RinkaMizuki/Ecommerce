@@ -1,12 +1,14 @@
 import httpRequests from "../utils/httpRequests";
 import tokenService from "../services/tokenService"
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logoutSuccess } from "../redux/authSlice";
+import { refreshTokenGoogle } from "../services/googleService";
 
 const useCustomFetch = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const typeLogin = useSelector(state => state.auth.login.type);
   const refreshToken = async () => {
     try {
       const res = await httpRequests.post(`/Auth/refresh-token`);
@@ -38,8 +40,21 @@ const useCustomFetch = () => {
       if (error.response?.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
 
-        const respRt = await refreshToken();
-        const accessToken = respRt.data?.accessToken;
+        let accessToken;
+        if (typeLogin === "default") {
+          const respRt = await refreshToken();
+          accessToken = respRt.data?.accessToken;
+        }
+        else {
+          const { access_token } = await refreshTokenGoogle("/token", null, {
+            client_id: import.meta.env.VITE_ECOMMERCE_CLIENT_ID,
+            client_secret: import.meta.env.VITE_ECOMMERCE_CLIENT_SECRET,
+            code,
+            grant_type: "refresh_token",
+            refresh_token: JSON.parse(localStorage.getItem("refresh_token")),
+          });
+          accessToken = access_token;
+        }
 
         tokenService.updateLocalAccessToken({
           token: accessToken,
