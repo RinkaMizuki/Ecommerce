@@ -163,9 +163,9 @@ const Profile = () => {
       window.removeEventListener("storage", handleLoadProfile);
     }
   }, [])
-
+  console.log();
   const validateSaveChanges = () => {
-    return isExistUserName || !email || (new Date(birth).getTime() >= new Date().getTime()) || !validatePhoneNumber(phone) || !phone || !validateEmail(email) || isDisable;
+    return isExistUserName || !email || ((new Date(birth).getTime() - 7 * 60 * 60 * 1000) > new Date().getTime()) || !validatePhoneNumber(phone) || !phone || !validateEmail(email) || isDisable;
   }
 
   const handleAvatarChange = (e) => {
@@ -271,11 +271,15 @@ const Profile = () => {
                 value={userName}
                 onChange={(e) => {
                   setUserName(e.target.value)
+                  setLoading(!!e.target.value);
+                  if (debounced === e.target.value) {
+                    setLoading(false);
+                  }
                   isDisable && setIsDisable(false);
                 }}
               />
               <span className={cx("username-note")}>User name when you change is unique.</span>
-              {loading ? <i className={cx("fa-solid fa-spinner", "loading")}></i> : !isExistUserName ? <i className={cx("fa-regular fa-circle-check", "checked")}></i> : <i className={cx("fa-solid fa-ban", "cancel")}></i>}
+              {loading ? <i className={cx("fa-solid fa-spinner", "loading")}></i> : userName ? !loading ? (!isExistUserName ? <i className={cx("fa-regular fa-circle-check", "checked")}></i> : <i className={cx("fa-solid fa-ban", "cancel")}></i>) : <></> : <></>}
             </div>
             <div className={cx("info-personal-item")}>
               <label htmlFor="email">Email</label>

@@ -189,6 +189,8 @@
   position: absolute;
   right: 5%;
   top: 70%;
+  color: var(--primary);
+  animation: spinner 1s linear infinite;
 }
 
 .verify-status {
@@ -211,11 +213,6 @@
 
 .cancel {
   color: #f00;
-}
-
-.loading {
-  color: var(--primary);
-  animation: spinner 1s linear infinite;
 }
 
 @keyframes spinner {
