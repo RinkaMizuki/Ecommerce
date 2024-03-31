@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import useCustomFetch from "../../hooks/useCustomFetch";
+import useDebounce from "../../hooks/useDebounce";
 
 const toastOptions = {
   position: "top-right",
@@ -33,7 +34,9 @@ const Register = () => {
   const [isHidePassword, setIsHidePassword] = useState(true);
   const [isHideConfirmPassword, setIsHideConfirmPassword] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [, registerService] = useCustomFetch();
+  const [isExistUserName, setIsExistUserName] = useState(false);
+  const [loadingUserName, setLoadingUserName] = useState(false);
+  const [getUserInfo, registerService] = useCustomFetch();
   const passwordRef = useRef(null);
   const submitRef = useRef(null);
   const confirmPaaswordRef = useRef(null);
@@ -67,7 +70,24 @@ const Register = () => {
       setIsHideConfirmPassword(true)
     }
   }
-
+  const debounced = useDebounce(userName, 500);
+  useEffect(() => {
+    if (!debounced?.trim()) {
+      setIsExistUserName(true);
+      return;
+    }
+    const fetchData = async () => {
+      try {
+        const response = await getUserInfo(`/Admin/users/${debounced}`);
+        setIsExistUserName(response.data.isExisted);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoadingUserName(false);
+      }
+    }
+    fetchData();
+  }, [debounced])
 
   useEffect(() => {
     window.scrollTo({
@@ -87,7 +107,7 @@ const Register = () => {
 
   const handleCreateAccount = async () => {
     if (password != confirmPassword) {
-      toast.error('Confirm password incorrect !!!', toastOptions);
+      toast.error('Confirm password incorrect.', toastOptions);
       return;
     }
     const data = {
@@ -103,7 +123,7 @@ const Register = () => {
         toast.success(res.data.message, toastOptions)
       }
       else if (res.data.statusCode == 409) { //status code conflict state 
-        toast.error("Account already exist !", toastOptions)
+        toast.error("Email already exist.", toastOptions)
       }
       else {
         toast.error(res.data.message, toastOptions)
@@ -125,7 +145,16 @@ const Register = () => {
           <p>Enter your details below</p>
         </div>
         <form className={cx("register-info")}>
-          <input type="text" placeholder="User Name" value={userName} onChange={(e) => setUserName(e.target.value)} required />
+          <div className={cx("username-input")}>
+            <input type="text" placeholder="User Name" value={userName} onChange={(e) => {
+              setUserName(e.target.value)
+              setLoadingUserName(!!e.target.value);
+              if (debounced === e.target.value) {
+                setLoadingUserName(false);
+              }
+            }} required />
+            {loadingUserName ? <i className={cx("fa-solid fa-spinner", "loading")}></i> : userName ? !loadingUserName ? (!isExistUserName ? <i className={cx("fa-regular fa-circle-check", "checked")}></i> : <i className={cx("fa-solid fa-ban", "cancel")}></i>) : <></> : <></>}
+          </div>
           <input
             type="email" placeholder="Email" required value={email} onChange={(e) => setEmail(e.target.value)} />
           <div className={cx("password-wrapper")}>
@@ -139,14 +168,13 @@ const Register = () => {
         </form>
         <div>
           <Button className={cx("btn-register")} lagre onClick={handleCreateAccount} ref={submitRef}
-            disable={!password || !userName || !email || !confirmPassword}
+            disable={!password || !userName || !email || !confirmPassword || isExistUserName}
           >
             {!isLoading ? "Create Account" : <Loading className={cx("custom-loading")} />}
           </Button>
           <Button className={cx("btn-google")}>
             <div>
               <img src={google} alt="google" />
-
               <span>Sign up with Google</span>
             </div>
           </Button>

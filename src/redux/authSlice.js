@@ -8,6 +8,7 @@ const authSlice = createSlice({
       isFetching: false,
       erorr: false,
       message: "",
+      type: "",
     }
   },
   reducers: {
@@ -16,10 +17,11 @@ const authSlice = createSlice({
     },
     loginSuccess: (state, action) => {
       state.login.isFetching = false;
-      const { accessToken, ...newObj } = action.payload;
+      const { accessToken, type, ...newObj } = action.payload;
       state.login.currentUser = newObj;
       state.login.erorr = false;
       state.login.message = "Login successfully";
+      state.login.type = type;
     },
     loginFailed: (state, action) => {
       state.login.isFetching = false;
@@ -40,6 +42,7 @@ const authSlice = createSlice({
       state.login.isFetching = false;
       state.login.erorr = true;
       state.login.message = "Logout failed";
+      state.login.type = "";
     }
   }
 })

@@ -57,6 +57,41 @@
   }
 }
 
+.checked,
+.cancel {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.checked {
+  color: #0f2;
+}
+
+.cancel {
+  color: #f00;
+}
+
+.username-input {
+  position: relative;
+
+  .loading {
+    color: var(--primary);
+    animation: spinner 1s linear infinite;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  >input {
+    border-bottom: 1px solid var(--text-gray-500);
+    padding-bottom: 5px;
+    width: 100%;
+  }
+}
+
 .register-info {
   display: flex;
   flex-direction: column;
@@ -97,8 +132,21 @@
     color: var(--black);
   }
 }
+
 .custom-loading {
   width: 30px !important;
   height: 30px !important;
   border-width: 4px !important;
+}
+
+
+@keyframes spinner {
+  from {
+    transform: translateY(-50%) rotate(0);
+  }
+
+  //giữ lại thuộc tính translate Y để cho nó k bị ghi đè
+  to {
+    transform: translateY(-50%) rotate(360deg);
+  }
 }
