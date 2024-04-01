@@ -175,6 +175,7 @@
 .category-title {
   font-weight: 500;
   font-size: 28px;
+  text-transform: capitalize;
 }
 
 .remove-sort-icon {
@@ -183,6 +184,7 @@
   top: 50%;
   transform: translateY(-50%);
   transition: all .2s ease-in-out;
+
   &:hover {
     color: var(--primary)
   }
@@ -223,4 +225,15 @@
 .title-wrapper {
   display: flex;
   gap: 20px;
+}
+
+.product-filter-text {
+  display: flex;
+  font-family: "Montserrat";
+  font-size: 23px;
+}
+
+.center {
+  justify-content: center;
+  margin-top: 70px;
 }

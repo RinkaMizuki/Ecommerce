@@ -8,6 +8,7 @@ import useCustomFetch from "../../hooks/useCustomFetch";
 import { Lightbox } from "react-modal-image";
 import { useSelector } from "react-redux";
 import { getLocalFavoriteProductId } from "../../services/favoriteService";
+import { Helmet } from "react-helmet";
 
 const cx = classNames.bind(styles)
 
@@ -83,6 +84,11 @@ const WishList = () => {
   return (
     <div className={cx("main-container",)}
     >
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>MT Store - Favorite</title>
+        <link rel="canonical" href={`${window.location.origin}/favorite`} />
+      </Helmet>
       {productSuggest?.map(p => {
         if (p.id == productId) {
           return (

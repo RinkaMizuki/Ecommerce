@@ -7,7 +7,7 @@ import useCustomFetch from "../../../hooks/useCustomFetch";
 import MenuItem from "../MenuItem";
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css'
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const cx = classNames.bind(styles);
 
@@ -17,6 +17,7 @@ const Sidebar = () => {
   const [getCategories] = useCustomFetch();
   const location = useLocation();
   const navigate = useNavigate();
+  const params = useParams();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,7 +30,7 @@ const Sidebar = () => {
   const onNavigate = (c) => {
     navigate(`/category/${c.title}`, {
       state: {
-        categoryId: c.id,
+        categoryTitle: c.title,
       }
     })
   }
@@ -39,14 +40,13 @@ const Sidebar = () => {
       <div className={cx("sidebar-wrapper")}>
         <TreeView
           aria-label="Categories"
-          defaultExpanded={[`${location.state?.parentCategoryId?.toString() || 0}`]}
+          defaultExpanded={[`${location.state?.parentCategoryTitle?.toLowerCase() || 0}`]}
           defaultCollapseIcon={<ExpandMore />}
           defaultExpandIcon={<ChevronRight />}
           className={cx("categories")}
-          selected={[`${location?.state?.categoryId.toString()}`, `${location.state?.parentCategoryId?.toString()}`]}
+          selected={[location?.state?.categoryTitle.toString(), location.state?.parentCategoryTitle?.toString(), params?.title?.toLocaleLowerCase()]}
         >
           {categories.length ? categories.map(c => (
-
             <MenuItem data={c} handleClick={() => onNavigate(c)} key={c.id} />
           )) : <Skeleton
             count={4}

@@ -10,6 +10,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import useCustomFetch from "../../hooks/useCustomFetch";
 import useDebounce from "../../hooks/useDebounce";
+import { Helmet } from "react-helmet";
 
 const toastOptions = {
   position: "top-right",
@@ -135,6 +136,11 @@ const Register = () => {
 
   return (
     <div className={cx("register-wrapper")}>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>MT Store - Register</title>
+        <link rel="canonical" href={`${window.location.origin}/register`} />
+      </Helmet>
       <div className={cx("register-image")}>
         <ToastContainer></ToastContainer>
         <img src={ecommerceRegister} alt="Ecommerce" />

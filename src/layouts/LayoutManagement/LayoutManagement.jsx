@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import AccountMenu from "../../components/AccountMenu";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { Helmet } from "react-helmet";
 
 const cx = classNames.bind(styles);
 
@@ -25,6 +26,11 @@ const LayoutManagement = ({ toggleTopHeader, children }) => {
   return (
     <>
       <Header toggleTopHeader={toggleTopHeader} />
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>MT Store - Account</title>
+        <link rel="canonical" href={`${window.location.origin}/manager/profile`} />
+      </Helmet>
       <div className={cx("main-container")} style={{
         marginTop: toggleTopHeader ? "76px" : "unset"
       }}>

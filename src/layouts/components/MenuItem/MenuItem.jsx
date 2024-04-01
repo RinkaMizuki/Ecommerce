@@ -4,12 +4,12 @@ import { Link } from "react-router-dom";
 
 const MenuItem = ({ data, handleClick }) => {
   return (
-    <TreeItem label={data.title} nodeId={data.id.toString()} sx={{
+    <TreeItem label={data.title} nodeId={`${data.title.toLowerCase()}`} sx={{
       "> .MuiTreeItem-content": {
         borderRadius: "5px"
       }
     }}
-    onClick={handleClick}
+      onClick={handleClick}
     >
       {data?.listProductCategoryChild.length > 0 && (
         data?.listProductCategoryChild.map((subCategory) => (
@@ -23,8 +23,8 @@ const MenuItem = ({ data, handleClick }) => {
               color: "var(--black)"
             }}
             state={{
-              categoryId: subCategory.id,
-              parentCategoryId: data.id,
+              categoryTitle: subCategory.title.toLowerCase(),
+              parentCategoryTitle: data.title.toLowerCase(),
             }}
           >
             <MenuItem data={subCategory} />

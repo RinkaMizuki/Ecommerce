@@ -17,6 +17,7 @@ import ScrollButton from "../../components/ScrollButton";
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useEffect } from "react";
+import { Helmet } from "react-helmet";
 
 const cx = classNames.bind(styles);
 
@@ -50,6 +51,11 @@ const Home = () => {
           marginTop: "60px",
         }}
       ></ToastContainer>
+      <Helmet>
+        <meta name="description" content="Welcome to MT STORE, your one-stop destination for cutting-edge technology products. At MT STORE, we pride ourselves on offering a wide range of high-quality gadgets, electronics, and accessories to meet all your tech needs." />
+        <title>Ecommerce - MT Store</title>
+        <link rel="canonical" href={window.location.origin} />
+      </Helmet>
       <div className={cx("wrapper")}>
         <ScrollButton />
         <Sidebar />

@@ -9,6 +9,7 @@ import { Lightbox } from "react-modal-image";
 import queryString from "query-string";
 import { icons } from "./Icons";
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { Helmet } from "react-helmet";
 
 const cx = classNames.bind(styles);
 
@@ -54,7 +55,7 @@ const CategoryDetail = () => {
     try {
       setLoading(true);
       const filterObj = {
-        category: location?.state?.categoryId,
+        category: location?.state?.categoryId || params.title,
       };
       let filterString = {
         filter: JSON.stringify(filterObj)
@@ -134,10 +135,15 @@ const CategoryDetail = () => {
       sortBy = "title";
     }
     await handleFilter(filterValue.saleFilter, filterValue.price, sortType, sortBy);
-
   }
+
   return (
     <div className={cx("category-detail-container")}>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>MT Store - {params.title.charAt(0).toUpperCase() + params.title.slice(1)}</title>
+        <link rel="canonical" href={`${window.location.origin}/manager/profile`} />
+      </Helmet>
       {listProductByCate?.map(p => {
         if (p.id == productId) {
           return (
@@ -160,10 +166,10 @@ const CategoryDetail = () => {
       <div className={cx("content-wrapper")}>
         <div className={cx("title-wrapper")}>
           <h2 className={cx("category-title")}>{params?.title}</h2>
-          {Object.keys(sortTab).map(key => {
+          {Object.keys(sortTab).map((key, index) => {
             const icon = sortTab[key].active ? sortTab[key].icon : null;
             const content = sortTab[key].active ? sortTab[key].content : null;
-            return (icon && content ? <span className={cx("button-sort")} style={{
+            return (icon && content ? <span key={index} className={cx("button-sort")} style={{
               minWidth: "155px"
             }}
               onClick={handleSort}
@@ -210,14 +216,16 @@ const CategoryDetail = () => {
             Tên Z - A
           </span>
         </div>
-        <div className={cx("product-wrapper")}>
-          {listProductByCate?.map(p => (
+        <div className={cx("product-wrapper", {
+          center: !listProductByCate.length
+        })}>
+          {listProductByCate.length ? listProductByCate?.map(p => (
             <Cart
               key={p.id}
               onCloseLightBox={closeLightBox}
               data={p}
             />
-          ))}
+          )) : <span className={cx("product-filter-text")}>Sản phẩm hiện tại không có sẵn.</span>}
         </div>
       </div>
     </div>

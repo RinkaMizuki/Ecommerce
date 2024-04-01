@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import imglyRemoveBackground from "@imgly/background-removal"
 import loadingImage from "../../assets/images/loading.jpg"
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
 const cx = classNames.bind(styles)
 
 const About = () => {
@@ -39,6 +40,11 @@ const About = () => {
 
   return (
     <div className={cx("main-container")}>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>MT Store - About</title>
+        <link rel="canonical" href={`${window.location.origin}/about`} />
+      </Helmet>
       <div role="presentation" onClick={handleClick} style={{ marginTop: "10px" }}>
         <Breadcrumbs aria-label="breadcrumb">
           <Link underline="hover" color="inherit" href="/">

@@ -12,6 +12,7 @@ import Button from "../../components/Button";
 import CartItem from "./CartItem";
 import { ToastContainer, toast } from "react-toastify";
 import { applyCouponProduct, getCouponProduct } from "../../services/couponService";
+import { Helmet } from "react-helmet";
 
 const toastOptions = {
   position: "top-right",
@@ -161,6 +162,11 @@ const Cart = () => {
   }
   return (
     <div className={cx("cart-container")}>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>MT Store - Cart</title>
+        <link rel="canonical" href={`${window.location.origin}/cart`} />
+      </Helmet>
       <ToastContainer
         style={{
           marginTop: "70px"

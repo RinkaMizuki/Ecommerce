@@ -12,6 +12,7 @@ import { loginFailed, loginStart, loginSuccess } from "../../redux/authSlice";
 import tokenService from "../../services/tokenService"
 import Loading from "../../components/Loading";
 import queryString from "query-string";
+import { Helmet } from "react-helmet";
 
 const toastOptions = {
   position: "top-right",
@@ -117,6 +118,11 @@ const Login = () => {
 
   return (
     <div className={cx("login-wrapper")}>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>MT Store - Log in</title>
+        <link rel="canonical" href={`${window.location.origin}/login`} />
+      </Helmet>
       <div className={cx("login-image")}>
         <ToastContainer></ToastContainer>
         <img src={ecommerceRegister} alt="Ecommerce" />

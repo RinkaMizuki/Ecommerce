@@ -9,6 +9,7 @@ import { Breadcrumbs } from "@mui/material";
 import Link from '@mui/material/Link';
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { Helmet } from "react-helmet";
 
 const cx = classNames.bind(styles)
 
@@ -82,6 +83,11 @@ const Contact = () => {
 
   return (
     <div className={cx("main-container")}>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>MT Store - Contact</title>
+        <link rel="canonical" href={`${window.location.origin}/contact`} />
+      </Helmet>
       <div role="presentation" onClick={handleClick} className={cx("breadcrumb")}>
         <Breadcrumbs aria-label="breadcrumb">
           <Link underline="hover" color="inherit" href="/">
