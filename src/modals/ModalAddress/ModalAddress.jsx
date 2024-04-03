@@ -5,14 +5,13 @@ import { useEffect, useRef, useState } from "react";
 import { getAddress } from "../../services/addressService";
 import { useClickOutside } from "../../hooks/useClickOutside";
 import initMap from "../../lib/map";
-import { postUserAddress, updateUserAddress } from "../../services/userAddressServcice";
 import { useDispatch, useSelector } from "react-redux";
 import { saveUserAddress } from "../../redux/addressSlice";
+import useCustomFetch from "../../hooks/useCustomFetch";
 
 const cx = classNames.bind(styles)
 
 const ModalAddress = ({ onHideModal, data = null }) => {
-
   const addressBinding = data?.district && data?.city && data?.state ? `${data?.state}, ${data?.city}, ${data?.district}` : "";
 
   const [provinces, setProvinces] = useState([]);
@@ -43,6 +42,7 @@ const ModalAddress = ({ onHideModal, data = null }) => {
   const userLogin = useSelector(state => state.auth.login.currentUser.user);
   const isFetching = useSelector(state => state.address.isFetching);
   const listAddress = useSelector(state => state.address.listAddress);
+  const [, postUserAddress, updateUserAddress] = useCustomFetch();
   const dispatch = useDispatch();
 
   const handleRemoveList = () => {
@@ -59,7 +59,6 @@ const ModalAddress = ({ onHideModal, data = null }) => {
     addressInputRef.current.focus();
     setToggleInput(false);
   };
-
 
   const handleChooseProvince = async (provinceID, provinceName) => {
     const fetchData = async () => {
@@ -361,7 +360,6 @@ const ModalAddress = ({ onHideModal, data = null }) => {
     setDetailAddress(e.target.value)
     localStorage.setItem("address", JSON.stringify(e.target.value));
   }
-
   const handleCheckDefault = () => {
     return listAddress.some(p => p.isDeliveryAddress);
   }
@@ -509,8 +507,8 @@ const ModalAddress = ({ onHideModal, data = null }) => {
               </div>
               <div className={cx("address-options")}>
                 <label className={cx("address-default")}>
-                  <input className={cx("address-check")} type="checkbox" role="checkbox" aria-checked="false" aria-disabled="false" ref={defaultCheckRef} disabled={handleCheckDefault()} checked={!listAddress.length} style={{
-                    opacity: !listAddress.length ? 0.5 : 1
+                  <input className={cx("address-check")} type="checkbox" role="checkbox" aria-checked="false" aria-disabled="false" ref={defaultCheckRef} disabled={handleCheckDefault()} checked={!listAddress.length || data?.IsDeliveryAddress} style={{
+                    opacity: !listAddress.length || data?.IsDeliveryAddress ? 0.5 : 1
                   }} />
                   <span>Đặt làm địa chỉ mặc đinh</span>
                 </label>

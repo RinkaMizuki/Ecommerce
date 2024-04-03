@@ -18,7 +18,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { getListUserAddress } from '../../services/userAddressServcice';
+import useCustomFetch from '../../hooks/useCustomFetch';
 
 const cx = classNames.bind(styles);
 
@@ -120,9 +120,10 @@ function PlusSquare(props) {
 export default function AccountMenu() {
   const [selectedNode, setSelectedNode] = useState("0");
   const [addresses, setAddresses] = useState([]);
-  const userLogin = useSelector(state => state.auth.login.currentUser.user);
-  const isFetching = useSelector(state => state.address.isFetching);
+  const userLogin = useSelector(state => state.auth.login.currentUser?.user);
 
+  const [getListUserAddress] = useCustomFetch();
+  const listAddress = useSelector(state => state.address.listAddress)
   const navigate = useNavigate();
   const location = useLocation()
 
@@ -173,7 +174,7 @@ export default function AccountMenu() {
       }
     }
     fetchData();
-  }, [isFetching])
+  }, [])
 
   return (
     <div className={cx("menu-manager-container")}>
@@ -208,7 +209,7 @@ export default function AccountMenu() {
           />
           <StyledTreeItem
             nodeId="6"
-            labelInfo={addresses.length}
+            labelInfo={addresses.length || listAddress.length}
             labelText="Address Book"
             labelIcon={HomeIcon}
             color="#e3742f"

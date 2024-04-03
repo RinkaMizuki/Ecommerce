@@ -46,14 +46,15 @@ const useCustomFetch = () => {
           accessToken = respRt.data?.accessToken;
         }
         else {
-          const { access_token } = await refreshTokenGoogle("/token", null, {
-            client_id: import.meta.env.VITE_ECOMMERCE_CLIENT_ID,
-            client_secret: import.meta.env.VITE_ECOMMERCE_CLIENT_SECRET,
-            code,
-            grant_type: "refresh_token",
-            refresh_token: JSON.parse(localStorage.getItem("refresh_token")),
+          const { id_token } = await refreshTokenGoogle("/token", null, {
+            params: {
+              client_id: import.meta.env.VITE_ECOMMERCE_CLIENT_ID,
+              client_secret: import.meta.env.VITE_ECOMMERCE_CLIENT_SECRET,
+              grant_type: "refresh_token",
+              refresh_token: JSON.parse(localStorage.getItem("refresh_token")),
+            }
           });
-          accessToken = access_token;
+          accessToken = id_token;
         }
 
         tokenService.updateLocalAccessToken({
@@ -94,7 +95,12 @@ const useCustomFetch = () => {
     return res;
   }
 
-  return [get, post, put];
+  const deleted = async (path, options = {}) => {
+    const res = await httpRequests.delete(path, options);
+    return res;
+  }
+
+  return [get, post, put, deleted];
 };
 
 export default useCustomFetch;

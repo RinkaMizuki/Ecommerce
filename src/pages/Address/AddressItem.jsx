@@ -1,9 +1,9 @@
 import classNames from "classnames/bind";
 import styles from "./Address.module.scss";
 import Button from "../../components/Button";
-import { updateUserAddress } from "../../services/userAddressServcice";
 import { useDispatch, useSelector } from "react-redux";
 import { saveUserAddress } from "../../redux/addressSlice";
+import useCustomFetch from "../../hooks/useCustomFetch";
 
 const cx = classNames.bind(styles)
 
@@ -12,6 +12,7 @@ const AddressItem = ({ addressItem, onShowModalAddress, onShowModalConfirm }) =>
   const dispatch = useDispatch();
   const isFetching = useSelector(state => state.address.isFetching);
   const listAddress = useSelector(state => state.address.listAddress);
+  const [, , updateUserAddress] = useCustomFetch();
 
   const handleSetDefault = async (address) => {
     try {

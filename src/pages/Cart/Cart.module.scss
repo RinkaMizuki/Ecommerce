@@ -623,8 +623,7 @@ input[type="checkbox"]:focus {
 }
 
 input[type="checkbox"]:disabled {
-  --primary: var(--form-control-disabled);
-
+  --primary: #ff96aa;
   color: var(--form-control-disabled);
   cursor: not-allowed;
 }

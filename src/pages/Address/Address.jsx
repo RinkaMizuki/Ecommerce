@@ -6,9 +6,9 @@ import { useContext, useEffect, useState } from "react";
 import { ModalContext } from "../../context/ModalContext";
 import { useDispatch, useSelector } from "react-redux";
 import AddressItem from "./AddressItem";
-import { getListUserAddress } from "../../services/userAddressServcice";
 import { listUserAddress } from "../../redux/addressSlice";
 import { useLocation } from "react-router-dom";
+import useCustomFetch from "../../hooks/useCustomFetch";
 
 const cx = classNames.bind(styles)
 
@@ -18,6 +18,7 @@ const Address = () => {
   const [listAddress, setListAddress] = useState([]);
   const isFetching = useSelector(state => state.address.isFetching);
   const userLogin = useSelector(state => state.auth.login.currentUser.user);
+  const [getListUserAddress] = useCustomFetch();
   const dispatch = useDispatch();
   const location = useLocation();
 

@@ -9,7 +9,6 @@ import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import AddLocationIcon from '@mui/icons-material/AddLocation';
 import useCustomFetch from "../../hooks/useCustomFetch";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import { getListUserAddress } from "../../services/userAddressServcice";
 import { useSelector } from "react-redux";
 import { ModalContext } from "../../context/ModalContext";
 import Skeleton from "react-loading-skeleton";
@@ -19,7 +18,6 @@ const cx = classNames.bind(styles);
 const Checkout = () => {
 
   const [paymentMethod, setPaymentMethod] = useState("cash");
-  const [getListDes, postPaymentOrder] = useCustomFetch();
   const [listUserAddress, setListUserAddress] = useState([]);
   const [listDes, setListDes] = useState([]);
   const [desId, setDesId] = useState("");
@@ -32,6 +30,7 @@ const Checkout = () => {
   const userLogin = useSelector(state => state.auth.login.currentUser.user);
   const isFetching = useSelector(state => state.address.isFetching);
   const { handleShowModalFormAddress, handleShowModalDelivery } = useContext(ModalContext);
+  const [getListDes, postPaymentOrder] = useCustomFetch();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -68,7 +67,7 @@ const Checkout = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getListUserAddress(`/Address/${userLogin.id}`);
+        const response = await getListDes(`/Address/${userLogin.id}`);
         setListUserAddress(response.data);
       }
       catch (error) {

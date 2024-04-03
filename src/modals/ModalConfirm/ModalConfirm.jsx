@@ -1,14 +1,16 @@
 import Button from "../../components/Button";
-import { deleteUserAddress } from "../../services/userAddressServcice";
+// import { deleteUserAddress } from "../../services/userAddressServcice";
 import styles from "./ModalConfirm.module.scss";
 import classNames from "classnames/bind";
 import { useDispatch, useSelector } from "react-redux";
 import { saveUserAddress } from "../../redux/addressSlice";
+import useCustomFetch from "../../hooks/useCustomFetch";
 
 const cx = classNames.bind(styles);
 
 const ModalConfirm = ({ onHideModal, data }) => {
 
+  const [, , , deleteUserAddress] = useCustomFetch();
   const isFetching = useSelector(state => state.address.isFetching);
   const dispatch = useDispatch();
 

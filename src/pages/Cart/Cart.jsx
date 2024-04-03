@@ -59,7 +59,6 @@ const Cart = () => {
 
           const queryStringData = queryString.stringify({
             filter: JSON.stringify({ id: listProductId?.map(p => p.id) }),
-            sort: JSON.stringify(["", "ASC"]),
             range: JSON.stringify([0, listProductId.length - 1]),
           })
 
