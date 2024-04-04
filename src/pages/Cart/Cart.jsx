@@ -95,6 +95,12 @@ const Cart = () => {
   }, [])
 
   useEffect(() => {
+
+    window.scrollTo({
+      behavior: "smooth",
+      top: 0,
+    })
+
     const handleStorageChange = () => {
       const productIds = getLocalProductQuantity(userLogin?.user.id);
       setListProductId(productIds);
@@ -160,7 +166,9 @@ const Cart = () => {
     }
   }
   return (
-    <div className={cx("cart-container")}>
+    <div className={cx("cart-container")} style={{
+      height: !products?.length ? "200vh" : "unset"
+    }}>
       <Helmet>
         <meta charSet="utf-8" />
         <title>MT Store - Cart</title>

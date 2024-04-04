@@ -178,12 +178,6 @@ const Register = () => {
           >
             {!isLoading ? "Create Account" : <Loading className={cx("custom-loading")} />}
           </Button>
-          <Button className={cx("btn-google")}>
-            <div>
-              <img src={google} alt="google" />
-              <span>Sign up with Google</span>
-            </div>
-          </Button>
         </div>
         <div className={cx("register-redirect")}>
           <span>Already have account?</span>

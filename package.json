@@ -33,6 +33,7 @@
     "react-bootstrap": "^2.9.1",
     "react-countdown": "^2.3.5",
     "react-dom": "^18.2.0",
+    "react-facebook-login": "^4.1.1",
     "react-helmet": "^6.1.0",
     "react-html-parser": "^2.0.2",
     "react-lazy-load-image-component": "^1.6.0",
@@ -50,6 +51,7 @@
   "devDependencies": {
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
+    "@vitejs/plugin-basic-ssl": "^1.1.0",
     "@vitejs/plugin-react": "^4.2.1",
     "eslint": "^8.55.0",
     "eslint-plugin-react": "^7.33.2",

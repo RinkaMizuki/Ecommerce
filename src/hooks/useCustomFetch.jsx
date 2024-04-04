@@ -41,20 +41,30 @@ const useCustomFetch = () => {
         originalRequest._retry = true;
 
         let accessToken;
-        if (typeLogin === "default") {
-          const respRt = await refreshToken();
-          accessToken = respRt.data?.accessToken;
+        if (typeLogin === "default" || typeLogin === "facebook") {
+          try {
+            const respRt = await refreshToken();
+            accessToken = respRt.data?.accessToken;
+          }
+          catch (error) {
+            console.log(error);
+          }
         }
         else {
-          const { id_token } = await refreshTokenGoogle("/token", null, {
-            params: {
-              client_id: import.meta.env.VITE_ECOMMERCE_CLIENT_ID,
-              client_secret: import.meta.env.VITE_ECOMMERCE_CLIENT_SECRET,
-              grant_type: "refresh_token",
-              refresh_token: JSON.parse(localStorage.getItem("refresh_token")),
-            }
-          });
-          accessToken = id_token;
+          try {
+            const { id_token } = await refreshTokenGoogle("/token", null, {
+              params: {
+                client_id: import.meta.env.VITE_ECOMMERCE_CLIENT_ID,
+                client_secret: import.meta.env.VITE_ECOMMERCE_CLIENT_SECRET,
+                grant_type: "refresh_token",
+                refresh_token: JSON.parse(localStorage.getItem("refresh_token")),
+              }
+            });
+            accessToken = id_token;
+          }
+          catch (error) {
+            console.log(error)
+          }
         }
 
         tokenService.updateLocalAccessToken({

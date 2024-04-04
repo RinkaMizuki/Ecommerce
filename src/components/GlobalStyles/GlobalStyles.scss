@@ -175,6 +175,11 @@ img {
   background: var(--primary);
 }
 
+::selection {
+  background-color: var(--primary);
+  color: var(--white);
+}
+
 :root {
   --form-control-color: rebeccapurple;
   --form-control-disabled: #959495;

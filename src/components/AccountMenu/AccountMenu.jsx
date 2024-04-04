@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import RecyclingIcon from '@mui/icons-material/Recycling';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
+import AddLinkIcon from '@mui/icons-material/AddLink';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import PaymentIcon from '@mui/icons-material/Payment';
 import HomeIcon from '@mui/icons-material/Home';
@@ -135,6 +136,9 @@ export default function AccountMenu() {
       navigate("/manager/address")
     }
     else if (nodeId == 7) {
+      navigate("/manager/links")
+    }
+    else if (nodeId == 8) {
       navigate("/manager/payments")
     }
     else if (nodeId == 10) {
@@ -152,8 +156,11 @@ export default function AccountMenu() {
     else if (location.pathname.includes("/address")) {
       setSelectedNode("6");
     }
-    else if (location.pathname.includes("/payments")) {
+    else if (location.pathname.includes("/links")) {
       setSelectedNode("7");
+    }
+    else if (location.pathname.includes("/payments")) {
+      setSelectedNode("8");
     }
     else if (location.pathname.includes("/returns")) {
       setSelectedNode("10");
@@ -219,11 +226,20 @@ export default function AccountMenu() {
           />
           <StyledTreeItem
             nodeId="7"
+            labelText="Sign-In Options"
+            labelIcon={AddLinkIcon}
+            color="#ff00ba"
+            bgColor="#f3e8fd"
+            colorForDarkMode="#D9B8FB"
+            bgColorForDarkMode="#100719"
+          />
+          <StyledTreeItem
+            nodeId="8"
             labelText="Payment Options"
             labelIcon={PaymentIcon}
             color="#a250f5"
             bgColor="#f3e8fd"
-            colorForDarkMode="#D9B8FB"
+            colorForDarkMode="#00d5ff"
             bgColorForDarkMode="#100719"
           />
         </StyledTreeItem>
@@ -231,7 +247,7 @@ export default function AccountMenu() {
 
       <TreeView
         aria-label="Orders management"
-        defaultExpanded={['8']}
+        defaultExpanded={['9']}
         defaultCollapseIcon={<MinusSquare />}
         defaultExpandIcon={<PlusSquare />}
         defaultEndIcon={<div style={{ width: 24 }} />}
@@ -247,7 +263,7 @@ export default function AccountMenu() {
         onNodeSelect={handleSelectNode}
         selected={selectedNode}
       >
-        <StyledTreeItem nodeId="8" labelText="Manage Orders" labelIcon={ManageHistoryIcon}>
+        <StyledTreeItem nodeId="9" labelText="Manage Orders" labelIcon={ManageHistoryIcon}>
           <StyledTreeItem
             nodeId="10"
             labelText="Returns"

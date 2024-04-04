@@ -8,11 +8,13 @@ import { useEffect, useRef, useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import { useDispatch, useSelector } from "react-redux";
 import useCustomFetch from "../../hooks/useCustomFetch";
+import FacebookIcon from '@mui/icons-material/Facebook';
 import { loginFailed, loginStart, loginSuccess } from "../../redux/authSlice";
 import tokenService from "../../services/tokenService"
 import Loading from "../../components/Loading";
 import queryString from "query-string";
 import { Helmet } from "react-helmet";
+import FacebookLogin from 'react-facebook-login';
 
 const toastOptions = {
   position: "top-right",
@@ -116,6 +118,13 @@ const Login = () => {
     }
   }
 
+  const responseFacebook = (res) => {
+    console.log(res);
+    navigate("/signin-facebook", {
+      state: res,
+    })
+  }
+
   return (
     <div className={cx("login-wrapper")}>
       <Helmet>
@@ -139,7 +148,7 @@ const Login = () => {
             {!isHidePassword ? <i className="fa-regular fa-eye" onClick={handleTogglePassword}></i> : <i className="fa-regular fa-eye-slash" onClick={handleTogglePassword}></i>}
           </div>
         </form>
-        <div>
+        <div className={cx("login-options")}>
           <Button className={cx("btn-login")} lagre onClick={handleLogin} ref={submitRef}
             disable={!userNameOrEmail || !password}
           >
@@ -151,6 +160,19 @@ const Login = () => {
               <span>Sign in with Google</span>
             </div>
           </Button>
+          <FacebookLogin
+            appId="1844560925992088"
+            fields="id,name,email,picture"
+            callback={responseFacebook}
+            cssClass={cx("btn-facebook")}
+            textButton="Sign in with Facebook"
+            version="19.0"
+            icon={<FacebookIcon style={{
+              color: "rgb(24, 119, 242)",
+              width: "40px",
+              height: "40px"
+            }} />}
+          />
         </div>
         <div className={cx("login-redirect")}>
           <Link to="/">Forgot password</Link>

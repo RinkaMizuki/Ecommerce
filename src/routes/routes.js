@@ -20,6 +20,8 @@ import Checkout from "../pages/Checkout";
 import Payment from "../pages/Payment";
 import PaymentError from "../pages/PaymentError";
 import GoogleLogin from "../pages/GoogleLogin";
+import Link from "../pages/Link";
+import FacebookLogin from "../pages/FacebookLogin";
 
 const publicRoutes = [
   {
@@ -40,6 +42,11 @@ const publicRoutes = [
   {
     path: config.routes.googleLogin,
     element: GoogleLogin,
+    layout: "default"
+  },
+  {
+    path: config.routes.facebookLogin,
+    element: FacebookLogin,
     layout: "default"
   },
   {
@@ -75,6 +82,11 @@ const publicRoutes = [
   {
     path: config.routes.profile,
     element: AuthRequired(Profile),
+    layout: "management"
+  },
+  {
+    path: config.routes.link,
+    element: AuthRequired(Link),
     layout: "management"
   },
   {

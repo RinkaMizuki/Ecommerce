@@ -98,8 +98,30 @@
     display: inline-block;
   }
 }
+
 .custom-loading {
   width: 30px !important;
   height: 30px !important;
   border-width: 4px !important;
+}
+
+.login-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn-facebook {
+  border: 1px solid var(--text-gray-500);
+  border-radius: 5px;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+
+  >svg {
+    margin-right: 17px;
+    margin-left: 17px;
+  }
 }

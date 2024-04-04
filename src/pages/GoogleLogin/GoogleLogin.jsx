@@ -1,17 +1,16 @@
 import axios from "axios";
 import queryString from "query-string";
 import { useLayoutEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useCustomFetch from "../../hooks/useCustomFetch"
-import { loginStart, loginSuccess } from "../../redux/authSlice";
+import { loginSuccess } from "../../redux/authSlice";
 import tokenService from "../../services/tokenService";
 import Loading from "../Loading";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { getTokenInfo } from "../../services/googleService";
 
 const GoogleLogin = () => {
 
-  const isFetching = useSelector(state => state.auth.login.isFetching);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [, postUserLinked] = useCustomFetch();
@@ -27,7 +26,6 @@ const GoogleLogin = () => {
       const { code } = queryString.parse(window.location.href.split("?")[1]);
 
       const fetchData = async () => {
-        dispatch(loginStart())
         try {
           const { access_token, expires_in, id_token, refresh_token, scope, token_type } = await getTokenInfo("/token", null, {
             params: {
@@ -53,7 +51,7 @@ const GoogleLogin = () => {
             providerDisplayName: "Google",
             picture: res.data.picture,
           }
-          const userLinked = await postUserLinked("/Auth/link-account", data, {
+          const userLinked = await postUserLinked("/Auth/link-google-account", data, {
             headers: {
               "Content-Type": "application/json"
             }
@@ -65,7 +63,9 @@ const GoogleLogin = () => {
             ...userLinked?.data,
             type: "google"
           }))
-          navigate("/")
+          navigate("/", {
+            replace: true,
+          })
         } catch (err) {
           console.log(err)
         }
@@ -76,7 +76,7 @@ const GoogleLogin = () => {
 
   return (
     <>
-      {isFetching && <Loading />}
+      <Loading />
     </>
   )
 };
