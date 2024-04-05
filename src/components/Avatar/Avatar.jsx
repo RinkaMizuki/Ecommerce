@@ -19,7 +19,8 @@ const Avatar = ({ src, alt, effect = "blur", width = "50", height = "50", classN
         [className]: className
       })}
       style={{
-        borderRadius: radius ? "50%" : "unset"
+        borderRadius: radius ? "50%" : "unset",
+        objectFit: "cover"
       }}
     />
   )

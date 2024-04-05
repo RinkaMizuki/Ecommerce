@@ -12,6 +12,7 @@ import tokenService from "../../../services/tokenService";
 import { getLocalFavoriteProductId } from "../../../services/favoriteService";
 import { getLocalProductQuantity } from "../../../services/cartService";
 import { useEffect, useState } from "react";
+import Avatar from "../../../components/Avatar";
 
 const cx = classNames.bind(styles);
 
@@ -94,7 +95,7 @@ const Header = function ({ toggleTopHeader }) {
     dispatch(logoutStart())
     let res
     try {
-      if (typeLogin === "default") {
+      if (typeLogin === "default" || typeLogin === "facebook") {
         res = await post(`/Auth/logout?userId=${userLogin?.user?.id || 0}`, {}, {})
         dispatch(logoutSuccess(res?.data))
       }
@@ -105,8 +106,8 @@ const Header = function ({ toggleTopHeader }) {
         }))
       }
       tokenService.removeToken("token");
-      navigate("/login")
       window.location.reload();
+      navigate("/login")
     } catch (error) {
       dispatch(logoutFailed(res?.data))
     }
@@ -224,7 +225,7 @@ const Header = function ({ toggleTopHeader }) {
               )}
             >
               <span className={cx("user-info")}>
-                <i className="fa-regular fa-user"></i>
+                <Avatar src={userLogin?.user?.url} alt={userLogin?.user?.avatar} width="32" height="32" />
               </span>
             </Tippy>
             }

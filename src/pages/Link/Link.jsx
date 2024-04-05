@@ -2,40 +2,180 @@ import classNames from "classnames/bind";
 import styles from "./Link.module.scss";
 import Avatar from "../../components/Avatar";
 import Button from "../../components/Button";
+import Popup from 'reactjs-popup';
+import CloseIcon from '@mui/icons-material/Close';
+import 'reactjs-popup/dist/index.css';
+import useCustomFetch from "../../hooks/useCustomFetch";
+import { logoutSuccess } from "../../redux/authSlice";
+import { useDispatch, useSelector } from "react-redux"
+import queryString from "query-string"
 
 const cx = classNames.bind(styles);
+const googleProvider = "Google";
+const facebookProvider = "Facebook";
 
 const Link = () => {
+
+  const currentUser = useSelector(state => state.auth.login.currentUser.user);
+  const dispatch = useDispatch();
+  const [, , , deleteUserLogin] = useCustomFetch();
+
+  const handleFindProviderByName = (providerName = "") => {
+    return currentUser.userLogins.find(ul => ul.loginProvider.toLowerCase() === providerName.toLowerCase());
+  }
+
+  const handleLinkAccount = () => {
+    const queryStringData = queryString.stringify({
+      client_id: import.meta.env.VITE_ECOMMERCE_CLIENT_ID,
+      redirect_uri: import.meta.env.VITE_ECOMMERCE_GOOGLE_REDIRECT_URI,
+      scope: "openid profile email",
+      response_type: "code",
+      access_type: "offline",
+      prompt: "consent",
+      nonce: 'n-0S6_WzA2Mj'
+    });
+    const googleAuthUrl = `${import.meta.env.VITE_ECOMMERCE_GOOGLE_BASE_URL}?${queryStringData}`;
+    localStorage.setItem("authType", JSON.stringify("link"))
+    window.location.href = googleAuthUrl;
+  }
+
+  const handleUnlinkAccount = async (providerKey) => {
+    try {
+      const res = await deleteUserLogin("/Auth/unlink-account", {
+        params: {
+          userId: currentUser?.id,
+          providerId: providerKey,
+        }
+      })
+      localStorage.removeItem("refresh_token");
+      tokenService.removeToken("token");
+      dispatch(logoutSuccess(res.data))
+      window.location.reload();
+      navigate("/login")
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }
+
   return (
     <div className={cx("link-account-container")}>
       <div className={cx("link-account-wrapper")}>
         <h1 className={cx("link-title")}>Link Your Sign-in Account</h1>
         <div className={cx("link-info-wrapper")}>
           <div className={cx("link-info-item")}>
-            <h2 className={cx("provider-title")}>Link Google</h2>
+            <h2 className={cx("provider-title")}>Link {googleProvider}</h2>
             <div className={cx("provider-info-wrapper")}>
               <div className={cx("provider-info")}>
-                <Avatar src="https://lh3.googleusercontent.com/a/ACg8ocJWH7br4Eq8uK0jp54csrrO84TjiBSUre_HUZl0WVmTc2E=s96-c" alt="Google Avatar" />
-                <p className={cx("account-name")}>nguyenduc09012003@gmail.com</p>
+                {handleFindProviderByName(googleProvider) ? <>
+                  <Avatar src={handleFindProviderByName(googleProvider)?.accountAvatar} />
+                  <p className={cx("account-name")}>{handleFindProviderByName(googleProvider)?.accountName}</p>
+                </> : <p className={cx("account-name")}>Haven't linked Google account yet</p>}
               </div>
-              {true ? <Button className={cx("btn-link-provider")}>Unlink</Button> : <Button className={cx("btn-link-provider")}>
-                <img src="https://fullstack.edu.vn/static/media/google-18px.c3ebfe2090fd87e02dbb9660dee0b031.svg" alt="" />
-                <span>Link Google</span>
+              {handleFindProviderByName(googleProvider) ? <Popup
+                trigger={<Button className={cx("btn-link-provider")}
+                >Unlink</Button>}
+                modal
+                nested
+                contentStyle={{
+                  width: "25%",
+                  padding: "2px",
+                  borderRadius: "5px",
+                  border: "0",
+                  animation: ".3s cubic-bezier(.38,.1,.36,.9) forwards a"
+                }}
+                lockScroll={true}
+                closeOnDocumentClick={false}
+              >
+                {close => (
+                  <div className={cx("modal")}>
+                    <button className={cx("close")} onClick={close}>
+                      <CloseIcon sx={{
+                        width: "20px",
+                        height: "20px",
+                      }} />
+                    </button>
+                    <div className={cx("header")}>
+                      <svg class="Dialog-module_errorIcon__1Rzg6" width="32" height="32" viewBox="0 0 16 16"><path d="M0 0h16v16H0V0z" fill="none"></path><path d="M15.2 13.1L8.6 1.6c-.2-.4-.9-.4-1.2 0L.8 13.1c-.1.2-.1.5 0 .7.1.2.3.3.6.3h13.3c.2 0 .5-.1.6-.3.1-.2.1-.5-.1-.7zM8.7 12H7.3v-1.3h1.3V12zm0-2.7H7.3v-4h1.3v4z" fill="currentColor"></path></svg>
+                    </div>
+                    <div className={cx("content")}>
+                      <p>Bạn muốn hủy liên kết với tài khoản <span>{handleFindProviderByName(googleProvider)?.accountName}</span>?</p>
+                    </div>
+                    <div className={cx("actions")}>
+                      <button className={cx("btn-cancel")} onClick={close}>
+                        <div className={cx("btn-content")}>
+                          <span className={cx("btn-text-cancel")}>Cancel</span>
+                        </div>
+                      </button>
+                      <button className={cx("btn-agree")} onClick={() => handleUnlinkAccount(handleFindProviderByName(googleProvider)?.providerKey)}>
+                        <div className={cx("btn-content")}>
+                          <span className={cx("btn-text-agree")}>Agree</span>
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </Popup> : <Button className={cx("btn-link-provider")} onClick={handleLinkAccount} >
+                <img src="https://fullstack.edu.vn/static/media/google-18px.c3ebfe2090fd87e02dbb9660dee0b031.svg" alt="Google Icon" />
+                <span>Link {googleProvider}</span>
               </Button>}
             </div>
           </div>
           <div className={cx("link-info-item")}>
-            <h2 className={cx("provider-title")}>Link Facebook</h2>
+            <h2 className={cx("provider-title")}>Link {facebookProvider}</h2>
             <div className={cx("provider-info-wrapper")}>
               <div className={cx("provider-info")}>
-                {false ? <>
-                  <Avatar src="https://lh3.googleusercontent.com/a/ACg8ocJWH7br4Eq8uK0jp54csrrO84TjiBSUre_HUZl0WVmTc2E=s96-c" alt="Google Avatar" />
-                  <p className={cx("account-name")}>Nguyễn Bin</p>
+                {handleFindProviderByName(facebookProvider) ? <>
+                  <Avatar src={handleFindProviderByName(facebookProvider)?.accountAvatar} />
+                  <p className={cx("account-name")}>{handleFindProviderByName(facebookProvider)?.accountName}</p>
                 </> : <p className={cx("account-name")}>Haven't linked Facebook account yet</p>}
               </div>
-              {false ? <Button className={cx("btn-link-provider")}>Unlink</Button> : <Button className={cx("btn-link-provider")}>
-                <img src="https://fullstack.edu.vn/static/media/facebook-18px.f8cbbfa43b6a279006c9d53266b2c3e8.svg" alt="" />
-                <span>Link Facebook</span>
+              {handleFindProviderByName(facebookProvider) ? <Popup
+                contentStyle={{
+                  width: "25%",
+                  padding: "2px",
+                  borderRadius: "5px",
+                  border: "0",
+                  animation: ".3s cubic-bezier(.38,.1,.36,.9) forwards a"
+                }}
+                trigger={<Button className={cx("btn-link-provider")}
+                >Unlink</Button>}
+                modal
+                nested
+                lockScroll={true}
+                closeOnDocumentClick={false}
+              >
+                {close => (
+                  <div className={cx("modal")}>
+                    <button className={cx("close")} onClick={close}>
+                      <CloseIcon sx={{
+                        width: "20px",
+                        height: "20px",
+                      }} />
+                    </button>
+                    <div className={cx("header")}>
+                      <svg class="Dialog-module_errorIcon__1Rzg6" width="32" height="32" viewBox="0 0 16 16"><path d="M0 0h16v16H0V0z" fill="none"></path><path d="M15.2 13.1L8.6 1.6c-.2-.4-.9-.4-1.2 0L.8 13.1c-.1.2-.1.5 0 .7.1.2.3.3.6.3h13.3c.2 0 .5-.1.6-.3.1-.2.1-.5-.1-.7zM8.7 12H7.3v-1.3h1.3V12zm0-2.7H7.3v-4h1.3v4z" fill="currentColor"></path></svg>
+                    </div>
+                    <div className={cx("content")}>
+                      <p>Bạn muốn hủy liên kết với tài khoản <span>{handleFindProviderByName(facebookProvider)?.accountName}</span>?</p>
+                    </div>
+                    <div className={cx("actions")}>
+                      <button className={cx("btn-cancel")} onClick={close}>
+                        <div className={cx("btn-content")}>
+                          <span className={cx("btn-text-cancel")}>Cancel</span>
+                        </div>
+                      </button>
+                      <button className={cx("btn-agree")} onClick={() => handleUnlinkAccount(handleFindProviderByName(googleProvider).providerKey)}>
+                        <div className={cx("btn-content")}>
+                          <span className={cx("btn-text-agree")}>Agree</span>
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </Popup> : <Button className={cx("btn-link-provider")}>
+                <img src="https://fullstack.edu.vn/static/media/facebook-18px.f8cbbfa43b6a279006c9d53266b2c3e8.svg" alt="Facebook Icon" />
+                <span>Link {facebookProvider}</span>
               </Button>}
             </div>
           </div>
@@ -43,11 +183,14 @@ const Link = () => {
             <h2 className={cx("provider-title")}>Link Phone Number</h2>
             <div className={cx("provider-info-wrapper")}>
               <div className={cx("provider-info")}>
-                <Avatar src="https://lh3.googleusercontent.com/a/ACg8ocJWH7br4Eq8uK0jp54csrrO84TjiBSUre_HUZl0WVmTc2E=s96-c" alt="Google Avatar" />
-                <p className={cx("account-name")}>Haven't linked Phone Number yet</p>
+                {handleFindProviderByName("0987654321") ?
+                  <p>0987654321</p>
+                  :
+                  <p className={cx("account-name")}>Haven't linked Phone Number yet</p>
+                }
               </div>
-              {false ? <Button className={cx("btn-link-provider")}>Unlink</Button> : <Button className={cx("btn-link-provider")}>
-                <svg ariaHidden="true" width="16" height="16" focusable="false" dataPrefix="fas" dataIcon="phone" class="svg-inline--fa fa-phone " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M511.2 387l-23.25 100.8c-3.266 14.25-15.79 24.22-30.46 24.22C205.2 512 0 306.8 0 54.5c0-14.66 9.969-27.2 24.22-30.45l100.8-23.25C139.7-2.602 154.7 5.018 160.8 18.92l46.52 108.5c5.438 12.78 1.77 27.67-8.98 36.45L144.5 207.1c33.98 69.22 90.26 125.5 159.5 159.5l44.08-53.8c8.688-10.78 23.69-14.51 36.47-8.975l108.5 46.51C506.1 357.2 514.6 372.4 511.2 387z"></path></svg>
+              {handleFindProviderByName("0987654321") ? <Button className={cx("btn-link-provider")}>Unlink</Button> : <Button className={cx("btn-link-provider")}>
+                <svg aria-hidden="true" width="16" height="16" focusable="false" dataprefix="fas" dataicon="phone" className="svg-inline--fa fa-phone " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M511.2 387l-23.25 100.8c-3.266 14.25-15.79 24.22-30.46 24.22C205.2 512 0 306.8 0 54.5c0-14.66 9.969-27.2 24.22-30.45l100.8-23.25C139.7-2.602 154.7 5.018 160.8 18.92l46.52 108.5c5.438 12.78 1.77 27.67-8.98 36.45L144.5 207.1c33.98 69.22 90.26 125.5 159.5 159.5l44.08-53.8c8.688-10.78 23.69-14.51 36.47-8.975l108.5 46.51C506.1 357.2 514.6 372.4 511.2 387z"></path></svg>
                 <span>Link Phone Number</span>
               </Button>}
             </div>
@@ -119,7 +262,7 @@ const Link = () => {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   )
 };
 

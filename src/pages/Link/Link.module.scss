@@ -17,6 +17,7 @@
   color: var(--black);
   font-size: 25px;
   margin: 0 0 20px;
+  color: var(--primary);
   padding-bottom: 10px;
 }
 
@@ -99,5 +100,111 @@
 
   &:hover {
     background-color: var(--text-gray-200);
+  }
+}
+
+.modal {
+  font-size: 12px;
+  font-family: "Montserrat";
+}
+
+.modal>.header {
+  display: flex;
+  justify-content: center;
+  padding: 16px 0;
+
+  >svg {
+    animation: Dialog .35s linear 1;
+    color: #ffb817;
+  }
+}
+
+.modal>.content {
+  text-align: center;
+  width: 100%;
+  padding: 10px 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 1.5;
+
+  >p {
+    font-size: 15px;
+
+    >span {
+      font-weight: 600;
+    }
+  }
+}
+
+.modal>.actions {
+  width: 100%;
+  margin: auto;
+  margin-top: 15px;
+  text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  border-top: 1px solid #f2f2f2;
+}
+
+.btn-cancel,
+.btn-agree {
+  border-bottom: 1px solid #f2f2f2;
+  flex-basis: auto;
+  flex-grow: 1;
+  height: 48px;
+  min-width: 50%;
+  border-radius: 0;
+  border-right: 1px solid #f2f2f2;
+  appearance: auto;
+  background-color: transparent;
+}
+
+.btn-text-cancel,
+.btn-text-agree {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-gray-700);
+}
+
+.btn-text-agree {
+  color: var(--primary);
+}
+
+.modal>.close {
+  cursor: pointer;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3px;
+  line-height: 20px;
+  right: -10px;
+  top: -10px;
+  font-size: 24px;
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #cfcece;
+}
+
+@keyframes Dialog {
+  0% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-4px);
+  }
+
+  50% {
+    transform: translateX(4px);
+  }
+
+  75% {
+    transform: translateX(-4px);
+  }
+
+  100% {
+    transform: translateX(0);
   }
 }

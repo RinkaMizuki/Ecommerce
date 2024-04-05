@@ -6,11 +6,12 @@ import useCustomFetch from "../../hooks/useCustomFetch"
 import { loginSuccess } from "../../redux/authSlice";
 import tokenService from "../../services/tokenService";
 import Loading from "../Loading";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getTokenInfo } from "../../services/googleService";
 
 const GoogleLogin = () => {
 
+  const userLogin = useSelector(state => state.auth.login?.currentUser?.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [, postUserLinked] = useCustomFetch();
@@ -23,8 +24,8 @@ const GoogleLogin = () => {
     } else {
       // Xử lý đăng nhập thành công hoặc các lỗi khác
       // Bạn có thể tiếp tục xử lý đăng nhập ở đây hoặc chuyển hướng người dùng đến trang chính của ứng dụng
+      const type = JSON.parse(localStorage.getItem("authType"));
       const { code } = queryString.parse(window.location.href.split("?")[1]);
-
       const fetchData = async () => {
         try {
           const { access_token, expires_in, id_token, refresh_token, scope, token_type } = await getTokenInfo("/token", null, {
@@ -51,26 +52,49 @@ const GoogleLogin = () => {
             providerDisplayName: "Google",
             picture: res.data.picture,
           }
-          const userLinked = await postUserLinked("/Auth/link-google-account", data, {
-            headers: {
-              "Content-Type": "application/json"
-            }
-          })
-          tokenService.setToken({
-            token: id_token,
-          })
-          dispatch(loginSuccess({
-            ...userLinked?.data,
-            type: "google"
-          }))
-          navigate("/", {
-            replace: true,
-          })
+          if (type === "login") {
+            const userAuth = await postUserLinked("/Auth/google-auth", data, {
+              headers: {
+                "Content-Type": "application/json"
+              }
+            })
+            tokenService.setToken({
+              token: id_token,
+            })
+            dispatch(loginSuccess({
+              ...userAuth?.data,
+              type: "google"
+            }))
+            navigate("/", {
+              replace: true,
+            })
+          }
+          else {
+            const userLinked = await postUserLinked("/Auth/google-link", data, {
+              headers: {
+                "Content-Type": "application/json"
+              },
+              params: {
+                userId: userLogin?.id,
+              }
+            })
+            tokenService.setToken({
+              token: id_token,
+            })
+            dispatch(loginSuccess({
+              ...userLinked?.data,
+              type: "google"
+            }))
+            navigate("/manager/links", {
+              replace: true,
+            })
+          }
         } catch (err) {
           console.log(err)
         }
       }
       fetchData();
+      //link account
     }
   }, []);
 

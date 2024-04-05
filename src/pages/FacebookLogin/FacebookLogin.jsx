@@ -16,7 +16,7 @@ const FacebookLogin = () => {
 
     const fetchData = async () => {
       try {
-        const userLinked = await postUserLinked("/Auth/link-facebook-account", null, {
+        const userLinked = await postUserLinked("/Auth/facebook-auth", null, {
           params: {
             facebookAccessToken: location.state.accessToken,
           }

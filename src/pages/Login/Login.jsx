@@ -64,6 +64,7 @@ const Login = () => {
       nonce: 'n-0S6_WzA2Mj'
     });
     const googleAuthUrl = `${import.meta.env.VITE_ECOMMERCE_GOOGLE_BASE_URL}?${queryStringData}`;
+    localStorage.setItem("authType", JSON.stringify("login"))
     window.location.href = googleAuthUrl;
   }
 
