@@ -1,0 +1,30 @@
+.modal {
+  font-size: 12px;
+  font-family: "Montserrat";
+}
+
+.modal>.header {
+  display: flex;
+  justify-content: center;
+  padding: 16px 0;
+}
+
+.modal>.content {
+  text-align: center;
+  width: 100%;
+  padding: 10px 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 1.5;
+}
+
+.modal>.actions {
+  width: 100%;
+  margin: auto;
+  margin-top: 15px;
+  text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  border-top: 1px solid #f2f2f2;
+}

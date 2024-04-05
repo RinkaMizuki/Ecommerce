@@ -3,7 +3,7 @@ import classNames from "classnames/bind";
 import ecommerceRegister from "../../assets/images/ecommerce-register.jpg";
 import Button from "../../components/Button"
 import google from "../../assets/images/google.png"
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +15,7 @@ import Loading from "../../components/Loading";
 import queryString from "query-string";
 import { Helmet } from "react-helmet";
 import FacebookLogin from 'react-facebook-login';
+import { useLayoutEffect } from "react";
 
 const toastOptions = {
   position: "top-right",
@@ -38,6 +39,7 @@ const Login = () => {
   const submitRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const isFetching = useSelector(state => state.auth.login.isFetching);
   //logics handle
   const handleTogglePassword = () => {
@@ -120,11 +122,18 @@ const Login = () => {
   }
 
   const responseFacebook = (res) => {
-    console.log(res);
+    localStorage.setItem("authType", JSON.stringify("login"))
     navigate("/signin-facebook", {
       state: res,
     })
   }
+
+  useLayoutEffect(() => {
+    if (location.state) {
+      toast.error(location.state.message, toastOptions);
+      window.history.replaceState({}, '')
+    }
+  }, [location.state])
 
   return (
     <div className={cx("login-wrapper")}>
@@ -134,7 +143,10 @@ const Login = () => {
         <link rel="canonical" href={`${window.location.origin}/login`} />
       </Helmet>
       <div className={cx("login-image")}>
-        <ToastContainer></ToastContainer>
+        <ToastContainer style={{
+          width: "30%",
+          marginTop: "110px",
+        }}></ToastContainer>
         <img src={ecommerceRegister} alt="Ecommerce" />
       </div>
       <div className={cx("login-form")}>

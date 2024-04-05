@@ -4,11 +4,14 @@ import Avatar from "../../components/Avatar";
 import Button from "../../components/Button";
 import Popup from 'reactjs-popup';
 import CloseIcon from '@mui/icons-material/Close';
+import FacebookIcon from '@mui/icons-material/Facebook';
 import 'reactjs-popup/dist/index.css';
 import useCustomFetch from "../../hooks/useCustomFetch";
 import { logoutSuccess } from "../../redux/authSlice";
 import { useDispatch, useSelector } from "react-redux"
-import queryString from "query-string"
+import queryString from "query-string";
+import FacebookLogin from "react-facebook-login";
+import { useNavigate } from "react-router-dom";
 
 const cx = classNames.bind(styles);
 const googleProvider = "Google";
@@ -17,6 +20,7 @@ const facebookProvider = "Facebook";
 const Link = () => {
 
   const currentUser = useSelector(state => state.auth.login.currentUser.user);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [, , , deleteUserLogin] = useCustomFetch();
 
@@ -24,7 +28,7 @@ const Link = () => {
     return currentUser.userLogins.find(ul => ul.loginProvider.toLowerCase() === providerName.toLowerCase());
   }
 
-  const handleLinkAccount = () => {
+  const handleLinkGoogleAccount = () => {
     const queryStringData = queryString.stringify({
       client_id: import.meta.env.VITE_ECOMMERCE_CLIENT_ID,
       redirect_uri: import.meta.env.VITE_ECOMMERCE_GOOGLE_REDIRECT_URI,
@@ -39,6 +43,12 @@ const Link = () => {
     window.location.href = googleAuthUrl;
   }
 
+  const responseFacebook = (res) => {
+    localStorage.setItem("authType", JSON.stringify("link"))
+    navigate("/signin-facebook", {
+      state: res,
+    })
+  }
   const handleUnlinkAccount = async (providerKey) => {
     try {
       const res = await deleteUserLogin("/Auth/unlink-account", {
@@ -115,7 +125,7 @@ const Link = () => {
                     </div>
                   </div>
                 )}
-              </Popup> : <Button className={cx("btn-link-provider")} onClick={handleLinkAccount} >
+              </Popup> : <Button className={cx("btn-link-provider")} onClick={handleLinkGoogleAccount} >
                 <img src="https://fullstack.edu.vn/static/media/google-18px.c3ebfe2090fd87e02dbb9660dee0b031.svg" alt="Google Icon" />
                 <span>Link {googleProvider}</span>
               </Button>}
@@ -173,10 +183,19 @@ const Link = () => {
                     </div>
                   </div>
                 )}
-              </Popup> : <Button className={cx("btn-link-provider")}>
-                <img src="https://fullstack.edu.vn/static/media/facebook-18px.f8cbbfa43b6a279006c9d53266b2c3e8.svg" alt="Facebook Icon" />
-                <span>Link {facebookProvider}</span>
-              </Button>}
+              </Popup> : <FacebookLogin
+                appId="1844560925992088"
+                fields="id,name,email,picture"
+                callback={responseFacebook}
+                cssClass={cx("btn-facebook")}
+                textButton="Link Facebook"
+                version="19.0"
+                icon={<FacebookIcon style={{
+                  color: "rgb(24, 119, 242)",
+                  width: "30px",
+                  height: "30px"
+                }} />}
+              />}
             </div>
           </div>
           <div className={cx("link-info-item")}>
