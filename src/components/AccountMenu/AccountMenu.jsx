@@ -20,6 +20,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import useCustomFetch from '../../hooks/useCustomFetch';
+import { useLayoutEffect } from 'react';
 
 const cx = classNames.bind(styles);
 
@@ -170,10 +171,10 @@ export default function AccountMenu() {
     }
   }, [location.pathname])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getListUserAddress(`/Address/${userLogin.id}`);
+        const response = await getListUserAddress(`/Address/${userLogin?.id}`);
         setAddresses(response.data);
       }
       catch (error) {

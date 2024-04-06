@@ -11,11 +11,11 @@ import "swiper/scss/navigation";
 import Cart from "../Cart";
 import { useRef, useState } from "react";
 import ViewTitle from "../ViewTitle/index.js";
-import { Lightbox } from "react-modal-image";
 import Button from "../Button";
 import { useEffect } from "react";
 import useCustomFetch from "../../hooks/useCustomFetch.jsx";
 import queryString from "query-string";
+import Lightbox from "../Lightbox";
 
 const cx = classNames.bind(styles);
 
@@ -68,12 +68,9 @@ const ProductFlashSale = () => {
                         return (
                             <div style={{ fontFamily: "Poppins" }} key={p.id}>
                                 <Lightbox
-                                    imageBackgroundColor="transparent"
-                                    hideZoom={true}
-                                    hideDownload={true}
                                     onClose={closeLightBox}
-                                    large={p.url}
-                                    alt={p.image}
+                                    url={p.url}
+                                    alt={p.title}
                                 />
                             </div>
                         )

@@ -5,11 +5,11 @@ import { useLocation, useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import useCustomFetch from "../../hooks/useCustomFetch"
 import Cart from "../Cart";
-import { Lightbox } from "react-modal-image";
 import queryString from "query-string";
 import { icons } from "./Icons";
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { Helmet } from "react-helmet";
+import Lightbox from "../Lightbox";
 
 const cx = classNames.bind(styles);
 
@@ -173,12 +173,9 @@ const CategoryDetail = () => {
           return (
             <div style={{ fontFamily: "Poppins" }} key={p.id}>
               <Lightbox
-                imageBackgroundColor="transparent"
-                hideZoom={true}
-                hideDownload={true}
                 onClose={closeLightBox}
-                large={p.url}
-                alt={p.image}
+                url={p.url}
+                alt={p.title}
               />
             </div>
           )

@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react"
 import ViewTitle from "../ViewTitle";
 import useCustomFetch from "../../hooks/useCustomFetch";
 import Cart from "../Cart";
-import { Lightbox } from "react-modal-image";
 import styles from "./ProductRelate.module.scss";
 import classNames from "classnames/bind";
 import queryString from "query-string";
+import Lightbox from "../Lightbox";
 
 const cx = classNames.bind(styles);
 
@@ -54,12 +54,9 @@ const ProductRelate = ({ categoryId, currentId, number }) => {
             return (
               <div style={{ fontFamily: "Poppins" }} key={p.id}>
                 <Lightbox
-                  imageBackgroundColor="transparent"
-                  hideZoom={true}
-                  hideDownload={true}
                   onClose={closeLightBox}
-                  large={p.url}
-                  alt={p.image}
+                  url={p.url}
+                  alt={p.title}
                 />
               </div>
             )

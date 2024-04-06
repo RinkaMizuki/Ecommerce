@@ -19,9 +19,12 @@ const Footer = () => {
         </div>
         <div className={cx("content-wrapper")}>
           <h3 className={cx("footer-title")}>Support</h3>
-          <span>111 Bijoy sarani, Dhaka,  DH 1515, Bangladesh.</span>
-          <span>exclusive@gmail.com</span>
-          <span>+88015-88888-9999</span>
+          <span style={{
+            maxWidth: "250px",
+            lineHeight: "1.5"
+          }}>941/13/4/25 Trần Xuân Soạn, Phường Tân Hưng, Quận 7, TPHCM.</span>
+          <span>mtstore@gmail.com</span>
+          <span>+84867706538</span>
         </div>
         <div className={cx("content-wrapper")}>
           <h3 className={cx("footer-title")}>Account</h3>
@@ -69,7 +72,7 @@ const Footer = () => {
         </div>
       </div>
       <div className={cx("footer-copyright")}>
-        <p><i className="fa-regular fa-copyright"></i> Copyright Rimel 2022. All right reserved</p>
+        <p><i className="fa-regular fa-copyright"></i> Copyright Rimel 2024. All right reserved</p>
       </div>
     </div>
   )

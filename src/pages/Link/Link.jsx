@@ -11,17 +11,31 @@ import { logoutSuccess } from "../../redux/authSlice";
 import { useDispatch, useSelector } from "react-redux"
 import queryString from "query-string";
 import FacebookLogin from "react-facebook-login";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import { useEffect } from "react";
+import tokenService from "../../services/tokenService";
 
 const cx = classNames.bind(styles);
 const googleProvider = "Google";
 const facebookProvider = "Facebook";
+const toastOptions = {
+  position: "top-right",
+  autoClose: 2000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  theme: "colored",
+}
 
 const Link = () => {
 
   const currentUser = useSelector(state => state.auth.login.currentUser.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
   const [, , , deleteUserLogin] = useCustomFetch();
 
   const handleFindProviderByName = (providerName = "") => {
@@ -68,8 +82,20 @@ const Link = () => {
     }
   }
 
+  useEffect(() => {
+    console.log(location.state);
+    if (location.state) {
+      toast.error(location.state.message, toastOptions);
+      window.history.replaceState({}, '')
+    }
+  }, [location.state])
+
+
   return (
     <div className={cx("link-account-container")}>
+      <ToastContainer style={{
+        marginTop: "110px"
+      }}></ToastContainer>
       <div className={cx("link-account-wrapper")}>
         <h1 className={cx("link-title")}>Link Your Sign-in Account</h1>
         <div className={cx("link-info-wrapper")}>
@@ -83,7 +109,7 @@ const Link = () => {
                 </> : <p className={cx("account-name")}>Haven't linked Google account yet</p>}
               </div>
               {handleFindProviderByName(googleProvider) ? <Popup
-                trigger={<Button className={cx("btn-link-provider")}
+                trigger={handleFindProviderByName(googleProvider)?.isUnlink && <Button className={cx("btn-link-provider")}
                 >Unlink</Button>}
                 modal
                 nested
@@ -106,7 +132,7 @@ const Link = () => {
                       }} />
                     </button>
                     <div className={cx("header")}>
-                      <svg class="Dialog-module_errorIcon__1Rzg6" width="32" height="32" viewBox="0 0 16 16"><path d="M0 0h16v16H0V0z" fill="none"></path><path d="M15.2 13.1L8.6 1.6c-.2-.4-.9-.4-1.2 0L.8 13.1c-.1.2-.1.5 0 .7.1.2.3.3.6.3h13.3c.2 0 .5-.1.6-.3.1-.2.1-.5-.1-.7zM8.7 12H7.3v-1.3h1.3V12zm0-2.7H7.3v-4h1.3v4z" fill="currentColor"></path></svg>
+                      <svg className="Dialog-module_errorIcon__1Rzg6" width="32" height="32" viewBox="0 0 16 16"><path d="M0 0h16v16H0V0z" fill="none"></path><path d="M15.2 13.1L8.6 1.6c-.2-.4-.9-.4-1.2 0L.8 13.1c-.1.2-.1.5 0 .7.1.2.3.3.6.3h13.3c.2 0 .5-.1.6-.3.1-.2.1-.5-.1-.7zM8.7 12H7.3v-1.3h1.3V12zm0-2.7H7.3v-4h1.3v4z" fill="currentColor"></path></svg>
                     </div>
                     <div className={cx("content")}>
                       <p>Bạn muốn hủy liên kết với tài khoản <span>{handleFindProviderByName(googleProvider)?.accountName}</span>?</p>
@@ -164,7 +190,7 @@ const Link = () => {
                       }} />
                     </button>
                     <div className={cx("header")}>
-                      <svg class="Dialog-module_errorIcon__1Rzg6" width="32" height="32" viewBox="0 0 16 16"><path d="M0 0h16v16H0V0z" fill="none"></path><path d="M15.2 13.1L8.6 1.6c-.2-.4-.9-.4-1.2 0L.8 13.1c-.1.2-.1.5 0 .7.1.2.3.3.6.3h13.3c.2 0 .5-.1.6-.3.1-.2.1-.5-.1-.7zM8.7 12H7.3v-1.3h1.3V12zm0-2.7H7.3v-4h1.3v4z" fill="currentColor"></path></svg>
+                      <svg className="Dialog-module_errorIcon__1Rzg6" width="32" height="32" viewBox="0 0 16 16"><path d="M0 0h16v16H0V0z" fill="none"></path><path d="M15.2 13.1L8.6 1.6c-.2-.4-.9-.4-1.2 0L.8 13.1c-.1.2-.1.5 0 .7.1.2.3.3.6.3h13.3c.2 0 .5-.1.6-.3.1-.2.1-.5-.1-.7zM8.7 12H7.3v-1.3h1.3V12zm0-2.7H7.3v-4h1.3v4z" fill="currentColor"></path></svg>
                     </div>
                     <div className={cx("content")}>
                       <p>Bạn muốn hủy liên kết với tài khoản <span>{handleFindProviderByName(facebookProvider)?.accountName}</span>?</p>
@@ -175,7 +201,7 @@ const Link = () => {
                           <span className={cx("btn-text-cancel")}>Cancel</span>
                         </div>
                       </button>
-                      <button className={cx("btn-agree")} onClick={() => handleUnlinkAccount(handleFindProviderByName(googleProvider).providerKey)}>
+                      <button className={cx("btn-agree")} onClick={() => handleUnlinkAccount(handleFindProviderByName(facebookProvider).providerKey)}>
                         <div className={cx("btn-content")}>
                           <span className={cx("btn-text-agree")}>Agree</span>
                         </div>

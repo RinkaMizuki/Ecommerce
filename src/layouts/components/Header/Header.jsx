@@ -12,6 +12,7 @@ import tokenService from "../../../services/tokenService";
 import { getLocalFavoriteProductId } from "../../../services/favoriteService";
 import { getLocalProductQuantity } from "../../../services/cartService";
 import { useEffect, useState } from "react";
+import defaultAvatar from "../../../assets/images/avatar.jpeg";
 import Avatar from "../../../components/Avatar";
 
 const cx = classNames.bind(styles);
@@ -106,8 +107,8 @@ const Header = function ({ toggleTopHeader }) {
         }))
       }
       tokenService.removeToken("token");
+      navigate("/login");
       window.location.reload();
-      navigate("/login")
     } catch (error) {
       dispatch(logoutFailed(res?.data))
     }
@@ -225,7 +226,7 @@ const Header = function ({ toggleTopHeader }) {
               )}
             >
               <span className={cx("user-info")}>
-                <Avatar src={userLogin?.user?.url} alt={userLogin?.user?.avatar} width="32" height="32" />
+                <Avatar src={userLogin?.user?.url || defaultAvatar} alt={userLogin?.user?.avatar || "Default Avatar"} width="32" height="32" />
               </span>
             </Tippy>
             }

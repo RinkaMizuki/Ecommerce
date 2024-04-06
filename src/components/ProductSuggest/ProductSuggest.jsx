@@ -10,7 +10,8 @@ import 'swiper/css/grid';
 import { useEffect, useRef, useState } from 'react';
 import queryString from 'query-string';
 import useCustomFetch from '../../hooks/useCustomFetch';
-import { Lightbox } from 'react-modal-image';
+import Lightbox from '../Lightbox';
+
 const cx = classNames.bind(styles);
 
 const ProductSuggest = () => {
@@ -57,12 +58,9 @@ const ProductSuggest = () => {
           return (
             <div style={{ fontFamily: "Poppins" }} key={p.id}>
               <Lightbox
-                imageBackgroundColor="transparent"
-                hideZoom={true}
-                hideDownload={true}
                 onClose={closeLightBox}
-                large={p.url}
-                alt={p.image}
+                url={p.url}
+                alt={p.title}
               />
             </div>
           )

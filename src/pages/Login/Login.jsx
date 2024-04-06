@@ -3,7 +3,7 @@ import classNames from "classnames/bind";
 import ecommerceRegister from "../../assets/images/ecommerce-register.jpg";
 import Button from "../../components/Button"
 import google from "../../assets/images/google.png"
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import { useDispatch, useSelector } from "react-redux";
@@ -41,6 +41,7 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isFetching = useSelector(state => state.auth.login.isFetching);
+  const userLogin = useSelector(state => state.auth.login.currentUser);
   //logics handle
   const handleTogglePassword = () => {
     const typePassword = passwordRef.current?.getAttribute("type")
@@ -134,6 +135,10 @@ const Login = () => {
       window.history.replaceState({}, '')
     }
   }, [location.state])
+
+  if (userLogin) {
+    return <Navigate to="/" />
+  }
 
   return (
     <div className={cx("login-wrapper")}>

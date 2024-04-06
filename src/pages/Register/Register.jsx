@@ -2,15 +2,15 @@ import styles from "./Register.module.scss";
 import classNames from "classnames/bind";
 import ecommerceRegister from "../../assets/images/ecommerce-register.jpg";
 import Button from "../../components/Button"
-import google from "../../assets/images/google.png"
 import Loading from "../../components/Loading"
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import useCustomFetch from "../../hooks/useCustomFetch";
 import useDebounce from "../../hooks/useDebounce";
 import { Helmet } from "react-helmet";
+import { useSelector } from "react-redux";
 
 const toastOptions = {
   position: "top-right",
@@ -41,6 +41,8 @@ const Register = () => {
   const passwordRef = useRef(null);
   const submitRef = useRef(null);
   const confirmPaaswordRef = useRef(null);
+
+  const userLogin = useSelector(state => state.auth.login.currentUser);
 
   const clearInput = () => {
     setUserName("");
@@ -132,6 +134,10 @@ const Register = () => {
       clearInput();
       setIsLoading(false);
     }, 500);
+  }
+
+  if (userLogin) {
+    return <Navigate to="/" />
   }
 
   return (

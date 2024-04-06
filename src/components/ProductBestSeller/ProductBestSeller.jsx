@@ -2,7 +2,7 @@ import Cart from "../Cart";
 import ViewTitle from "../ViewTitle";
 import styles from "./ProductBestSeller.module.scss"
 import classNames from "classnames/bind";
-import { Lightbox } from "react-modal-image";
+import Lightbox from "../Lightbox";
 import { useEffect, useState } from "react";
 import useCustomFetch from "../../hooks/useCustomFetch";
 import queryString from "query-string";
@@ -49,12 +49,9 @@ const ProductBestSeller = () => {
           return (
             <div style={{ fontFamily: "Poppins" }} key={p.id}>
               <Lightbox
-                imageBackgroundColor="transparent"
-                hideZoom={true}
-                hideDownload={true}
                 onClose={closeLightBox}
-                large={p.url}
-                alt={p.image}
+                url={p.url}
+                alt={p.title}
               />
             </div>
           )

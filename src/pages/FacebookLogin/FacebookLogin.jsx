@@ -16,8 +16,8 @@ const FacebookLogin = () => {
   useLayoutEffect(() => {
 
     const fetchData = async () => {
+      const type = JSON.parse(localStorage.getItem("authType"));
       try {
-        const type = JSON.parse(localStorage.getItem("authType"));
         const userAuth = await postUserLinked("/Auth/facebook-auth", null, {
           params: {
             facebookAccessToken: location.state.accessToken,
@@ -38,12 +38,11 @@ const FacebookLogin = () => {
       }
       catch (error) {
         if (error?.response?.status === 409) {
-          navigate("/login", {
+          navigate(`${type === "login" ? "/login" : "/manager/links"}`, {
             replace: true,
             state: error?.response?.data
           })
         }
-        console.log(error);
       }
     }
     fetchData();

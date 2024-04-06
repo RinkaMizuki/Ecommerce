@@ -84,7 +84,7 @@ const useCustomFetch = () => {
         dispatch(logoutSuccess({
           message: "Logout successfully"
         }))
-        navigate("/")
+        navigate("/login")
       }
       return Promise.reject(error);
     }
