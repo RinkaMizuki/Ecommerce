@@ -1,8 +1,15 @@
+import 'reactjs-popup/dist/index.css';
+import { default as PopupComponent } from "reactjs-popup"
+import classNames from 'classnames/bind';
+import styles from "./Popup.module.scss";
+import CloseIcon from '@mui/icons-material/Close';
 
-const Popup = ({ content, contentStyle, action, header, button, lockScroll = true, closeOnDocumentClick = false }) => {
+const cx = classNames.bind(styles);
+
+const Popup = ({ content, contentStyle, action, header, trigger, lockScroll = true, closeOnDocumentClick = false }) => {
   return (
-    <Popup
-      trigger={button}
+    <PopupComponent
+      trigger={trigger}
       modal
       nested
       contentStyle={contentStyle}
@@ -28,7 +35,7 @@ const Popup = ({ content, contentStyle, action, header, button, lockScroll = tru
           </div>
         </div>
       )}
-    </Popup>
+    </PopupComponent>
   )
 };
 

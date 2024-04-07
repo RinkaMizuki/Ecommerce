@@ -3,8 +3,7 @@
   height: 48px;
   background-color: black;
   color: var(--text-white);
-  font-family: "Poppins";
-  font-weight: 300;
+  font-family: "Montserrat";
   font-size: 15px;
 }
 
@@ -37,9 +36,36 @@
   align-items: center;
   margin-right: 110px;
   gap: 10px;
+  position: relative;
 
   >i {
     cursor: pointer;
+    margin-top: 2px;
+  }
+}
+
+.select-option {
+  width: 80px;
+  border-radius: 3px;
+  padding: 3px 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background-color: var(--white);
+  position: absolute;
+  bottom: -45px;
+  border: 1px dashed var(--black);
+  flex-direction: column;
+  gap: 3px;
+  z-index: 99999;
+
+  >span {
+    font-family: "Montserrat";
+    cursor: pointer;
+    padding-left: 2px;
+    color: var(--black);
+    font-weight: 400;
+    width: 100%;
   }
 }
 
@@ -48,7 +74,7 @@
 }
 
 .header-container {
-  font-family: "Poppins";
+  font-family: "Montserrat";
   margin: 20px 110px 15px;
   display: flex;
   justify-content: space-between;
@@ -64,7 +90,7 @@
 
   >a:first-child {
     font-weight: 700;
-    font-size: 23px;
+    font-size: 27px;
     flex-grow: 2;
     display: inline-block;
   }
@@ -73,7 +99,7 @@
     color: #000;
     text-decoration: none;
     font-size: 16px;
-    font-weight: 400;
+    font-weight: 500;
   }
 }
 
@@ -150,7 +176,7 @@ input::placeholder {
   // backdrop-filter: blur(60px);
   color: var(--white);
   background-color: rgba(43, 43, 43, 0.8);
-  font-family: "Poppins";
+  font-family: "Montserrat";
   font-weight: 300;
   font-size: 15px;
   border-radius: 5px;

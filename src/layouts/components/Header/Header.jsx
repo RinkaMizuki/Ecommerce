@@ -11,11 +11,24 @@ import { useSpring, animated } from "@react-spring/web";
 import tokenService from "../../../services/tokenService";
 import { getLocalFavoriteProductId } from "../../../services/favoriteService";
 import { getLocalProductQuantity } from "../../../services/cartService";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import defaultAvatar from "../../../assets/images/avatar.jpeg";
 import Avatar from "../../../components/Avatar";
+import { useTranslation } from 'react-i18next';
+import { useClickOutside } from "../../../hooks/useClickOutside";
 
 const cx = classNames.bind(styles);
+
+const LANGUAGE = [
+  {
+    key: 'vi',
+    value: "Tiếng việt"
+  },
+  {
+    key: 'en',
+    value: "English"
+  }
+]
 
 const MENU = [
   {
@@ -41,9 +54,11 @@ const MENU = [
 ];
 
 const Header = function ({ toggleTopHeader }) {
+  const [isShow, setIsShow] = useState(false);
+  const expandRef = useRef(null);
   const userLogin = useSelector(state => state.auth.login.currentUser);
   const typeLogin = useSelector(state => state.auth.login.type);
-
+  const { t, i18n } = useTranslation();
   const [listId, setListId] = useState(getLocalFavoriteProductId(userLogin?.user?.id));
   const [listProductId, setListProductId] = useState(getLocalProductQuantity(userLogin?.user?.id));
   const [, post,] = useCustomFetch();
@@ -54,6 +69,20 @@ const Header = function ({ toggleTopHeader }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const handleShowLanguage = () => {
+    setIsShow(!isShow);
+  }
+  const handleClickOutside = () => {
+    setIsShow(false);
+  }
+
+  const handleChangeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    setIsShow(false);
+  }
+
+  useClickOutside(expandRef, handleClickOutside);
   useEffect(() => {
     const handleStorageChange = () => {
       const ids = getLocalFavoriteProductId(userLogin?.user.id);
@@ -136,12 +165,26 @@ const Header = function ({ toggleTopHeader }) {
       <div className={cx("wrapper")}>
         <div className={cx("top-header-wrapper")}>
           <div className={cx("top-header-item-wrapper")}>
-            <p>Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%!</p>
-            <a href="/" className={cx("top-header-shop")}>ShopNow</a>
+            <p>{t('top-header-title')}</p>
+            <a href="/" className={cx("top-header-shop")}>{t('shop-now')}</a>
           </div>
-          <div className={cx("top-header-language")}>
-            <span>English</span>
-            <i className="fa-solid fa-angle-down"></i>
+          <div className={cx("top-header-language")} ref={expandRef}>
+            <span>{t('language')}</span>
+            <i className="fa-solid fa-angle-down" onClick={handleShowLanguage} ></i>
+            {isShow && <div className={cx("select-option")}>
+              {LANGUAGE.map(lng => (
+                <span
+                  style={{
+                    backgroundColor: i18n.language == lng.key ? "var(--text-gray-500)" : "unset",
+                    cursor: i18n.language == lng.key ? "default" : "pointer"
+                  }}
+                  key={lng.key}
+                  onClick={i18n.language != lng.key ? () => handleChangeLanguage(lng.key) : () => { }}
+                >
+                  {lng.value}
+                </span>
+              ))}
+            </div>}
           </div>
         </div>
       </div>
@@ -153,20 +196,20 @@ const Header = function ({ toggleTopHeader }) {
             <Link to="/">MT Store</Link>
             <Link to="/" className={cx({
               "underline": location.pathname == "/"
-            })}>Home</Link>
+            })}>{t('home')}</Link>
             <Link to="/contact" className={cx({
               "underline": location.pathname == "/contact"
-            })}>Contact</Link>
+            })}>{t('contact')}</Link>
             <Link to="/about" className={cx({
               "underline": location.pathname == "/about"
-            })}>About</Link>
+            })}>{t('about')}</Link>
             {!userLogin && <Link to="/register" className={cx({
               "underline": location.pathname == "/register"
             })}>Sign up</Link>}
           </div>
           <div className={cx("right-header")}>
             <div className={cx("input-search")}>
-              <input type="text" name="search" id="search" placeholder="What are you looking for?" />
+              <input type="text" name="search" id="search" placeholder={t('search-placeholder')} />
               <i className={cx("icon-search", "fa-solid fa-magnifying-glass")}></i>
             </div>
             {userLogin && (location.pathname !== "/favorite" ? <Link to="/favorite" className={cx("favorite-wrapper")}>

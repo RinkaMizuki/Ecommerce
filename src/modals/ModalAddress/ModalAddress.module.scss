@@ -87,7 +87,7 @@
   top: calc(100% + 5px);
   height: 315px;
   max-height: 315px;
-  z-index: 600;
+  z-index: 2000;
   border: 1px solid rgba(0, 0, 0, .14);
   border-radius: 2px;
   box-shadow: 0 0 4px rgba(0, 0, 0, .14);
@@ -419,4 +419,16 @@
 .selected {
   color: var(--primary) !important;
   background-color: #f5f5f5;
+}
+
+.autocomplete-container {
+  position: relative;
+
+  >input {
+    border: none;
+  }
+
+  >div:nth-of-type(2) {
+    z-index: 9999;
+  }
 }

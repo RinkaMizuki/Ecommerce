@@ -5,9 +5,12 @@ import { useEffect, useRef, useState } from "react";
 import { getAddress } from "../../services/addressService";
 import { useClickOutside } from "../../hooks/useClickOutside";
 import initMap from "../../lib/map";
+import { GeocoderAutocomplete } from '@geoapify/geocoder-autocomplete';
 import { useDispatch, useSelector } from "react-redux";
 import { saveUserAddress } from "../../redux/addressSlice";
 import useCustomFetch from "../../hooks/useCustomFetch";
+import "@geoapify/geocoder-autocomplete/styles/minimal.css";
+import Map from "../../components/Map"
 
 const cx = classNames.bind(styles)
 
@@ -23,6 +26,11 @@ const ModalAddress = ({ onHideModal, data = null }) => {
   const [detailAddress, setDetailAddress] = useState(data?.address || "");
   const [tabActive, setTabActive] = useState("province");
   const [toggleInput, setToggleInput] = useState(true);
+  const [address, setAddress] = useState("");
+  const [coordinates, setCoordinates] = useState([
+    10.7514687,
+    106.6946574
+  ])
   const addressPlaceholderRef = useRef(null);
   const addressListRef = useRef(null);
   const addressWrapperRef = useRef(null);
@@ -218,6 +226,29 @@ const ModalAddress = ({ onHideModal, data = null }) => {
   // }, []);
 
   useEffect(() => {
+    const autocomplete = new GeocoderAutocomplete(
+      document.getElementById("autocomplete"),
+      import.meta.env.VITE_ECOMMERCE_GEOAPIFY_APIKEY,
+      {
+        placeholder: "Enter your address",
+        lang: 'vi'
+      });
+
+    autocomplete.on('select', (location) => {
+      autocomplete.setValue(location?.properties?.address_line1?.split(",")[0] || "");
+      handleMapAddressChange(location?.properties?.address_line1?.split(",")[0]);
+      setAddress(location?.properties?.name)
+      setCoordinates([
+        location?.properties?.lat || 10.7514687,
+        location?.properties?.lon || 106.6946574,
+      ])
+    });
+
+    autocomplete.on('suggestions', (suggestions) => {
+    });
+  }, [])
+
+  useEffect(() => {
     fullnameInputRef.current.focus();
     const fetchData = async () => {
       try {
@@ -356,13 +387,13 @@ const ModalAddress = ({ onHideModal, data = null }) => {
     setFullname(e.target.value)
   }
 
-  const handleMapAddressChange = (e) => {
-    setDetailAddress(e.target.value)
-    localStorage.setItem("address", JSON.stringify(e.target.value));
+  const handleMapAddressChange = (addressDetail) => {
+    localStorage.setItem("address", JSON.stringify(addressDetail));
   }
   const handleCheckDefault = () => {
     return listAddress.some(p => p.isDeliveryAddress);
   }
+
   return (
     <div className={cx("modal-mask")}>
       <div className={cx("modal-address-container")}>
@@ -492,18 +523,20 @@ const ModalAddress = ({ onHideModal, data = null }) => {
                 </div>
               </div>
               <div className={cx("address-detail")}>
-                <input id="pac-input" className={cx("address-detail-area")} placeholder="Address Detail" autoComplete="user-street-address" disabled={searchAddress.split(",").length < 3 && !detailAddress}
+                {/* <input id="pac-input" className={cx("address-detail-area")} placeholder="Address Detail" autoComplete="user-street-address" disabled={searchAddress.split(",").length < 3 && !detailAddress}
                   onChange={handleMapAddressChange}
                   value={detailAddress}
-                />
+                /> */}
+                <div id="autocomplete" className={cx("autocomplete-container")}></div>
               </div>
               <div className={cx("map-wrapper")}>
-                <div className={cx("not-allowed")}>
+                {/* <div className={cx("not-allowed")}>
                   <div id="map" className={cx("map")}></div>
                   <div id="infowindow-content">
                     <span id="place-address"></span>
                   </div>
-                </div>
+                </div> */}
+                <Map coordinates={coordinates} address={address} />
               </div>
               <div className={cx("address-options")}>
                 <label className={cx("address-default")}>

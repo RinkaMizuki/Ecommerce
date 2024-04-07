@@ -2,10 +2,7 @@ import classNames from "classnames/bind";
 import styles from "./Link.module.scss";
 import Avatar from "../../components/Avatar";
 import Button from "../../components/Button";
-import Popup from 'reactjs-popup';
-import CloseIcon from '@mui/icons-material/Close';
 import FacebookIcon from '@mui/icons-material/Facebook';
-import 'reactjs-popup/dist/index.css';
 import useCustomFetch from "../../hooks/useCustomFetch";
 import { logoutSuccess } from "../../redux/authSlice";
 import { useDispatch, useSelector } from "react-redux"
@@ -15,6 +12,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { useEffect } from "react";
 import tokenService from "../../services/tokenService";
+import Popup from "../../components/Popup";
 
 const cx = classNames.bind(styles);
 const googleProvider = "Google";
@@ -108,53 +106,40 @@ const Link = () => {
                   <p className={cx("account-name")}>{handleFindProviderByName(googleProvider)?.accountName}</p>
                 </> : <p className={cx("account-name")}>Haven't linked Google account yet</p>}
               </div>
-              {handleFindProviderByName(googleProvider) ? <Popup
-                trigger={handleFindProviderByName(googleProvider)?.isUnlink && <Button className={cx("btn-link-provider")}
-                >Unlink</Button>}
-                modal
-                nested
-                contentStyle={{
-                  width: "25%",
-                  padding: "2px",
-                  borderRadius: "5px",
-                  border: "0",
-                  animation: ".3s cubic-bezier(.38,.1,.36,.9) forwards a"
-                }}
-                lockScroll={true}
-                closeOnDocumentClick={false}
-              >
-                {close => (
-                  <div className={cx("modal")}>
-                    <button className={cx("close")} onClick={close}>
-                      <CloseIcon sx={{
-                        width: "20px",
-                        height: "20px",
-                      }} />
+              {handleFindProviderByName(googleProvider) ?
+                <Popup
+                  trigger={handleFindProviderByName(googleProvider)?.isUnlink && <Button className={cx("btn-link-provider")}
+                  >Unlink</Button>}
+                  contentStyle={{
+                    width: "25%",
+                    padding: "2px",
+                    borderRadius: "5px",
+                    border: "0",
+                    animation: ".3s cubic-bezier(.38,.1,.36,.9) forwards a"
+                  }}
+                  header={
+                    <svg className={cx("header-icon")} width="32" height="32" viewBox="0 0 16 16"><path d="M0 0h16v16H0V0z" fill="none"></path><path d="M15.2 13.1L8.6 1.6c-.2-.4-.9-.4-1.2 0L.8 13.1c-.1.2-.1.5 0 .7.1.2.3.3.6.3h13.3c.2 0 .5-.1.6-.3.1-.2.1-.5-.1-.7zM8.7 12H7.3v-1.3h1.3V12zm0-2.7H7.3v-4h1.3v4z" fill="currentColor"></path></svg>
+                  }
+                  content={<p className={cx("content-text")}>You want to unlink the account <span>{handleFindProviderByName(googleProvider)?.accountName}</span>?</p>}
+                  action={<>
+                    <button className={cx("btn-cancel")} onClick={close}>
+                      <div className={cx("btn-content")}>
+                        <span className={cx("btn-text-cancel")}>Cancel</span>
+                      </div>
                     </button>
-                    <div className={cx("header")}>
-                      <svg className="Dialog-module_errorIcon__1Rzg6" width="32" height="32" viewBox="0 0 16 16"><path d="M0 0h16v16H0V0z" fill="none"></path><path d="M15.2 13.1L8.6 1.6c-.2-.4-.9-.4-1.2 0L.8 13.1c-.1.2-.1.5 0 .7.1.2.3.3.6.3h13.3c.2 0 .5-.1.6-.3.1-.2.1-.5-.1-.7zM8.7 12H7.3v-1.3h1.3V12zm0-2.7H7.3v-4h1.3v4z" fill="currentColor"></path></svg>
-                    </div>
-                    <div className={cx("content")}>
-                      <p>Bạn muốn hủy liên kết với tài khoản <span>{handleFindProviderByName(googleProvider)?.accountName}</span>?</p>
-                    </div>
-                    <div className={cx("actions")}>
-                      <button className={cx("btn-cancel")} onClick={close}>
-                        <div className={cx("btn-content")}>
-                          <span className={cx("btn-text-cancel")}>Cancel</span>
-                        </div>
-                      </button>
-                      <button className={cx("btn-agree")} onClick={() => handleUnlinkAccount(handleFindProviderByName(googleProvider)?.providerKey)}>
-                        <div className={cx("btn-content")}>
-                          <span className={cx("btn-text-agree")}>Agree</span>
-                        </div>
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </Popup> : <Button className={cx("btn-link-provider")} onClick={handleLinkGoogleAccount} >
-                <img src="https://fullstack.edu.vn/static/media/google-18px.c3ebfe2090fd87e02dbb9660dee0b031.svg" alt="Google Icon" />
-                <span>Link {googleProvider}</span>
-              </Button>}
+                    <button className={cx("btn-agree")} onClick={() => handleUnlinkAccount(handleFindProviderByName(googleProvider)?.providerKey)}>
+                      <div className={cx("btn-content")}>
+                        <span className={cx("btn-text-agree")}>Agree</span>
+                      </div>
+                    </button>
+                  </>}
+                />
+                :
+                <Button className={cx("btn-link-provider")} onClick={handleLinkGoogleAccount} >
+                  <img src="https://fullstack.edu.vn/static/media/google-18px.c3ebfe2090fd87e02dbb9660dee0b031.svg" alt="Google Icon" />
+                  <span>Link {googleProvider}</span>
+                </Button>
+              }
             </div>
           </div>
           <div className={cx("link-info-item")}>
@@ -166,62 +151,48 @@ const Link = () => {
                   <p className={cx("account-name")}>{handleFindProviderByName(facebookProvider)?.accountName}</p>
                 </> : <p className={cx("account-name")}>Haven't linked Facebook account yet</p>}
               </div>
-              {handleFindProviderByName(facebookProvider) ? <Popup
-                contentStyle={{
-                  width: "25%",
-                  padding: "2px",
-                  borderRadius: "5px",
-                  border: "0",
-                  animation: ".3s cubic-bezier(.38,.1,.36,.9) forwards a"
-                }}
-                trigger={<Button className={cx("btn-link-provider")}
-                >Unlink</Button>}
-                modal
-                nested
-                lockScroll={true}
-                closeOnDocumentClick={false}
-              >
-                {close => (
-                  <div className={cx("modal")}>
-                    <button className={cx("close")} onClick={close}>
-                      <CloseIcon sx={{
-                        width: "20px",
-                        height: "20px",
-                      }} />
+              {handleFindProviderByName(facebookProvider) ?
+                <Popup
+                  trigger={handleFindProviderByName(facebookProvider)?.isUnlink && <Button className={cx("btn-link-provider")}
+                  >Unlink</Button>}
+                  contentStyle={{
+                    width: "25%",
+                    padding: "2px",
+                    borderRadius: "5px",
+                    border: "0",
+                    animation: ".3s cubic-bezier(.38,.1,.36,.9) forwards a"
+                  }}
+                  header={
+                    <svg className={cx("header-icon")} width="32" height="32" viewBox="0 0 16 16"><path d="M0 0h16v16H0V0z" fill="none"></path><path d="M15.2 13.1L8.6 1.6c-.2-.4-.9-.4-1.2 0L.8 13.1c-.1.2-.1.5 0 .7.1.2.3.3.6.3h13.3c.2 0 .5-.1.6-.3.1-.2.1-.5-.1-.7zM8.7 12H7.3v-1.3h1.3V12zm0-2.7H7.3v-4h1.3v4z" fill="currentColor"></path></svg>
+                  }
+                  content={<p className={cx("content-text")}>Do you want to unlink your account?Do you want to unlink your account?You want to unlink the account <span>{handleFindProviderByName(facebookProvider)?.accountName}</span>?</p>}
+                  action={<>
+                    <button className={cx("btn-cancel")} onClick={close}>
+                      <div className={cx("btn-content")}>
+                        <span className={cx("btn-text-cancel")}>Cancel</span>
+                      </div>
                     </button>
-                    <div className={cx("header")}>
-                      <svg className="Dialog-module_errorIcon__1Rzg6" width="32" height="32" viewBox="0 0 16 16"><path d="M0 0h16v16H0V0z" fill="none"></path><path d="M15.2 13.1L8.6 1.6c-.2-.4-.9-.4-1.2 0L.8 13.1c-.1.2-.1.5 0 .7.1.2.3.3.6.3h13.3c.2 0 .5-.1.6-.3.1-.2.1-.5-.1-.7zM8.7 12H7.3v-1.3h1.3V12zm0-2.7H7.3v-4h1.3v4z" fill="currentColor"></path></svg>
-                    </div>
-                    <div className={cx("content")}>
-                      <p>Bạn muốn hủy liên kết với tài khoản <span>{handleFindProviderByName(facebookProvider)?.accountName}</span>?</p>
-                    </div>
-                    <div className={cx("actions")}>
-                      <button className={cx("btn-cancel")} onClick={close}>
-                        <div className={cx("btn-content")}>
-                          <span className={cx("btn-text-cancel")}>Cancel</span>
-                        </div>
-                      </button>
-                      <button className={cx("btn-agree")} onClick={() => handleUnlinkAccount(handleFindProviderByName(facebookProvider).providerKey)}>
-                        <div className={cx("btn-content")}>
-                          <span className={cx("btn-text-agree")}>Agree</span>
-                        </div>
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </Popup> : <FacebookLogin
-                appId="1844560925992088"
-                fields="id,name,email,picture"
-                callback={responseFacebook}
-                cssClass={cx("btn-facebook")}
-                textButton="Link Facebook"
-                version="19.0"
-                icon={<FacebookIcon style={{
-                  color: "rgb(24, 119, 242)",
-                  width: "30px",
-                  height: "30px"
-                }} />}
-              />}
+                    <button className={cx("btn-agree")} onClick={() => handleUnlinkAccount(handleFindProviderByName(facebookProvider)?.providerKey)}>
+                      <div className={cx("btn-content")}>
+                        <span className={cx("btn-text-agree")}>Agree</span>
+                      </div>
+                    </button>
+                  </>}
+                />
+                :
+                <FacebookLogin
+                  appId="1844560925992088"
+                  fields="id,name,email,picture"
+                  callback={responseFacebook}
+                  cssClass={cx("btn-facebook")}
+                  textButton="Link Facebook"
+                  version="19.0"
+                  icon={<FacebookIcon style={{
+                    color: "rgb(24, 119, 242)",
+                    width: "30px",
+                    height: "30px"
+                  }} />}
+                />}
             </div>
           </div>
           <div className={cx("link-info-item")}>

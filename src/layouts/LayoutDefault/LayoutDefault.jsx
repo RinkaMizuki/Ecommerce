@@ -4,6 +4,7 @@ import classNames from "classnames/bind";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useLocation } from "react-router-dom";
+import Map from "../../components/Map"
 
 const cx = classNames.bind(styles);
 
@@ -22,6 +23,7 @@ const LayoutDefault = ({ toggleTopHeader, children }) => {
       >
         {children}
       </div>
+      {window.location.pathname === "/" && <Map address={import.meta.env.VITE_ECOMMERCE_DEFAULT_ADDRESS} />}
       <Footer />
     </>
   )

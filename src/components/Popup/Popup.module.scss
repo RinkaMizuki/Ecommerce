@@ -28,3 +28,19 @@
   flex-wrap: wrap;
   border-top: 1px solid #f2f2f2;
 }
+
+.modal>.close {
+  cursor: pointer;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3px;
+  line-height: 20px;
+  right: -10px;
+  top: -10px;
+  font-size: 24px;
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #cfcece;
+}

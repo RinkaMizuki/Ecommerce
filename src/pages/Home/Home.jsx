@@ -68,7 +68,7 @@ const Home = () => {
       <ProductSuggest></ProductSuggest>
       <ProductArrival></ProductArrival>
       <ProductService></ProductService>
-    </ >
+    </>
   )
 };
 

@@ -13,4 +13,8 @@ export const httpRequestGoogle = axios.create({
   baseURL: import.meta.env.VITE_ECOMMERCE_TOKEN_URI
 })
 
+export const httpRequestGeoapify = axios.create({
+  baseURL: `https://api.geoapify.com/v1/geocode/search`,
+});
+
 export default httpRequests;

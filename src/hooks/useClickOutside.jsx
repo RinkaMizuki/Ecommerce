@@ -1,10 +1,10 @@
 import { useEffect } from "react"
 
-export const useClickOutside = (ref, handleRemoveList) => {
+export const useClickOutside = (ref, handleLogicOutside) => {
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (ref.current && !ref.current.contains(e.target)) {
-        handleRemoveList();
+        handleLogicOutside();
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
