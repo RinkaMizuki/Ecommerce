@@ -2,6 +2,10 @@
   width: 100%;
   height: 100vh;
   background-color: #96d6f7;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 
   >h1 {
     text-align: center;
