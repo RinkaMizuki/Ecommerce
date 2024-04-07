@@ -112,7 +112,6 @@ const Login = () => {
       }, 1000);
 
     } catch (error) {
-
       if (error.response.status != 200) {
         toast.error("Login failed. Please try to again !", toastOptions);
       }
