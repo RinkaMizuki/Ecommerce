@@ -16,6 +16,7 @@ import { useEffect } from "react";
 import useCustomFetch from "../../hooks/useCustomFetch.jsx";
 import queryString from "query-string";
 import Lightbox from "../Lightbox";
+import { useTranslation } from "react-i18next";
 
 const cx = classNames.bind(styles);
 
@@ -23,6 +24,7 @@ const ProductFlashSale = () => {
     const [productId, setProductId] = useState("");
     const [productSale, setProductSale] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const { t } = useTranslation();
     const [get] = useCustomFetch();
 
     const prevRef = useRef(null);
@@ -59,8 +61,8 @@ const ProductFlashSale = () => {
                 flashsale={true}
                 prevRef={prevRef}
                 nextRef={nextRef}
-                label="Today's"
-                title="Flash Sales"
+                label={t("today")}
+                title={t("flashsale")}
             />
             {
                 productSale?.map(p => {
@@ -104,7 +106,7 @@ const ProductFlashSale = () => {
                     ))}
                 </Swiper>
                 <div className={cx("btn-wrapper")}>
-                    <Button lagre={true}>View All Products</Button>
+                    <Button lagre={true}>{t('view-all')}</Button>
                 </div>
             </div>
         </div>

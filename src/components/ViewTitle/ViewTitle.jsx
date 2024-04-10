@@ -2,10 +2,11 @@ import styles from "./ViewTitle.module.scss"
 import classNames from "classnames/bind"
 import CountDown from "../CountDown";
 import Button from "../Button";
+import { useTranslation } from "react-i18next";
 const cx = classNames.bind(styles);
 
 const ViewTitle = ({ className, flashsale = false, title, label, nextRef, prevRef, btnView = false, emptyBtn = false, hiddenArrow = false }) => {
-
+  const { t } = useTranslation();
   return (
     <div className={cx("container", {
       [className]: className,
@@ -22,7 +23,7 @@ const ViewTitle = ({ className, flashsale = false, title, label, nextRef, prevRe
         {!hiddenArrow ? (!btnView ? <div className={cx("title-navigate")}>
           <i className={cx("icon-arrow-left", "fa-solid fa-arrow-left-long")} ref={prevRef}></i>
           <i className={cx("icon-arrow-right", "fa-solid fa-arrow-right-long")} ref={nextRef}></i>
-        </div> : !emptyBtn ? <Button small={true} className={className} >View All</Button> : null) : null}
+        </div> : !emptyBtn ? <Button small={true} className={className} >{t('view')}</Button> : null) : null}
       </div>
     </div>
   )

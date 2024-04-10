@@ -11,11 +11,12 @@ import { useSpring, animated } from "@react-spring/web";
 import tokenService from "../../../services/tokenService";
 import { getLocalFavoriteProductId } from "../../../services/favoriteService";
 import { getLocalProductQuantity } from "../../../services/cartService";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import defaultAvatar from "../../../assets/images/avatar.jpeg";
 import Avatar from "../../../components/Avatar";
 import { useTranslation } from 'react-i18next';
 import { useClickOutside } from "../../../hooks/useClickOutside";
+import { getToken as revokeToken } from "../../../services/googleService";
 
 const cx = classNames.bind(styles);
 
@@ -54,11 +55,16 @@ const MENU = [
 ];
 
 const Header = function ({ toggleTopHeader }) {
+  const { t, i18n } = useTranslation();
   const [isShow, setIsShow] = useState(false);
   const expandRef = useRef(null);
   const userLogin = useSelector(state => state.auth.login.currentUser);
   const typeLogin = useSelector(state => state.auth.login.type);
-  const { t, i18n } = useTranslation();
+  const [lng, setLng] = useState(() => {
+    const lng = JSON.parse(localStorage.getItem('lng') || JSON.stringify("en"));
+    i18n.changeLanguage(lng);
+    return lng;
+  });
   const [listId, setListId] = useState(getLocalFavoriteProductId(userLogin?.user?.id));
   const [listProductId, setListProductId] = useState(getLocalProductQuantity(userLogin?.user?.id));
   const [, post,] = useCustomFetch();
@@ -77,8 +83,13 @@ const Header = function ({ toggleTopHeader }) {
     setIsShow(false);
   }
 
-  const handleChangeLanguage = (lng) => {
+  useLayoutEffect(() => {
     i18n.changeLanguage(lng);
+  }, [lng])
+
+  const handleChangeLanguage = (lng) => {
+    localStorage.setItem('lng', JSON.stringify(lng));
+    setLng(lng);
     setIsShow(false);
   }
 
@@ -130,12 +141,21 @@ const Header = function ({ toggleTopHeader }) {
         dispatch(logoutSuccess(res?.data))
       }
       else {
-        localStorage.removeItem("refresh_token");
         dispatch(logoutSuccess({
           message: "Logout successfully."
         }))
       }
-      tokenService.removeToken("token");
+      await revokeToken("/revoke", null, {
+        headers: {
+          "Content-type": "application/x-www-form-urlencoded",
+        },
+        params: {
+          token: tokenService.getTokenGoogleAuth(),
+        }
+      });
+      tokenService.removeTokenGoogleAuth();
+      tokenService.removeToken();
+      tokenService.removeRefreshToken();
       navigate("/login");
       window.location.reload();
     } catch (error) {
@@ -205,7 +225,7 @@ const Header = function ({ toggleTopHeader }) {
             })}>{t('about')}</Link>
             {!userLogin && <Link to="/register" className={cx({
               "underline": location.pathname == "/register"
-            })}>Sign up</Link>}
+            })}>{t('sign-up')}</Link>}
           </div>
           <div className={cx("right-header")}>
             <div className={cx("input-search")}>

@@ -7,7 +7,7 @@ import { loginSuccess } from "../../redux/authSlice";
 import tokenService from "../../services/tokenService";
 import Loading from "../Loading";
 import { useDispatch, useSelector } from "react-redux";
-import { getTokenInfo } from "../../services/googleService";
+import { getToken as getTokenInfo } from "../../services/googleService";
 
 const GoogleLogin = () => {
 
@@ -61,6 +61,7 @@ const GoogleLogin = () => {
             tokenService.setToken({
               token: id_token,
             })
+            tokenService.setTokenGoogleAuth(access_token);
             dispatch(loginSuccess({
               ...userAuth?.data,
               type: "google"
@@ -81,6 +82,7 @@ const GoogleLogin = () => {
             tokenService.setToken({
               token: id_token,
             })
+            tokenService.setTokenGoogleAuth(access_token);
             dispatch(loginSuccess({
               ...userLinked?.data,
               type: "google"

@@ -8,6 +8,7 @@
   font-family: "Poppins";
   font-weight: 300;
   font-size: 15px;
+  line-height: 1.1;
 }
 
 .qr-image {
@@ -39,6 +40,7 @@
 .input-email-wrapper {
   display: flex;
   align-items: center;
+
   >input {
     width: 217px;
     border-radius: 3px;
@@ -47,24 +49,29 @@
     background-color: var(--black);
     border: 2px solid var(--text-white);
   }
-  > i {
+
+  >i {
     margin-left: -30px;
     cursor: pointer;
   }
 }
+
 .download-save {
   font-size: 13px;
 }
+
 .download-wrapper {
   display: flex;
   gap: 15px;
 }
+
 .store-wrapper {
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 20px;
 }
+
 .store {
   cursor: pointer;
   padding: 5px;
@@ -74,31 +81,38 @@
   align-items: center;
   color: var(--white);
   gap: 10px;
-  > i {
+
+  >i {
     font-size: 23px;
   }
 }
+
 .download-text {
   display: flex;
   flex-direction: column;
   gap: 3px;
-  > p {
+
+  >p {
     font-size: 10px;
     color: var(--text-white);
   }
-  > span {
+
+  >span {
     font-weight: 400;
   }
 }
+
 .social-media {
   display: flex;
   align-items: center;
   gap: 50px;
-  > i {
+
+  >i {
     cursor: pointer;
     font-size: 23px;
   }
 }
+
 .footer-copyright {
   height: 100%;
   display: flex;

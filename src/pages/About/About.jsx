@@ -64,10 +64,10 @@ const About = () => {
         <div className={cx("left-story")}>
           <h1 className={cx("title-story")}>Our Story</h1>
           <p className={cx("description-story")}>
-            Launced in 2015, Exclusive is South Asia’s premier online shopping makterplace with an active presense in Bangladesh. Supported by wide range of tailored marketing, data and service solutions, Exclusive has 10,500 sallers and 300 brands and serves 3 millioons customers across the region.
+            Launced in 2015, MT Store is South Asia’s premier online shopping makterplace with an active presense in Bangladesh. Supported by wide range of tailored marketing, data and service solutions, MT Store has 10,500 sallers and 300 brands and serves 3 millioons customers across the region.
           </p>
           <p className={cx("description-story")}>
-            Exclusive has more than 1 Million products to offer, growing at a very fast. Exclusive offers a diverse assotment in categories ranging  from consumer.
+            MT Store has more than 1 Million products to offer, growing at a very fast. MT Store offers a diverse assotment in categories ranging  from consumer.
           </p>
         </div>
         <div className={cx("right-story")}>

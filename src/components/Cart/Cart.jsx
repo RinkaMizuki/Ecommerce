@@ -12,6 +12,7 @@ import 'react-lazy-load-image-component/src/effects/blur.css';
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css';
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 const cx = classNames.bind(styles);
 
@@ -33,6 +34,7 @@ const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false
 
   const userInfo = useSelector(state => state.auth.login.currentUser);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const quantityStore = getLocalProductQuantity(userInfo?.user?.id).find(p => p.id == data.id);
 
@@ -161,7 +163,7 @@ const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false
         >
           {quantity == 0 ? <>
             <i className="fa-solid fa-cart-shopping"></i>
-            <span style={{ marginLeft: "10px" }} ref={addRef} onClick={() => handleAddProduct(data?.id)}>Add To Cart</span>
+            <span style={{ marginLeft: "10px" }} ref={addRef} onClick={() => handleAddProduct(data?.id)}>{t('add-cart')}</span>
           </>
             : <div className={cx("btn-quantity-wrapper")}>
               <button className={cx("minus-btn", "btn")}

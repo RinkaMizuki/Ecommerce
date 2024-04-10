@@ -6,6 +6,7 @@ import Lightbox from "../Lightbox";
 import { useEffect, useState } from "react";
 import useCustomFetch from "../../hooks/useCustomFetch";
 import queryString from "query-string";
+import { useTranslation } from "react-i18next";
 
 const cx = classNames.bind(styles)
 
@@ -15,7 +16,7 @@ const ProductBestSeller = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [productId, setProductId] = useState("");
   const [get] = useCustomFetch();
-
+  const { t } = useTranslation();
   const closeLightBox = (id) => {
     setProductId(id);
   }
@@ -43,7 +44,12 @@ const ProductBestSeller = () => {
 
   return (
     <div className={cx("bestseller-wrapper")}>
-      <ViewTitle label="This Month" title="Best Selling Products" btnView={true} className={cx("custom-btn")} />
+      <ViewTitle
+        label={t('this-month')}
+        title={t('best-sale')}
+        btnView={true}
+        className={cx("custom-btn")}
+      />
       {productBestSeller?.map(p => {
         if (p.id == productId) {
           return (

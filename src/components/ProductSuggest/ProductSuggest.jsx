@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from 'react';
 import queryString from 'query-string';
 import useCustomFetch from '../../hooks/useCustomFetch';
 import Lightbox from '../Lightbox';
+import { useTranslation } from 'react-i18next';
 
 const cx = classNames.bind(styles);
 
@@ -19,6 +20,7 @@ const ProductSuggest = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [productId, setProductId] = useState("");
   const [get] = useCustomFetch();
+  const { t } = useTranslation();
   const prevRef = useRef(null);
   const nextRef = useRef(null);
 
@@ -49,7 +51,9 @@ const ProductSuggest = () => {
 
   return (
     <div className={cx("suggest-product-wrapper")}>
-      <ViewTitle label="Product's Suggestion" title="Suggest For you"
+      <ViewTitle
+        label={t('suggest')}
+        title={t('suggest-for')}
         prevRef={prevRef}
         nextRef={nextRef}
       />
@@ -91,7 +95,7 @@ const ProductSuggest = () => {
         ))}
       </Swiper>
       <div className={cx("btn-wrapper")}>
-        <Button lagre>View All Suggest</Button>
+        <Button lagre>{t('view-all-suggest')}</Button>
       </div>
     </div>
   )

@@ -2,11 +2,13 @@ import classNames from "classnames/bind";
 import styles from "./Category.module.scss";
 import ViewTitle from "../ViewTitle";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const cx = classNames.bind(styles)
 
 const Category = () => {
   const [isWhite, setIsWhite] = useState(false);
+  const { t } = useTranslation();
   const handleMouseEnter = () => {
     setIsWhite(true);
   };
@@ -15,7 +17,11 @@ const Category = () => {
   };
   return (
     <div className={cx("container")}>
-      <ViewTitle label="Categories" title="Browser By Category" hiddenArrow={true} />
+      <ViewTitle
+        label={t("category")}
+        title={t("category-list")}
+        hiddenArrow={true}
+      />
       <div className={cx("category-container")}>
         <div className={cx("category-item")}>
           <i className="fa-solid fa-mobile-screen"></i>

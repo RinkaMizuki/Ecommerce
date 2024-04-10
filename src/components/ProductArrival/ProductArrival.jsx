@@ -5,18 +5,20 @@ import woman from "../../assets/images/woman.png"
 import gucci from "../../assets/images/gucci.png"
 import speaker from "../../assets/images/speaker.png"
 import playstation5white from "../../assets/images/playstation5white.png"
+import { useTranslation } from "react-i18next";
 
 const cx = classNames.bind(styles);
 
 const ProductArrival = () => {
 
+  const { t } = useTranslation();
 
   return (<div>
     <ViewTitle
       btnView="true"
       emptyBtn="true"
-      label="Featured"
-      title="New Arrival"
+      label={t('featured')}
+      title={t('new-arrival')}
     >
     </ViewTitle>
     <div className={cx("feature-wrapper")}>
@@ -25,7 +27,7 @@ const ProductArrival = () => {
         <div className={cx("feature-left-content")}>
           <h1 className={cx("feature-title")}>PlayStation 5</h1>
           <p className={cx("feature-desc")}>Black and White version of the PS5 coming out on sale.</p>
-          <a href="/">Shop Now</a>
+          <a href="/">{t('shop-now')}</a>
         </div>
       </div>
       <div className={cx("feature-right")}>
@@ -34,7 +36,7 @@ const ProductArrival = () => {
           <div className={cx("feature-right-content")}>
             <h1 className={cx("feature-title")}>Women’s Collections</h1>
             <p className={cx("feature-desc")}>Featured woman collections that give you another vibe.</p>
-            <a href="/">Shop Now</a>
+            <a href="/">{t('shop-now')}</a>
           </div>
         </div>
         <div className={cx("feature-right-horizontal")}>
@@ -43,7 +45,7 @@ const ProductArrival = () => {
             <div className={cx("feature-right-horizontal-left-content")}>
               <h1 className={cx("feature-title")}>Speakers</h1>
               <p className={cx("feature-desc")}>Amazon wireless speakers.</p>
-              <a href="/">Shop Now</a>
+              <a href="/">{t('shop-now')}</a>
             </div>
           </div>
           <div className={cx("feature-right-horizontal-item")}>
@@ -51,7 +53,7 @@ const ProductArrival = () => {
             <div className={cx("feature-right-horizontal-right-content")}>
               <h1 className={cx("feature-title")}>Perfume</h1>
               <p className={cx("feature-desc")}>GUCCI INTENSE OUD EDP.</p>
-              <a href="/">Shop Now</a>
+              <a href="/">{t('shop-now')}</a>
             </div>
           </div>
         </div>

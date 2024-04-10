@@ -11,8 +11,9 @@ import FacebookLogin from "react-facebook-login";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { useEffect } from "react";
-import tokenService from "../../services/tokenService";
 import Popup from "../../components/Popup";
+import { getToken as revokeToken } from "../../services/googleService";
+import tokenService from "../../services/tokenService";
 
 const cx = classNames.bind(styles);
 const googleProvider = "Google";
@@ -61,7 +62,7 @@ const Link = () => {
       state: res,
     })
   }
-  const handleUnlinkAccount = async (providerKey) => {
+  const handleUnlinkAccount = async (providerKey, type) => {
     try {
       const res = await deleteUserLogin("/Auth/unlink-account", {
         params: {
@@ -69,8 +70,19 @@ const Link = () => {
           providerId: providerKey,
         }
       })
-      localStorage.removeItem("refresh_token");
-      tokenService.removeToken("token");
+      if (type === googleProvider) {
+        await revokeToken("/revoke", null, {
+          headers: {
+            "Content-type": "application/x-www-form-urlencoded",
+          },
+          params: {
+            token: tokenService.getTokenGoogleAuth(),
+          }
+        });
+        tokenService.removeTokenGoogleAuth();
+      }
+      tokenService.removeRefreshToken();
+      tokenService.removeToken();
       dispatch(logoutSuccess(res.data))
       window.location.reload();
       navigate("/login")
@@ -127,7 +139,7 @@ const Link = () => {
                         <span className={cx("btn-text-cancel")}>Cancel</span>
                       </div>
                     </button>
-                    <button className={cx("btn-agree")} onClick={() => handleUnlinkAccount(handleFindProviderByName(googleProvider)?.providerKey)}>
+                    <button className={cx("btn-agree")} onClick={() => handleUnlinkAccount(handleFindProviderByName(googleProvider)?.providerKey, googleProvider)}>
                       <div className={cx("btn-content")}>
                         <span className={cx("btn-text-agree")}>Agree</span>
                       </div>

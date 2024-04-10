@@ -1,24 +1,28 @@
 import React from "react"
 import styles from "./Footer.module.scss";
 import classNames from "classnames/bind";
+import { useTranslation } from "react-i18next";
 
 const cx = classNames.bind(styles);
 
 const Footer = () => {
+
+  const { t } = useTranslation();
+
   return (
     <div className={cx("footer-wrapper")}>
       <div className={cx("footer-content")}>
         <div className={cx("content-wrapper")}>
-          <h3 className={cx("footer-title")}>Exclusive</h3>
-          <span>Subscribe</span>
-          <span>Get 10% off your first order</span>
+          <h3 className={cx("footer-title")}>MT Store</h3>
+          <span>{t('subscribe')}</span>
+          <span>{t('get-off')}</span>
           <div className={cx("input-email-wrapper")}>
-            <input type="text" name="email" id="email" placeholder="Enter your email" />
+            <input type="text" name="email" id="email" placeholder={t('your-email')} />
             <i className="fa-regular fa-paper-plane"></i>
           </div>
         </div>
         <div className={cx("content-wrapper")}>
-          <h3 className={cx("footer-title")}>Support</h3>
+          <h3 className={cx("footer-title")}>{t('support')}</h3>
           <span style={{
             maxWidth: "250px",
             lineHeight: "1.5"
@@ -27,23 +31,23 @@ const Footer = () => {
           <span>+84867706538</span>
         </div>
         <div className={cx("content-wrapper")}>
-          <h3 className={cx("footer-title")}>Account</h3>
-          <span>My Account</span>
-          <span>Login / Register</span>
-          <span>Cart</span>
-          <span>Wishlist</span>
-          <span>Shop</span>
+          <h3 className={cx("footer-title")}>{t('account')}</h3>
+          <span>{t('profile')}</span>
+          <span>{t('auth')}</span>
+          <span>{t('cart')}</span>
+          <span>{t('wishlist')}</span>
+          <span>{t('shop')}</span>
         </div>
         <div className={cx("content-wrapper")}>
-          <h3 className={cx("footer-title")}>Quick Link</h3>
-          <span>Privacy Policy</span>
-          <span>Terms Of Use</span>
-          <span>FAQ</span>
-          <span>Contact</span>
+          <h3 className={cx("footer-title")}>{t('quick-link')}</h3>
+          <span>{t('privacy-policy')}</span>
+          <span>{t('terms-of-use')}</span>
+          <span>{t('faq')}</span>
+          <span>{t('contact')}</span>
         </div>
         <div className={cx("content-wrapper")}>
-          <h3 className={cx("footer-title")}>Download App</h3>
-          <span className={cx("download-save")}>Save $3 with App New User Only</span>
+          <h3 className={cx("footer-title")}>{t('download-app')}</h3>
+          <span className={cx("download-save")}>{t('save-money')}</span>
           <div className={cx("download-wrapper")}>
             <img src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Sample_EPC_QR_code.png" alt="QR Download" className={cx("qr-image")} />
             <div className={cx("store-wrapper")}>

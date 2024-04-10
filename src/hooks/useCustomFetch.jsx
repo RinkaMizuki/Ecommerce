@@ -3,7 +3,7 @@ import tokenService from "../services/tokenService"
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutSuccess } from "../redux/authSlice";
-import { refreshTokenGoogle } from "../services/googleService";
+import { getToken as refreshTokenGoogle } from "../services/googleService";
 
 const useCustomFetch = () => {
   const navigate = useNavigate();

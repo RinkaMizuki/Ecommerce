@@ -149,7 +149,10 @@ const Profile = () => {
   }
 
   useEffect(() => {
-
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    })
     const handleLoadProfile = function (event) {
       if (event.key === 'reloadEvent' && event.newValue === 'profile') {
         window.location.reload();
@@ -163,7 +166,7 @@ const Profile = () => {
       window.removeEventListener("storage", handleLoadProfile);
     }
   }, [])
-  console.log();
+
   const validateSaveChanges = () => {
     return isExistUserName || !email || ((new Date(birth).getTime() - 7 * 60 * 60 * 1000) > new Date().getTime()) || !validatePhoneNumber(phone) || !phone || !validateEmail(email) || isDisable;
   }

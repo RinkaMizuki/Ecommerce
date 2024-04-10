@@ -100,9 +100,7 @@ const Login = () => {
       tokenService.setToken({
         token: res.data.accessToken,
       })
-
       toast.success("Login account successfully !", toastOptions);
-
       setTimeout(() => {
         dispatch(loginSuccess({
           ...res?.data,
@@ -114,9 +112,10 @@ const Login = () => {
     } catch (error) {
       if (error.response.status != 200) {
         toast.error("Login failed. Please try to again !", toastOptions);
+        setPassword("")
       }
       dispatch(loginFailed({
-        message: "login failed"
+        message: "Login failed"
       }))
     }
   }
@@ -155,7 +154,7 @@ const Login = () => {
       </div>
       <div className={cx("login-form")}>
         <div className={cx("login-title")}>
-          <h1>Log In to Exclusive</h1>
+          <h1>Log In to MT Store</h1>
           <p>Enter your details below</p>
         </div>
         <form className={cx("login-info")}>

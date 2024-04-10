@@ -7,6 +7,7 @@ import queryString from "query-string";
 import useCustomFetch from "../../hooks/useCustomFetch";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+import { useTranslation } from "react-i18next";
 
 const cx = classNames.bind(styles)
 const countDownDate = new Date(2024, 4, 1).getTime();
@@ -14,6 +15,7 @@ const ProductFuture = () => {
   const [productUpcoming, setProductUpcoming] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [get] = useCustomFetch();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,26 +40,26 @@ const ProductFuture = () => {
 
   const renderer = ({ days, hours, minutes, seconds, completed }) => {
     if (completed) {
-      return <p>Come Into Sight!!!</p>
+      return <p>{t('cometo')}</p>
     } else {
       // Render a countdown
       return (
         <>
           <span className={cx("product-future-time-item")}>
             <p>{days}</p>
-            <span>Days</span>
+            <span>{t('day')}</span>
           </span>
           <span className={cx("product-future-time-item")}>
             <p>{hours}</p>
-            <span>Hours</span>
+            <span>{t('hour')}</span>
           </span>
           <span className={cx("product-future-time-item")}>
             <p>{minutes}</p>
-            <span>Minutes</span>
+            <span>{t('minute')}</span>
           </span>
           <span className={cx("product-future-time-item")}>
             <p>{seconds}</p>
-            <span>Seconds</span>
+            <span>{t('second')}</span>
           </span>
         </>
       )
@@ -67,7 +69,7 @@ const ProductFuture = () => {
   return (
     <div className={cx("product-future-wrapper")}>
       <div className={cx("product-future-desc")}>
-        <span className={cx("upcoming")}>Upcoming Product</span>
+        <span className={cx("upcoming")}>{t('upcoming')}</span>
         <h1>{productUpcoming?.title}</h1>
         <div className={cx("product-future-time")}>
           <Countdown
@@ -76,7 +78,7 @@ const ProductFuture = () => {
           >
           </Countdown>
         </div>
-        <Button small className={cx("custom-btn-enroll")}>Enroll Now!</Button >
+        <Button small className={cx("custom-btn-enroll")}>{t('enroll')}</Button >
       </div>
       <div className={cx("product-future-img")}>
         <LazyLoadImage

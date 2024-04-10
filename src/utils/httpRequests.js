@@ -10,7 +10,7 @@ export const httpRequestAddress = axios.create({
 })
 
 export const httpRequestGoogle = axios.create({
-  baseURL: import.meta.env.VITE_ECOMMERCE_TOKEN_URI
+  baseURL: import.meta.env.VITE_ECOMMERCE_GOOGLE_TOKEN_URI
 })
 
 export const httpRequestGeoapify = axios.create({
