@@ -14,16 +14,16 @@ const setToken = (token) => {
   localStorage.setItem("token", JSON.stringify(token));
 };
 
-const getTokenGoogleAuth = (token) => {
-  return JSON.parse(localStorage.getItem("goole_token"));
+const getTokenGoogleAuth = () => {
+  return JSON.parse(localStorage.getItem("google_token"));
 };
 
 const setTokenGoogleAuth = (token) => {
-  localStorage.setItem("goole_token", JSON.stringify(token));
+  localStorage.setItem("google_token", JSON.stringify(token));
 };
 
 const removeTokenGoogleAuth = () => {
-  localStorage.removeItem("goole_token");
+  localStorage.removeItem("google_token");
 };
 
 const removeToken = () => {

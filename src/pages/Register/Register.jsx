@@ -11,10 +11,11 @@ import useCustomFetch from "../../hooks/useCustomFetch";
 import useDebounce from "../../hooks/useDebounce";
 import { Helmet } from "react-helmet";
 import { useSelector } from "react-redux";
+import { postAuth } from "../../services/ssoService";
 
 const toastOptions = {
   position: "top-right",
-  autoClose: 3000,
+  autoClose: 2000,
   hideProgressBar: false,
   closeOnClick: true,
   pauseOnHover: true,
@@ -109,31 +110,39 @@ const Register = () => {
   }
 
   const handleCreateAccount = async () => {
-    if (password != confirmPassword) {
-      toast.error('Confirm password incorrect.', toastOptions);
-      return;
-    }
-    const data = {
-      userName,
-      email,
-      password,
-      confirmPassword,
-    }
-    setIsLoading(true);
-    const res = await registerService("/Auth/register", data)
-    setTimeout(() => {
-      if (res.data.statusCode == 201) {
+    try {
+      if (password != confirmPassword) {
+        toast.error('Confirm password incorrect.', toastOptions);
+        return;
+      }
+      const data = {
+        email,
+        username: userName,
+        password,
+        service: import.meta.env.VITE_ECOMMERCE_SERVICE_NAME,
+        confirmPassword,
+      }
+      setIsLoading(true);
+      // const res = await registerService("/Auth/register", data);
+      const res = await postAuth("/auth/register", data);
+      if (res?.data?.statusCode == 201) {
         toast.success(res.data.message, toastOptions)
       }
-      else if (res.data.statusCode == 409) { //status code conflict state 
-        toast.error("Email already exist.", toastOptions)
+      setTimeout(() => {
+        clearInput();
+      }, 500);
+    }
+    catch (err) {
+
+      if (err?.response?.data?.statusCode == 409) { //status code conflict state 
+        toast.error(err?.response?.data?.message, toastOptions)
       }
       else {
-        toast.error(res.data.message, toastOptions)
+        toast.error(err?.response?.data?.message, toastOptions)
       }
-      clearInput();
+    } finally {
       setIsLoading(false);
-    }, 500);
+    }
   }
 
   if (userLogin) {

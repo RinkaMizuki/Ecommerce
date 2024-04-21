@@ -71,15 +71,15 @@ const Link = () => {
         }
       })
       if (type === googleProvider) {
-        await revokeToken("/revoke", null, {
-          headers: {
-            "Content-type": "application/x-www-form-urlencoded",
-          },
-          params: {
-            token: tokenService.getTokenGoogleAuth(),
-          }
-        });
-        tokenService.removeTokenGoogleAuth();
+        // await revokeToken("/revoke", null, {
+        //   headers: {
+        //     "Content-type": "application/x-www-form-urlencoded",
+        //   },
+        //   params: {
+        //     token: tokenService.getTokenGoogleAuth(),
+        //   }
+        // });
+        // tokenService.removeTokenGoogleAuth();
       }
       tokenService.removeRefreshToken();
       tokenService.removeToken();

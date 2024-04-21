@@ -6,17 +6,17 @@ import Tippy from "@tippyjs/react/headless";
 import 'tippy.js/dist/tippy.css';
 import { logoutFailed, logoutStart, logoutSuccess } from "../../../redux/authSlice";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import useCustomFetch from "../../../hooks/useCustomFetch";
 import { useSpring, animated } from "@react-spring/web";
-import tokenService from "../../../services/tokenService";
+//import tokenService from "../../../services/tokenService";
 import { getLocalFavoriteProductId } from "../../../services/favoriteService";
 import { getLocalProductQuantity } from "../../../services/cartService";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import defaultAvatar from "../../../assets/images/avatar.jpeg";
 import Avatar from "../../../components/Avatar";
 import { useTranslation } from 'react-i18next';
 import { useClickOutside } from "../../../hooks/useClickOutside";
-import { getToken as revokeToken } from "../../../services/googleService";
+//import { getToken as revokeToken } from "../../../services/googleService";
+import { postAuth as postLogout } from "../../../services/ssoService";
 
 const cx = classNames.bind(styles);
 
@@ -59,15 +59,8 @@ const Header = function ({ toggleTopHeader }) {
   const [isShow, setIsShow] = useState(false);
   const expandRef = useRef(null);
   const userLogin = useSelector(state => state.auth.login.currentUser);
-  const typeLogin = useSelector(state => state.auth.login.type);
-  const [lng, setLng] = useState(() => {
-    const lng = JSON.parse(localStorage.getItem('lng') || JSON.stringify("en"));
-    i18n.changeLanguage(lng);
-    return lng;
-  });
   const [listId, setListId] = useState(getLocalFavoriteProductId(userLogin?.user?.id));
   const [listProductId, setListProductId] = useState(getLocalProductQuantity(userLogin?.user?.id));
-  const [, post,] = useCustomFetch();
 
   const config = { tension: 300, friction: 20 };
   const initialStyles = { opacity: 0, transform: "scale(0.5)" };
@@ -83,13 +76,9 @@ const Header = function ({ toggleTopHeader }) {
     setIsShow(false);
   }
 
-  useLayoutEffect(() => {
-    i18n.changeLanguage(lng);
-  }, [lng])
-
   const handleChangeLanguage = (lng) => {
     localStorage.setItem('lng', JSON.stringify(lng));
-    setLng(lng);
+    i18n.changeLanguage(lng)
     setIsShow(false);
   }
 
@@ -136,26 +125,10 @@ const Header = function ({ toggleTopHeader }) {
     dispatch(logoutStart())
     let res
     try {
-      if (typeLogin === "default" || typeLogin === "facebook") {
-        res = await post(`/Auth/logout?userId=${userLogin?.user?.id || 0}`, {}, {})
-        dispatch(logoutSuccess(res?.data))
-      }
-      else {
-        dispatch(logoutSuccess({
-          message: "Logout successfully."
-        }))
-      }
-      await revokeToken("/revoke", null, {
-        headers: {
-          "Content-type": "application/x-www-form-urlencoded",
-        },
-        params: {
-          token: tokenService.getTokenGoogleAuth(),
-        }
-      });
-      tokenService.removeTokenGoogleAuth();
-      tokenService.removeToken();
-      tokenService.removeRefreshToken();
+      res = await postLogout(`/auth/logout`, {
+        userId: userLogin?.user?.id
+      }, {})
+      dispatch(logoutSuccess(res?.data))
       navigate("/login");
       window.location.reload();
     } catch (error) {
@@ -215,16 +188,20 @@ const Header = function ({ toggleTopHeader }) {
           <div className={cx("left-header")}>
             <Link to="/">MT Store</Link>
             <Link to="/" className={cx({
-              "underline": location.pathname == "/"
+              "underline": location.pathname == "/",
+              "hover-underline": location.pathname != "/"
             })}>{t('home')}</Link>
             <Link to="/contact" className={cx({
-              "underline": location.pathname == "/contact"
+              "underline": location.pathname == "/contact",
+              "hover-underline": location.pathname != "/contact"
             })}>{t('contact')}</Link>
             <Link to="/about" className={cx({
-              "underline": location.pathname == "/about"
+              "underline": location.pathname == "/about",
+              "hover-underline": location.pathname != "/about"
             })}>{t('about')}</Link>
             {!userLogin && <Link to="/register" className={cx({
-              "underline": location.pathname == "/register"
+              "underline": location.pathname == "/register",
+              "hover-underline": location.pathname != "/register"
             })}>{t('sign-up')}</Link>}
           </div>
           <div className={cx("right-header")}>

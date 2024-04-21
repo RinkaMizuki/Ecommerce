@@ -121,7 +121,7 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: "en", // Ngôn ngữ mặc định
+    lng: JSON.parse(localStorage.getItem('lng') || JSON.stringify("en")), // Ngôn ngữ mặc định
     interpolation: {
       escapeValue: false // không escape các giá trị
     }

@@ -5,11 +5,12 @@ import Loading from "../Loading";
 import tokenService from "../../services/tokenService";
 import { loginSuccess } from "../../redux/authSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { postAuth } from "../../services/ssoService";
 
 const FacebookLogin = () => {
 
   const userLogin = useSelector(state => state.auth.login.currentUser?.user)
-  const [, postUserLinked] = useCustomFetch();
+  //const [, postUserLinked] = useCustomFetch();
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -18,16 +19,22 @@ const FacebookLogin = () => {
     const fetchData = async () => {
       const type = JSON.parse(localStorage.getItem("authType"));
       try {
-        const userAuth = await postUserLinked("/Auth/facebook-auth", null, {
+        // const userAuth = await postUserLinked("/Auth/facebook-auth", null, {
+        //   params: {
+        //     facebookAccessToken: location.state.accessToken,
+        //     type,
+        //     userId: userLogin?.id
+        //   }
+        // })
+        const userAuth = await postAuth("/auth/facebook-login", null, {
           params: {
             facebookAccessToken: location.state.accessToken,
             type,
-            userId: userLogin?.id
+            userId: userLogin?.id,
+            serviceName: import.meta.env.VITE_ECOMMERCE_SERVICE_NAME
           }
         })
-        tokenService.setToken({
-          token: userAuth.data.accessToken,
-        })
+
         dispatch(loginSuccess({
           ...userAuth?.data,
           type: "facebook"

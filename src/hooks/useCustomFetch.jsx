@@ -4,25 +4,40 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutSuccess } from "../redux/authSlice";
 import { getToken as refreshTokenGoogle } from "../services/googleService";
+import { getRefreshToken } from "../services/ssoService";
 
 const useCustomFetch = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const typeLogin = useSelector(state => state.auth.login.type);
-  const refreshToken = async () => {
+  const refreshToken = async (type) => {
     try {
-      const res = await httpRequests.post(`/Auth/refresh-token`);
+      // const res = await httpRequests.post(`/Auth/refresh-token`);
+      const res = await getRefreshToken('/auth/refresh-token', {
+        params: {
+          type
+        }
+      });
       return res;
     } catch (error) {
-      return error;
+      if (error?.response?.status === 403 || error?.response?.status === 401) {
+        tokenService.removeToken();
+        dispatch(logoutSuccess({
+          message: "Logout successfully"
+        }))
+        navigate("/login")
+        return;
+      }
     }
   }
   //nếu có token thì trước khi request sẽ đính kèm vào headers
   httpRequests.interceptors.request.use(
     async (config) => {
-      const token = tokenService.getLocalAccessToken()?.token || import.meta.env.VITE_ECOMMERCE_FAKE_TOKEN;
-      if (token) {
-        config.headers["Authorization"] = `Bearer ${token}`;
+      if (typeLogin === "google") {
+        const token = tokenService.getLocalAccessToken()?.token;
+        if (token) {
+          config.headers["Authorization"] = `Bearer ${token}`;
+        }
       }
       return config;
     }, (error) => {
@@ -40,40 +55,12 @@ const useCustomFetch = () => {
       if (error.response?.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
 
-        let accessToken;
-        if (typeLogin === "default" || typeLogin === "facebook") {
-          try {
-            const respRt = await refreshToken();
-            accessToken = respRt.data?.accessToken;
-          }
-          catch (error) {
-            console.log(error);
-          }
-        }
-        else {
-          try {
-            const { id_token } = await refreshTokenGoogle("/token", null, {
-              params: {
-                client_id: import.meta.env.VITE_ECOMMERCE_CLIENT_ID,
-                client_secret: import.meta.env.VITE_ECOMMERCE_CLIENT_SECRET,
-                grant_type: "refresh_token",
-                refresh_token: JSON.parse(localStorage.getItem("refresh_token")),
-              }
-            });
-            accessToken = id_token;
-          }
-          catch (error) {
-            console.log(error)
-          }
-        }
+        await refreshToken(typeLogin);
 
-        tokenService.updateLocalAccessToken({
-          token: accessToken,
-        });
         return httpRequests(originalRequest);
       }
 
-      if (error.response?.status === 403) {
+      if (error.response?.status === 403 || error.response?.status === 401) {
         let expires = null;
         let now = new Date();
         now.setTime(now.getTime() - 3 * 24 * 60 * 60 * 1000);

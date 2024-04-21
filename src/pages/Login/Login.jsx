@@ -10,12 +10,13 @@ import { useDispatch, useSelector } from "react-redux";
 import useCustomFetch from "../../hooks/useCustomFetch";
 import FacebookIcon from '@mui/icons-material/Facebook';
 import { loginFailed, loginStart, loginSuccess } from "../../redux/authSlice";
-import tokenService from "../../services/tokenService"
+//import tokenService from "../../services/tokenService"
 import Loading from "../../components/Loading";
 import queryString from "query-string";
 import { Helmet } from "react-helmet";
 import FacebookLogin from 'react-facebook-login';
 import { useLayoutEffect } from "react";
+import { postAuth } from "../../services/ssoService";
 
 const toastOptions = {
   position: "top-right",
@@ -34,7 +35,7 @@ const Login = () => {
   const [userNameOrEmail, setUserNameOrEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isHidePassword, setIsHidePassword] = useState(true);
-  const [, loginService] = useCustomFetch();
+  //const [, loginService] = useCustomFetch();
   const passwordRef = useRef(null);
   const submitRef = useRef(null);
   const dispatch = useDispatch();
@@ -64,7 +65,8 @@ const Login = () => {
       response_type: "code",
       access_type: "offline",
       prompt: "consent",
-      nonce: 'n-0S6_WzA2Mj'
+      nonce: 'n-0S6_WzA2Mj',
+      include_granted_scopes: true,
     });
     const googleAuthUrl = `${import.meta.env.VITE_ECOMMERCE_GOOGLE_BASE_URL}?${queryStringData}`;
     localStorage.setItem("authType", JSON.stringify("login"))
@@ -90,17 +92,19 @@ const Login = () => {
 
   const handleLogin = async () => {
     const user = {
-      userNameOrEmail,
-      password
+      username: userNameOrEmail,
+      password,
     }
 
     dispatch(loginStart())
     try {
-      const res = await loginService("/Auth/login", user);
-      tokenService.setToken({
-        token: res.data.accessToken,
-      })
-      toast.success("Login account successfully !", toastOptions);
+      // const res = await loginService("/Auth/login", user);
+      // tokenService.setToken({
+      //   token: res.data.accessToken,
+      // })
+      // toast.success("Login account successfully !", toastOptions);
+      const res = await postAuth("/auth/login", user);
+      toast.success(res?.data?.message, toastOptions);
       setTimeout(() => {
         dispatch(loginSuccess({
           ...res?.data,
@@ -108,7 +112,6 @@ const Login = () => {
         }))
         navigate("/")
       }, 1000);
-
     } catch (error) {
       if (error.response.status != 200) {
         toast.error("Login failed. Please try to again !", toastOptions);
