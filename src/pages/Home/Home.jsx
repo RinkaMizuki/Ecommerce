@@ -53,7 +53,7 @@ const Home = () => {
       ></ToastContainer>
       <Helmet>
         <meta name="description" content="Welcome to MT STORE, your one-stop destination for cutting-edge technology products. At MT STORE, we pride ourselves on offering a wide range of high-quality gadgets, electronics, and accessories to meet all your tech needs." />
-        <title>Ecommerce - MT Store</title>
+        <title>MT Store - Ecommerce</title>
         <link rel="canonical" href={window.location.origin} />
       </Helmet>
       <div className={cx("wrapper")}>

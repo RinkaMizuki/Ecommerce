@@ -4,7 +4,7 @@ import Avatar from "../../components/Avatar";
 import Button from "../../components/Button";
 import FacebookIcon from '@mui/icons-material/Facebook';
 import useCustomFetch from "../../hooks/useCustomFetch";
-import { logoutSuccess } from "../../redux/authSlice";
+import { loginSuccess, logoutSuccess } from "../../redux/authSlice";
 import { useDispatch, useSelector } from "react-redux"
 import queryString from "query-string";
 import FacebookLogin from "react-facebook-login";
@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import Popup from "../../components/Popup";
 import { getToken as revokeToken } from "../../services/googleService";
 import tokenService from "../../services/tokenService";
+import { unlinkAccount } from "../../services/ssoService";
 
 const cx = classNames.bind(styles);
 const googleProvider = "Google";
@@ -35,7 +36,6 @@ const Link = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
-  const [, , , deleteUserLogin] = useCustomFetch();
 
   const handleFindProviderByName = (providerName = "") => {
     return currentUser.userLogins.find(ul => ul.loginProvider.toLowerCase() === providerName.toLowerCase());
@@ -62,9 +62,9 @@ const Link = () => {
       state: res,
     })
   }
-  const handleUnlinkAccount = async (providerKey, type) => {
+  const handleUnlinkAccount = async (providerKey, type, closePopup) => {
     try {
-      const res = await deleteUserLogin("/Auth/unlink-account", {
+      const res = await unlinkAccount("/auth/unlink-provider", {
         params: {
           userId: currentUser?.id,
           providerId: providerKey,
@@ -81,11 +81,10 @@ const Link = () => {
         // });
         // tokenService.removeTokenGoogleAuth();
       }
-      tokenService.removeRefreshToken();
-      tokenService.removeToken();
-      dispatch(logoutSuccess(res.data))
-      window.location.reload();
-      navigate("/login")
+      //tokenService.removeRefreshToken();
+      //tokenService.removeToken();
+      dispatch(loginSuccess(res.data))
+      closePopup();
     }
     catch (err) {
       console.log(err);
@@ -93,9 +92,8 @@ const Link = () => {
   }
 
   useEffect(() => {
-    console.log(location.state);
     if (location.state) {
-      toast.error(location.state.message, toastOptions);
+      toast.error(location.state?.message, toastOptions);
       window.history.replaceState({}, '')
     }
   }, [location.state])
@@ -139,7 +137,7 @@ const Link = () => {
                         <span className={cx("btn-text-cancel")}>Cancel</span>
                       </div>
                     </button>
-                    <button className={cx("btn-agree")} onClick={() => handleUnlinkAccount(handleFindProviderByName(googleProvider)?.providerKey, googleProvider)}>
+                    <button className={cx("btn-agree")} onClick={() => handleUnlinkAccount(handleFindProviderByName(googleProvider)?.providerKey, googleProvider, close)}>
                       <div className={cx("btn-content")}>
                         <span className={cx("btn-text-agree")}>Agree</span>
                       </div>
@@ -184,7 +182,7 @@ const Link = () => {
                         <span className={cx("btn-text-cancel")}>Cancel</span>
                       </div>
                     </button>
-                    <button className={cx("btn-agree")} onClick={() => handleUnlinkAccount(handleFindProviderByName(facebookProvider)?.providerKey)}>
+                    <button className={cx("btn-agree")} onClick={() => handleUnlinkAccount(handleFindProviderByName(facebookProvider)?.providerKey, close)}>
                       <div className={cx("btn-content")}>
                         <span className={cx("btn-text-agree")}>Agree</span>
                       </div>

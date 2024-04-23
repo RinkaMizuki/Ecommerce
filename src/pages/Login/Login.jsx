@@ -145,7 +145,7 @@ const Login = () => {
     <div className={cx("login-wrapper")}>
       <Helmet>
         <meta charSet="utf-8" />
-        <title>MT Store - Log in</title>
+        <title>MT Store - Login</title>
         <link rel="canonical" href={`${window.location.origin}/login`} />
       </Helmet>
       <div className={cx("login-image")}>

@@ -4,16 +4,14 @@ import emailImage from "../../assets/images/email.svg.png";
 import Button from "../../components/Button";
 import { Link, useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
-import useCustomFetch from "../../hooks/useCustomFetch";
 import { ToastContainer, toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { loginSuccess } from "../../redux/authSlice";
+import { getRefreshToken as getConfirm } from "../../services/ssoService";
 
 const cx = classNames.bind(styles);
 
 const toastOptions = {
   position: "top-right",
-  autoClose: 2000,
+  autoClose: 1200,
   hideProgressBar: false,
   closeOnClick: true,
   pauseOnHover: true,
@@ -24,26 +22,17 @@ const toastOptions = {
 
 const Confirm = () => {
 
-  const [getConfirmed] = useCustomFetch();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const dispatch = useDispatch();
-
   useEffect(() => {
-    
-    const userId = searchParams.get("userId");
+    const email = searchParams.get("email");
     const token = searchParams.get("token");
 
     const fetchData = async () => {
       try {
-        const response = await getConfirmed(`/Auth/confirm-email?userId=${userId}&token=${token}`);
+        const response = await getConfirm(`/auth/confirm-email?email=${email}&token=${token}`);
         if (response?.data?.statusCode === 200) {
-
-          dispatch(loginSuccess(response.data));
-          localStorage.setItem("reloadEvent", "profile");
-
           toast.success(response?.data?.message, toastOptions);
-
         } else {
           toast.error(response?.data?.message, toastOptions);
         }

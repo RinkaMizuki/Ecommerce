@@ -153,18 +153,18 @@ const Profile = () => {
       top: 0,
       behavior: "smooth"
     })
-    const handleLoadProfile = function (event) {
-      if (event.key === 'reloadEvent' && event.newValue === 'profile') {
-        window.location.reload();
-        // Đặt lại giá trị để tránh việc xử lý lặp lại
-        localStorage.setItem('reloadEvent', '');
-      }
-    }
+    // const handleLoadProfile = function (event) {
+    //   if (event.key === 'reloadEvent' && event.newValue === 'profile') {
+    //     window.location.reload();
+    //     // Đặt lại giá trị để tránh việc xử lý lặp lại
+    //     localStorage.setItem('reloadEvent', '');
+    //   }
+    // }
 
-    window.addEventListener('storage', handleLoadProfile);
-    return () => {
-      window.removeEventListener("storage", handleLoadProfile);
-    }
+    // window.addEventListener('storage', handleLoadProfile);
+    // return () => {
+    //   window.removeEventListener("storage", handleLoadProfile);
+    // }
   }, [])
 
   const validateSaveChanges = () => {

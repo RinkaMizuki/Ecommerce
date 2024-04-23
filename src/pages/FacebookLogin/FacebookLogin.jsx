@@ -44,12 +44,11 @@ const FacebookLogin = () => {
         })
       }
       catch (error) {
-        if (error?.response?.status === 409) {
-          navigate(`${type === "login" ? "/login" : "/manager/links"}`, {
-            replace: true,
-            state: error?.response?.data
-          })
-        }
+        console.log(error);
+        navigate(`${type === "login" ? "/login" : "/manager/links"}`, {
+          replace: true,
+          state: error?.response?.data
+        })
       }
     }
     fetchData();

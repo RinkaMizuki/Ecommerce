@@ -101,7 +101,7 @@ const publicRoutes = [
   },
   {
     path: config.routes.confirm,
-    element: AuthRequired(Confirm),
+    element: Confirm,
     layout: null
   },
   {

@@ -9,4 +9,9 @@ const getRefreshToken = async (path, options = {}) => {
   return res;
 }
 
-export { postAuth, getRefreshToken }
+const unlinkAccount = async (path, options = {}) => {
+  const res = await httpRequestSso.delete(path, options);
+  return res;
+}
+
+export { postAuth, getRefreshToken, unlinkAccount }

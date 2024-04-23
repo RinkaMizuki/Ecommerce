@@ -1,9 +1,7 @@
 import queryString from "query-string";
 import { useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import useCustomFetch from "../../hooks/useCustomFetch"
 import { loginSuccess } from "../../redux/authSlice";
-import tokenService from "../../services/tokenService";
 import Loading from "../Loading";
 import { useDispatch, useSelector } from "react-redux";
 //import { getToken as getTokenInfo } from "../../services/googleService";
@@ -14,7 +12,7 @@ const GoogleLogin = () => {
   const userLogin = useSelector(state => state.auth.login?.currentUser?.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [, postUserLinked] = useCustomFetch();
+  const type = JSON.parse(localStorage.getItem("authType"));
 
   useLayoutEffect(() => {
     const { error } = queryString.parse(window.location.href.split("?")[1]);
@@ -23,7 +21,6 @@ const GoogleLogin = () => {
       window.location.href = `${window.location.origin}/login`
     } else {
       // Xử lý đăng nhập thành công hoặc các lỗi khác
-      const type = JSON.parse(localStorage.getItem("authType"));
       const { code } = queryString.parse(window.location.href.split("?")[1]);
       const fetchData = async () => {
         try {
@@ -87,8 +84,12 @@ const GoogleLogin = () => {
               replace: true,
             })
           }
-        } catch (err) {
-          console.log(err)
+        } catch (error) {
+          console.log(error)
+          navigate(`${type === "login" ? "/login" : "/manager/links"}`, {
+            replace: true,
+            state: error?.response?.data
+          })
         }
       }
       fetchData();

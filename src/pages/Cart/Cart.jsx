@@ -1,6 +1,6 @@
 import classNames from "classnames/bind";
 import styles from "./Cart.module.scss";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getLocalProductQuantity } from "../../services/cartService";
 import { useSelector } from "react-redux";
 import useCustomFetch from "../../hooks/useCustomFetch";
@@ -37,7 +37,10 @@ const Cart = () => {
   const [couponCode, setCouponCode] = useState("");
   const [totalPrice, setTotalPrice] = useState(0);
   const [getListProduct] = useCustomFetch();
+  const [isCouponApplied, setIsCouponApplied] = useState(false);
   const [checkedItems, setCheckedItems] = useState(listProductId.map(item => true));
+
+  const checkCouponRef = useRef(null);
 
   const navigate = useNavigate();
 
@@ -53,17 +56,13 @@ const Cart = () => {
 
     const fetchData = async () => {
       try {
-
         if (listProductId.length !== 0) {
           setLoading(true);
-
           const queryStringData = queryString.stringify({
             filter: JSON.stringify({ id: listProductId?.map(p => p.id) }),
             range: JSON.stringify([0, listProductId.length - 1]),
           })
-
           const response = await getListProduct(`/Admin/products?${queryStringData}`);
-
           setProducts(response.data);
         } else {
           setProducts([]);
@@ -79,7 +78,6 @@ const Cart = () => {
   }, [listProductId])
 
   useEffect(() => {
-
     const fetchData = async () => {
       try {
         const response = await getCouponProduct("/Admin/coupons");
@@ -89,9 +87,7 @@ const Cart = () => {
         console.log(error);
       }
     }
-
     fetchData();
-
   }, [])
 
   useEffect(() => {
@@ -150,6 +146,7 @@ const Cart = () => {
         }
       });
       setTotalPrice(response.totalPrice)
+      setIsCouponApplied(true)
       toast.success(response.message, toastOptions)
     } catch (error) {
       console.log(error);
@@ -157,14 +154,16 @@ const Cart = () => {
     }
   }
 
-  const handleSelectCoupon = (code) => {
+  const handleSelectCoupon = (e, code) => {
     if (couponCode === code) {
       setCouponCode("");
-      setTotalPrice(0);
     } else {
       setCouponCode(code);
     }
+    setTotalPrice(0);
+    setIsCouponApplied(false)
   }
+
   return (
     <div className={cx("cart-container")} style={{
       height: !products?.length ? "200vh" : "unset"
@@ -228,7 +227,7 @@ const Cart = () => {
             <Button
               className={cx("btn-apply")}
               onClick={handleApplyCoupon}
-              disable={checkedItems.every(bool => !bool) || !couponCode}
+              disable={checkedItems.every(bool => !bool) || !couponCode || isCouponApplied}
             >Apply Coupon</Button>
           </div>
           <div className={cx("coupon-list-wrapper")}>
@@ -265,9 +264,9 @@ const Cart = () => {
                         </div>
                         <div className={cx("coupon-template-right")}>
                           <div className={cx("coupon-checkbox-wrapper")}>
-                            <div data-testid="vcRadioButton" className={cx("coupon-checkbox")} aria-label="" role="radio" aria-checked="false" tabIndex="0" style={{
+                            <div data-testid="vcRadioButton" className={cx("coupon-checkbox")} aria-label="coupon" role="radio" aria-checked={couponCode === c.couponCode ? 'true' : 'false'} data-coupon={c.couponCode} tabIndex="0" style={{
                               cursor: ((totalPrice < minAmount && minAmount != 0) || (totalPrice > maxAmount && maxAmount != 0)) ? "not-allowed" : "pointer"
-                            }} onClick={() => handleSelectCoupon(c.couponCode)}>
+                            }} ref={checkCouponRef} onClick={(e) => handleSelectCoupon(e, c.couponCode)}>
                               <i className={cx("fa-solid fa-check", "icon-check")}
                                 style={{
                                   display: couponCode.toUpperCase() === c.couponCode.toUpperCase() && !((totalPrice < minAmount && minAmount != 0) || (totalPrice > maxAmount && maxAmount != 0)) ? "block" : "none"

@@ -174,8 +174,10 @@ export default function AccountMenu() {
   useLayoutEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getListUserAddress(`/Address/${userLogin?.id}`);
-        setAddresses(response.data);
+        if (userLogin?.id) {
+          const response = await getListUserAddress(`/Address/${userLogin?.id}`);
+          setAddresses(response.data);
+        }
       }
       catch (error) {
         console.log(error);
