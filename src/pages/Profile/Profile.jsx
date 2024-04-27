@@ -16,6 +16,7 @@ import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import moment from "moment";
 import Loading from "../../components/Loading";
+import { helpers } from "../../helpers/validate";
 
 const toastOptions = {
   position: "top-right",
@@ -168,7 +169,7 @@ const Profile = () => {
   }, [])
 
   const validateSaveChanges = () => {
-    return isExistUserName || !email || ((new Date(birth).getTime() - 7 * 60 * 60 * 1000) > new Date().getTime()) || !validatePhoneNumber(phone) || !phone || !validateEmail(email) || isDisable;
+    return isExistUserName || !email || ((new Date(birth).getTime() - 7 * 60 * 60 * 1000) > new Date().getTime()) || !helpers.validatePhoneNumber(phone) || !phone || !helpers.validateEmail(email) || isDisable;
   }
 
   const handleAvatarChange = (e) => {
@@ -228,18 +229,6 @@ const Profile = () => {
     }
 
   }, [blob])
-
-  const validatePhoneNumber = (phone) => {
-    const regexPhoneNumber = /(84|0[3|5|7|8|9])+([0-9]{8})\b/g;
-    return phone.match(regexPhoneNumber) ? true : false;
-  }
-  const validateEmail = (email) => {
-    return String(email)
-      .toLowerCase()
-      .match(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      );
-  };
 
   return (
     <div className={cx("profile-container")}>

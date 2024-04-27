@@ -22,6 +22,7 @@ import PaymentError from "../pages/PaymentError";
 import GoogleLogin from "../pages/GoogleLogin";
 import Link from "../pages/Link";
 import FacebookLogin from "../pages/FacebookLogin";
+import ResetPassword from "../pages/ResetPassword";
 
 const publicRoutes = [
   {
@@ -38,6 +39,11 @@ const publicRoutes = [
     path: config.routes.login,
     element: Login,
     layout: "default"
+  },
+  {
+    path: config.routes.resetPassword,
+    element: ResetPassword,
+    layout: null
   },
   {
     path: config.routes.googleLogin,

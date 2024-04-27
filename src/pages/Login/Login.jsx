@@ -3,11 +3,12 @@ import classNames from "classnames/bind";
 import ecommerceRegister from "../../assets/images/ecommerce-register.jpg";
 import Button from "../../components/Button"
 import google from "../../assets/images/google.png"
-import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import { useDispatch, useSelector } from "react-redux";
-import useCustomFetch from "../../hooks/useCustomFetch";
+import MarkEmailUnreadIcon from '@mui/icons-material/MarkEmailUnread';
+import NoEncryptionIcon from '@mui/icons-material/NoEncryption';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import { loginFailed, loginStart, loginSuccess } from "../../redux/authSlice";
 //import tokenService from "../../services/tokenService"
@@ -17,6 +18,8 @@ import { Helmet } from "react-helmet";
 import FacebookLogin from 'react-facebook-login';
 import { useLayoutEffect } from "react";
 import { postAuth } from "../../services/ssoService";
+import Popup from "../../components/Popup";
+import { helpers } from "../../helpers/validate";
 
 const toastOptions = {
   position: "top-right",
@@ -34,10 +37,12 @@ const Login = () => {
 
   const [userNameOrEmail, setUserNameOrEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [emailForgot, setEmailForgot] = useState("");
   const [isHidePassword, setIsHidePassword] = useState(true);
-  //const [, loginService] = useCustomFetch();
+  const [isSend, setIsSend] = useState(false);
   const passwordRef = useRef(null);
   const submitRef = useRef(null);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -141,6 +146,27 @@ const Login = () => {
     return <Navigate to="/" />
   }
 
+  const resetInput = () => {
+    setIsSend(false);
+    setEmailForgot("");
+  }
+
+  const hanleForgotPassword = async () => {
+    try {
+      const res = await postAuth("/auth/forgot-password", {
+        email: emailForgot,
+        returnUrl: import.meta.env.VITE_ECOMMERCE_RESET_RETURN_URL
+      })
+      console.log(res);
+    }
+    catch (error) {
+      console.log(error);
+    }
+    finally {
+      setIsSend(true)
+    }
+  }
+
   return (
     <div className={cx("login-wrapper")}>
       <Helmet>
@@ -193,8 +219,67 @@ const Login = () => {
             }} />}
           />
         </div>
-        <div className={cx("login-redirect")}>
-          <Link to="/">Forgot password</Link>
+        <div className={cx("forgot-password")}>
+          <Popup
+            onReset={resetInput}
+            trigger={<span>Forgot password</span>
+            }
+            contentStyle={{
+              width: "30%",
+              padding: "2px",
+              borderRadius: "5px",
+              border: "0",
+              animation: ".3s cubic-bezier(.38,.1,.36,.9) forwards a"
+            }}
+            header={
+              <div style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: "10px"
+              }}>
+                {!isSend ? <NoEncryptionIcon sx={{
+                  width: "50px",
+                  height: "50px",
+                  color: "var(--primary)"
+                }} /> : <MarkEmailUnreadIcon sx={{
+                  width: "50px",
+                  height: "50px",
+                  color: "var(--primary)"
+                }} />}
+                <h1 style={{
+                  fontWeight: "600",
+                  fontSize: "27px"
+                }}>{!isSend ? "Forgot Your Password" : "Check Your Email"}</h1>
+                <span style={{
+                  maxWidth: "80%",
+                  textAlign: "center",
+                  fontWeight: "500",
+                  fontSize: isSend ? "15px" : "14px"
+                }}>{!isSend ? "Enter your email address and we will send you instructions to reset your password." : <div style={{
+                  marginTop: "10px",
+                  lineHeight: "1.2"
+                }}>Please check the email address <span style={{
+                  textDecoration: "underline",
+                  color: "var(--primary)",
+                  fontWeight: "400"
+                }}>{emailForgot}</span> for instructions to reset your password.</div>}</span>
+              </div>
+            }
+            content={<div className={cx("login-info")} style={{
+              flex: 1
+            }}>
+              {!isSend ? <input type="text" placeholder="Enter Your Email" required className={cx("input-forgot")} value={emailForgot} onChange={(e) => setEmailForgot(e.target.value)} /> : <></>}
+            </div>}
+            action={
+              <Button className={cx("btn-agree")} onClick={hanleForgotPassword} disable={!emailForgot || !helpers.validateEmail(emailForgot)} >
+                <div className={cx("btn-content")}>
+                  <span className={cx("btn-text-agree")}>{!isSend ? "Send Email" : "Resend Email"}</span>
+                </div>
+              </Button>
+            }
+          />
         </div>
       </div>
     </div>

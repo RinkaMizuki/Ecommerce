@@ -38,10 +38,10 @@ const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isExistUserName, setIsExistUserName] = useState(false);
   const [loadingUserName, setLoadingUserName] = useState(false);
-  const [getUserInfo, registerService] = useCustomFetch();
-  const passwordRef = useRef(null);
+  const [getUserInfo] = useCustomFetch();
   const submitRef = useRef(null);
-  const confirmPaaswordRef = useRef(null);
+  const passwordRef = useRef(null);
+  const confirmPasswordRef = useRef(null);
 
   const userLogin = useSelector(state => state.auth.login.currentUser);
 
@@ -64,13 +64,13 @@ const Register = () => {
     }
   }
   const handleToggleConfirmPassword = () => {
-    const typeConfirmPassword = confirmPaaswordRef.current?.getAttribute("type")
+    const typeConfirmPassword = confirmPasswordRef.current?.getAttribute("type")
     if (typeConfirmPassword == "password") {
-      confirmPaaswordRef.current.setAttribute("type", "text")
+      confirmPasswordRef.current.setAttribute("type", "text")
       setIsHideConfirmPassword(false)
     }
     else {
-      confirmPaaswordRef.current.setAttribute("type", "password")
+      confirmPasswordRef.current.setAttribute("type", "password")
       setIsHideConfirmPassword(true)
     }
   }
@@ -179,11 +179,11 @@ const Register = () => {
           <input
             type="email" placeholder="Email" required value={email} onChange={(e) => setEmail(e.target.value)} />
           <div className={cx("password-wrapper")}>
-            <input type="password" placeholder="Password" required value={password} onChange={(e) => setPassword(e.target.value)} ref={passwordRef} />
+            <input type="password" placeholder="Password" required value={password} onChange={(e) => setPassword(e.target.value.trim())} ref={passwordRef} />
             {!isHidePassword ? <i className="fa-regular fa-eye" onClick={handleTogglePassword}></i> : <i className="fa-regular fa-eye-slash" onClick={handleTogglePassword}></i>}
           </div>
           <div className={cx("password-wrapper")}>
-            <input type="password" placeholder="Confirm Password" required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} ref={confirmPaaswordRef} />
+            <input type="password" placeholder="Confirm Password" required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value.trim())} ref={confirmPasswordRef} />
             {!isHideConfirmPassword ? <i className="fa-regular fa-eye" onClick={handleToggleConfirmPassword}></i> : <i className="fa-regular fa-eye-slash" onClick={handleToggleConfirmPassword}></i>}
           </div>
         </form>

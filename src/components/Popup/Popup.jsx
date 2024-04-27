@@ -3,10 +3,24 @@ import { default as PopupComponent } from "reactjs-popup"
 import classNames from 'classnames/bind';
 import styles from "./Popup.module.scss";
 import CloseIcon from '@mui/icons-material/Close';
+import { forwardRef, useImperativeHandle } from 'react';
 
 const cx = classNames.bind(styles);
+let closeGlobal = () => { };
 
-const Popup = ({ content, contentStyle, action, header, trigger, lockScroll = true, closeOnDocumentClick = false }) => {
+const Popup = forwardRef(({ content, contentStyle, action, header, trigger, lockScroll = true, closeOnDocumentClick = false, onReset = () => { } }, ref) => {
+
+  const handleClosePopup = () => {
+    closeGlobal();
+    onReset();
+  }
+
+  useImperativeHandle(ref, () => ({
+    closePopup: () => {
+      closeGlobal();
+    }
+  }));
+
   return (
     <PopupComponent
       trigger={trigger}
@@ -16,27 +30,30 @@ const Popup = ({ content, contentStyle, action, header, trigger, lockScroll = tr
       lockScroll={lockScroll}
       closeOnDocumentClick={closeOnDocumentClick}
     >
-      {close => (
-        <div className={cx("modal")}>
-          <button className={cx("close")} onClick={close}>
-            <CloseIcon sx={{
-              width: "20px",
-              height: "20px",
-            }} />
-          </button>
-          <div className={cx("header")}>
-            {header}
+      {close => {
+        closeGlobal = close
+        return (
+          <div className={cx("modal")}>
+            <button className={cx("close")} onClick={handleClosePopup}>
+              <CloseIcon sx={{
+                width: "20px",
+                height: "20px",
+              }} />
+            </button>
+            <div className={cx("header")}>
+              {header}
+            </div>
+            <div className={cx("content")}>
+              {content}
+            </div>
+            <div className={cx("actions")}>
+              {action}
+            </div>
           </div>
-          <div className={cx("content")}>
-            {content}
-          </div>
-          <div className={cx("actions")}>
-            {action}
-          </div>
-        </div>
-      )}
+        )
+      }}
     </PopupComponent>
   )
-};
+});
 
 export default Popup;

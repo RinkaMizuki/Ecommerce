@@ -8,6 +8,7 @@ const configRoutes = {
   favorite: "/favorite",
   contact: "/contact",
   about: "/about",
+  resetPassword: "/reset-password",
   productDetail: "/product-detail/:productId",
   category: "/category/:title",
   manager: "/manager",

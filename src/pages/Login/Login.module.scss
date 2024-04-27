@@ -49,11 +49,10 @@
   >h1 {
     font-weight: 600;
     font-size: 30px;
-    margin-top: -50px;
   }
 
   >p {
-    font-size: 14px;
+    font-size: 20px;
     margin-top: 20px;
   }
 }
@@ -124,4 +123,63 @@
     margin-right: 17px;
     margin-left: 17px;
   }
+}
+
+.forgot-password {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  >span {
+    color: var(--primary);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
+
+.btn-forgot {
+  align-items: center;
+  background-color: transparent;
+  border: 1px solid rgba(0, 0, 0, .15);
+  border-radius: 30px;
+  color: var(--text-gray-700);
+  display: flex;
+  font-size: 17px;
+  gap: 8px;
+  font-weight: 300;
+  height: 37px;
+  line-height: 37px;
+  padding: 0 16px;
+  transition: background-color .2s, border-color .2s, color .2s, fill .2s ease-in-out;
+
+  &:hover {
+    border-color: var(--text-gray-700);
+  }
+}
+
+.input-forgot {
+  height: 30px;
+  font-size: 18px;
+}
+
+.btn-agree {
+  border-bottom: 1px solid #f2f2f2;
+  flex-basis: auto;
+  flex-grow: 1;
+  height: 48px;
+  min-width: 50%;
+  border-radius: 0;
+  border-right: 1px solid #f2f2f2;
+  appearance: auto;
+  background-color: transparent;
+
+  &:hover {
+    background-color: unset !important;
+  }
+}
+
+.btn-text-agree {
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--primary);
 }

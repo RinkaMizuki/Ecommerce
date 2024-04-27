@@ -3,17 +3,14 @@ import styles from "./Link.module.scss";
 import Avatar from "../../components/Avatar";
 import Button from "../../components/Button";
 import FacebookIcon from '@mui/icons-material/Facebook';
-import useCustomFetch from "../../hooks/useCustomFetch";
-import { loginSuccess, logoutSuccess } from "../../redux/authSlice";
+import { loginSuccess } from "../../redux/authSlice";
 import { useDispatch, useSelector } from "react-redux"
 import queryString from "query-string";
 import FacebookLogin from "react-facebook-login";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Popup from "../../components/Popup";
-import { getToken as revokeToken } from "../../services/googleService";
-import tokenService from "../../services/tokenService";
 import { unlinkAccount } from "../../services/ssoService";
 
 const cx = classNames.bind(styles);
@@ -36,6 +33,8 @@ const Link = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
+
+  const popupRef = useRef(null);
 
   const handleFindProviderByName = (providerName = "") => {
     return currentUser.userLogins.find(ul => ul.loginProvider.toLowerCase() === providerName.toLowerCase());
@@ -98,6 +97,9 @@ const Link = () => {
     }
   }, [location.state])
 
+  const handleClosePopup = () => {
+    popupRef.current?.closePopup();
+  }
 
   return (
     <div className={cx("link-account-container")}>
@@ -132,12 +134,12 @@ const Link = () => {
                   }
                   content={<p className={cx("content-text")}>You want to unlink the account <span>{handleFindProviderByName(googleProvider)?.accountName}</span>?</p>}
                   action={<>
-                    <button className={cx("btn-cancel")} onClick={close}>
+                    <button className={cx("btn-cancel")} onClick={handleClosePopup}>
                       <div className={cx("btn-content")}>
                         <span className={cx("btn-text-cancel")}>Cancel</span>
                       </div>
                     </button>
-                    <button className={cx("btn-agree")} onClick={() => handleUnlinkAccount(handleFindProviderByName(googleProvider)?.providerKey, googleProvider, close)}>
+                    <button className={cx("btn-agree")} onClick={() => handleUnlinkAccount(handleFindProviderByName(googleProvider)?.providerKey, googleProvider, handleClosePopup)}>
                       <div className={cx("btn-content")}>
                         <span className={cx("btn-text-agree")}>Agree</span>
                       </div>
@@ -163,6 +165,7 @@ const Link = () => {
               </div>
               {handleFindProviderByName(facebookProvider) ?
                 <Popup
+                  ref={popupRef}
                   trigger={handleFindProviderByName(facebookProvider)?.isUnlink && <Button className={cx("btn-link-provider")}
                   >Unlink</Button>}
                   contentStyle={{
@@ -175,14 +178,14 @@ const Link = () => {
                   header={
                     <svg className={cx("header-icon")} width="32" height="32" viewBox="0 0 16 16"><path d="M0 0h16v16H0V0z" fill="none"></path><path d="M15.2 13.1L8.6 1.6c-.2-.4-.9-.4-1.2 0L.8 13.1c-.1.2-.1.5 0 .7.1.2.3.3.6.3h13.3c.2 0 .5-.1.6-.3.1-.2.1-.5-.1-.7zM8.7 12H7.3v-1.3h1.3V12zm0-2.7H7.3v-4h1.3v4z" fill="currentColor"></path></svg>
                   }
-                  content={<p className={cx("content-text")}>Do you want to unlink your account?Do you want to unlink your account?You want to unlink the account <span>{handleFindProviderByName(facebookProvider)?.accountName}</span>?</p>}
+                  content={<p className={cx("content-text")}>Do you want to unlink your account?<span>{handleFindProviderByName(facebookProvider)?.accountName}</span>?</p>}
                   action={<>
-                    <button className={cx("btn-cancel")} onClick={close}>
+                    <button className={cx("btn-cancel")} onClick={handleClosePopup}>
                       <div className={cx("btn-content")}>
                         <span className={cx("btn-text-cancel")}>Cancel</span>
                       </div>
                     </button>
-                    <button className={cx("btn-agree")} onClick={() => handleUnlinkAccount(handleFindProviderByName(facebookProvider)?.providerKey, close)}>
+                    <button className={cx("btn-agree")} onClick={() => handleUnlinkAccount(handleFindProviderByName(facebookProvider)?.providerKey, handleClosePopup)}>
                       <div className={cx("btn-content")}>
                         <span className={cx("btn-text-agree")}>Agree</span>
                       </div>
