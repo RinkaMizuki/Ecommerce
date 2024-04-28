@@ -8,7 +8,7 @@ import { forwardRef, useImperativeHandle } from 'react';
 const cx = classNames.bind(styles);
 let closeGlobal = () => { };
 
-const Popup = forwardRef(({ content, contentStyle, action, header, trigger, lockScroll = true, closeOnDocumentClick = false, onReset = () => { } }, ref) => {
+const Popup = forwardRef(({ content, contentStyle, action, header, trigger, lockScroll = true, closeOnDocumentClick = false, onReset = () => { }, open = false, onClose = () => { } }, ref) => {
 
   const handleClosePopup = () => {
     closeGlobal();
@@ -24,6 +24,8 @@ const Popup = forwardRef(({ content, contentStyle, action, header, trigger, lock
   return (
     <PopupComponent
       trigger={trigger}
+      open={open}
+      onClose={onClose}
       modal
       nested
       contentStyle={contentStyle}

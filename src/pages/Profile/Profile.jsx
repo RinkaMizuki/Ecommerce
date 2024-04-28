@@ -12,11 +12,14 @@ import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import NotificationsOffIcon from '@mui/icons-material/NotificationsOff';
 import { toast, ToastContainer } from "react-toastify";
 import { loginSuccess } from "../../redux/authSlice";
+import PhoneLockedIcon from '@mui/icons-material/PhoneLocked';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import moment from "moment";
 import Loading from "../../components/Loading";
 import { helpers } from "../../helpers/validate";
+import { FormControlLabel, FormGroup, Switch } from "@mui/material";
+import Popup from "../../components/Popup";
 
 const toastOptions = {
   position: "top-right",
@@ -42,11 +45,13 @@ const Profile = () => {
   const [phone, setPhone] = useState(userLogin?.phone);
   const [birth, setBirth] = useState(moment(userLogin?.birthDate).format('YYYY-MM-DD'));
   const [isDisable, setIsDisable] = useState(true);
+  const [isF2A, setIsF2A] = useState(userLogin?.f2a);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [file, setFile] = useState(null);
   const [blob, setBlob] = useState(null);
+  const [open, setOpen] = useState(false);
 
   const inputFileRef = useRef(null);
   const avatarRef = useRef(null);
@@ -147,6 +152,7 @@ const Profile = () => {
     setConfirmPassword("");
     setNewPassword("");
     setCurrentPassword("");
+    setIsDisable(true);
   }
 
   useEffect(() => {
@@ -197,6 +203,13 @@ const Profile = () => {
     }
   }
 
+  const handleSwitchF2A = async () => {
+    setOpen(!open);
+    setIsF2A(!isF2A)
+  }
+
+  const closeModal = () => setOpen(false);
+
   const debounced = useDebounce(userName, 500);
   useEffect(() => {
 
@@ -230,6 +243,16 @@ const Profile = () => {
 
   }, [blob])
 
+  const handleSendOTP = async () => {
+    try {
+      setLoading(true);
+    }
+    catch (err) {
+
+    } finally {
+      setLoading(false);
+    }
+  }
   return (
     <div className={cx("profile-container")}>
       <ToastContainer
@@ -322,32 +345,88 @@ const Profile = () => {
             </div>
           </div>
         </div>
-        <div className={cx("info-password")}>
-          <label htmlFor="currentPassword">Password Changes</label>
-          <input type="password" name="currentPassword" id="currentPassword"
-            placeholder="Current Password"
-            value={currentPassword}
-            onChange={(e) => {
-              setCurrentPassword(e.target.value.trim())
-              isDisable && setIsDisable(false);
-            }}
-          />
-          <input type="password" name="newPassword" placeholder="New password"
-            value={newPassword}
-            onChange={(e) => {
-              setNewPassword(e.target.value.trim())
-              isDisable && setIsDisable(false);
-            }}
-          />
-          <span className={cx("new-password-note")}>New password requires at least 3 characters.</span>
-          <input type="password" name="confirmPassword" placeholder="Confirm New Password"
-            value={confirmPassword}
-            onChange={(e) => {
-              setConfirmPassword(e.target.value.trim())
-              isDisable && setIsDisable(false);
-            }}
-          />
-          <span className={cx("confirm-password-note")}>Confirm password must match the new password.</span>
+        <div className={cx("password-wrapper")}>
+          <div className={cx("info-password")}>
+            <label htmlFor="currentPassword">Password Changes</label>
+            <input type="password" name="currentPassword" id="currentPassword"
+              placeholder="Current Password"
+              value={currentPassword}
+              onChange={(e) => {
+                setCurrentPassword(e.target.value.trim())
+                isDisable && setIsDisable(false);
+              }}
+            />
+            <input type="password" name="newPassword" placeholder="New password"
+              value={newPassword}
+              onChange={(e) => {
+                setNewPassword(e.target.value.trim())
+                isDisable && setIsDisable(false);
+              }}
+            />
+            <span className={cx("new-password-note")}>New password requires at least 3 characters.</span>
+            <input type="password" name="confirmPassword" placeholder="Confirm New Password"
+              value={confirmPassword}
+              onChange={(e) => {
+                setConfirmPassword(e.target.value.trim())
+                isDisable && setIsDisable(false);
+              }}
+            />
+            <span className={cx("confirm-password-note")}>Confirm password must match the new password.</span>
+          </div>
+          <div className={cx("featured-wrapper")}>
+            <h1>Security Account</h1>
+            <Tippy content={<span style={{
+              fontFamily: "Poppins",
+            }}>{!userLogin?.phone ? "Verify Your Phone" : "Verified"}</span>}>
+              <FormGroup>
+                <FormControlLabel disabled={!userLogin?.phone} control={<Switch checked={isF2A} onChange={handleSwitchF2A} />} label="Enabled F2A" />
+              </FormGroup>
+            </Tippy>
+            <Popup
+              onReset={() => setIsF2A(userLogin?.f2a)}
+              onClose={closeModal}
+              open={open}
+              contentStyle={{
+                width: "25%",
+                padding: "2px",
+                borderRadius: "5px",
+                border: "0",
+                animation: ".3s cubic-bezier(.38,.1,.36,.9) forwards a"
+              }}
+              header={
+                <div style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: "10px"
+                }}>
+                  <PhoneLockedIcon sx={{
+                    width: "50px",
+                    height: "50px",
+                    color: "var(--primary)"
+                  }} />
+                  <h1 style={{
+                    fontSize: "20px",
+                    fontWeight: "600",
+                  }}>Two-Factor Authentication</h1>
+                </div>
+              }
+              content={<span style={{
+                fontSize: "14px",
+                fontWeight: "400",
+              }}>Are you sure you want to enable 2-factor authentication?</span>}
+              action={
+                <Button className={cx("btn-agree")} disable={loading} onClick={handleSendOTP}>
+                  <div className={cx("btn-content")}>
+                    <span className={cx("btn-text-agree")}>
+                      {!loading ? "Send OTP" : <Loading className={cx("custom-loading", "sending")} />}
+                    </span>
+                  </div>
+                </Button>
+              }
+            />
+          </div>
         </div>
       </div>
       <div className={cx("btn-wrapper")}>

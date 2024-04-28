@@ -37,7 +37,7 @@ const Link = () => {
   const popupRef = useRef(null);
 
   const handleFindProviderByName = (providerName = "") => {
-    return currentUser.userLogins.find(ul => ul.loginProvider.toLowerCase() === providerName.toLowerCase());
+    return currentUser.userLogins?.find(ul => ul.loginProvider.toLowerCase() === providerName.toLowerCase());
   }
 
   const handleLinkGoogleAccount = () => {

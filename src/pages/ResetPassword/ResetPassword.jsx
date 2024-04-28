@@ -3,9 +3,10 @@ import styles from "./ResetPassword.module.scss";
 import LockResetIcon from '@mui/icons-material/LockReset';
 import Button from "../../components/Button";
 import { useRef, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, Navigate } from "react-router-dom";
 import { postAuth as postResetPassword } from "../../services/ssoService";
 import { toast } from "react-toastify";
+import { jwtDecode } from "jwt-decode";
 
 const cx = classNames.bind(styles);
 const toastOptions = {
@@ -54,7 +55,8 @@ const ResetPassword = () => {
 
   const handleResetPassword = async () => {
     try {
-      const token = searchParams.get("token");
+      const token = searchParams.get("token") ?? "";
+      if (!token) return;
       const res = await postResetPassword("/auth/reset-password", {
         token,
         password,
@@ -69,6 +71,22 @@ const ResetPassword = () => {
       toast.error(error.response.data?.message, toastOptions)
     } finally {
       navigate("/login")
+    }
+  }
+
+  if (!searchParams.get("token")) {
+    return Navigate({ to: "/login", replace: true })
+  }
+  else {
+    try {
+      const values = jwtDecode(searchParams.get("token"))
+      const currentDate = new Date();
+      if (values.exp * 1000 < currentDate.getTime()) {
+        return Navigate({ to: "/login", replace: true })
+      }
+    } catch (err) {
+      console.log(err);
+      return Navigate({ to: "/login", replace: true })
     }
   }
 

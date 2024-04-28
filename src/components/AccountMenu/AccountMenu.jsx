@@ -229,7 +229,7 @@ export default function AccountMenu() {
           />
           <StyledTreeItem
             nodeId="7"
-            labelInfo={userLogin?.userLogins?.length}
+            labelInfo={userLogin?.userLogins?.length || 0}
             labelText="Sign-In Options"
             labelIcon={AddLinkIcon}
             color="#ff00ba"

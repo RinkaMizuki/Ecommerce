@@ -39,7 +39,9 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [emailForgot, setEmailForgot] = useState("");
   const [isHidePassword, setIsHidePassword] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [isSend, setIsSend] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
   const passwordRef = useRef(null);
   const submitRef = useRef(null);
 
@@ -62,7 +64,6 @@ const Login = () => {
   }
 
   const handleGoogleAuth = () => {
-
     const queryStringData = queryString.stringify({
       client_id: import.meta.env.VITE_ECOMMERCE_CLIENT_ID,
       redirect_uri: import.meta.env.VITE_ECOMMERCE_GOOGLE_REDIRECT_URI,
@@ -99,8 +100,8 @@ const Login = () => {
     const user = {
       username: userNameOrEmail,
       password,
+      remember: isChecked
     }
-
     dispatch(loginStart())
     try {
       // const res = await loginService("/Auth/login", user);
@@ -123,7 +124,7 @@ const Login = () => {
         setPassword("")
       }
       dispatch(loginFailed({
-        message: "Login failed"
+        message: "Login failed."
       }))
     }
   }
@@ -135,7 +136,7 @@ const Login = () => {
     })
   }
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (location.state) {
       toast.error(location.state.message, toastOptions);
       window.history.replaceState({}, '')
@@ -153,6 +154,7 @@ const Login = () => {
 
   const hanleForgotPassword = async () => {
     try {
+      setIsLoading(true);
       const res = await postAuth("/auth/forgot-password", {
         email: emailForgot,
         returnUrl: import.meta.env.VITE_ECOMMERCE_RESET_RETURN_URL
@@ -163,7 +165,8 @@ const Login = () => {
       console.log(error);
     }
     finally {
-      setIsSend(true)
+      setIsSend(true);
+      setIsLoading(false);
     }
   }
 
@@ -192,10 +195,14 @@ const Login = () => {
             <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} ref={passwordRef} value={password} />
             {!isHidePassword ? <i className="fa-regular fa-eye" onClick={handleTogglePassword}></i> : <i className="fa-regular fa-eye-slash" onClick={handleTogglePassword}></i>}
           </div>
+          <div className={cx("remember-me")}>
+            <input type="checkbox" name="checkbox" id="remember" onChange={() => setIsChecked(!isChecked)} checked={isChecked} />
+            <label htmlFor="remember">Remember me</label>
+          </div>
         </form>
         <div className={cx("login-options")}>
           <Button className={cx("btn-login")} lagre onClick={handleLogin} ref={submitRef}
-            disable={!userNameOrEmail || !password}
+            disable={!userNameOrEmail || !password || isFetching}
           >
             {!isFetching ? "Log In" : <Loading className={cx("custom-loading")} />}
           </Button>
@@ -275,7 +282,7 @@ const Login = () => {
             action={
               <Button className={cx("btn-agree")} onClick={hanleForgotPassword} disable={!emailForgot || !helpers.validateEmail(emailForgot)} >
                 <div className={cx("btn-content")}>
-                  <span className={cx("btn-text-agree")}>{!isSend ? "Send Email" : "Resend Email"}</span>
+                  <span className={cx("btn-text-agree")}>{!isSend ? !isLoading ? "Send Email" : <Loading className={cx("custom-loading", "sending")} /> : "Resend Email"}</span>
                 </div>
               </Button>
             }

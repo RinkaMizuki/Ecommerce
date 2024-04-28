@@ -6,12 +6,14 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { getRefreshToken as getConfirm } from "../../services/ssoService";
+import { Navigate, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const cx = classNames.bind(styles);
 
 const toastOptions = {
   position: "top-right",
-  autoClose: 1200,
+  autoClose: 2000,
   hideProgressBar: false,
   closeOnClick: true,
   pauseOnHover: true,
@@ -23,11 +25,11 @@ const toastOptions = {
 const Confirm = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
-
+  const navigate = useNavigate();
   useEffect(() => {
-    const email = searchParams.get("email");
-    const token = searchParams.get("token");
-
+    const email = searchParams.get("email") ?? "";
+    const token = searchParams.get("token") ?? "";
+    if (!email || !token) return;
     const fetchData = async () => {
       try {
         const response = await getConfirm(`/auth/confirm-email?email=${email}&token=${token}`);
@@ -37,12 +39,29 @@ const Confirm = () => {
           toast.error(response?.data?.message, toastOptions);
         }
       } catch (error) {
-        console.log(error);
-        toast.error(error.response?.data?.message, toastOptions);
+        console.log("Error: ", error);
+        navigate("/login", {
+          state: error.response?.data
+        })
       }
     }
     fetchData();
   }, [])
+
+  if (!searchParams.get("email") || !searchParams.get("token")) {
+    return Navigate({ to: "/login", replace: true })
+  } else {
+    try {
+      const values = jwtDecode(searchParams.get("token"))
+      const currentDate = new Date();
+      if (values.exp * 1000 < currentDate.getTime()) {
+        return Navigate({ to: "/login", replace: true })
+      }
+    } catch (err) {
+      console.log(err);
+      return Navigate({ to: "/login", replace: true })
+    }
+  }
 
   return (
     <div className={cx("confirm-container")}>
