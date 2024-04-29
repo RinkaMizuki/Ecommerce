@@ -4,7 +4,7 @@ import LockResetIcon from '@mui/icons-material/LockReset';
 import Button from "../../components/Button";
 import { useRef, useState } from "react";
 import { useNavigate, useSearchParams, Navigate } from "react-router-dom";
-import { postAuth as postResetPassword } from "../../services/ssoService";
+import { post as postResetPassword } from "../../services/ssoService";
 import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 

@@ -4,7 +4,7 @@ import classNames from "classnames/bind"
 import { useTranslation } from "react-i18next";
 
 const cx = classNames.bind(styles);
-const countDownDate = new Date(2024, 3, 23).getTime();
+const countDownDate = new Date(2024, 6, 23).getTime();
 const CountDown = () => {
   const { t } = useTranslation();
   // Renderer callback with condition

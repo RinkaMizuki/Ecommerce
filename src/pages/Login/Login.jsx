@@ -16,8 +16,7 @@ import Loading from "../../components/Loading";
 import queryString from "query-string";
 import { Helmet } from "react-helmet";
 import FacebookLogin from 'react-facebook-login';
-import { useLayoutEffect } from "react";
-import { postAuth } from "../../services/ssoService";
+import { post } from "../../services/ssoService";
 import Popup from "../../components/Popup";
 import { helpers } from "../../helpers/validate";
 
@@ -109,7 +108,7 @@ const Login = () => {
       //   token: res.data.accessToken,
       // })
       // toast.success("Login account successfully !", toastOptions);
-      const res = await postAuth("/auth/login", user);
+      const res = await post("/auth/login", user);
       toast.success(res?.data?.message, toastOptions);
       setTimeout(() => {
         dispatch(loginSuccess({
@@ -155,7 +154,7 @@ const Login = () => {
   const hanleForgotPassword = async () => {
     try {
       setIsLoading(true);
-      const res = await postAuth("/auth/forgot-password", {
+      const res = await post("/auth/forgot-password", {
         email: emailForgot,
         returnUrl: import.meta.env.VITE_ECOMMERCE_RESET_RETURN_URL
       })

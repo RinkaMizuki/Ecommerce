@@ -16,7 +16,7 @@ import Avatar from "../../../components/Avatar";
 import { useTranslation } from 'react-i18next';
 import { useClickOutside } from "../../../hooks/useClickOutside";
 //import { getToken as revokeToken } from "../../../services/googleService";
-import { postAuth as postLogout } from "../../../services/ssoService";
+import { post as postLogout } from "../../../services/ssoService";
 
 const cx = classNames.bind(styles);
 

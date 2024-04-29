@@ -5,7 +5,7 @@ import { loginSuccess } from "../../redux/authSlice";
 import Loading from "../Loading";
 import { useDispatch, useSelector } from "react-redux";
 //import { getToken as getTokenInfo } from "../../services/googleService";
-import { postAuth } from "../../services/ssoService";
+import { post } from "../../services/ssoService";
 
 const GoogleLogin = () => {
 
@@ -54,7 +54,7 @@ const GoogleLogin = () => {
             serviceName: import.meta.env.VITE_ECOMMERCE_SERVICE_NAME
           }
           if (type === "login") {
-            const userAuth = await postAuth("/auth/google-login", data, {
+            const userAuth = await post("/auth/google-login", data, {
               headers: {
                 "Content-Type": "application/json"
               }
@@ -68,7 +68,7 @@ const GoogleLogin = () => {
             })
           }
           else {
-            const userLinked = await postAuth("/auth/google-link", data, {
+            const userLinked = await post("/auth/google-link", data, {
               headers: {
                 "Content-Type": "application/json"
               },

@@ -5,7 +5,7 @@ import Button from "../../components/Button";
 import { Link, useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import { getRefreshToken as getConfirm } from "../../services/ssoService";
+import { get as getConfirm } from "../../services/ssoService";
 import { Navigate, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 

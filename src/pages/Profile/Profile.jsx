@@ -20,6 +20,9 @@ import Loading from "../../components/Loading";
 import { helpers } from "../../helpers/validate";
 import { FormControlLabel, FormGroup, Switch } from "@mui/material";
 import Popup from "../../components/Popup";
+import UnpublishedIcon from '@mui/icons-material/Unpublished';
+import { get as getOtpCode, post as postVerifyOtp } from "../../services/ssoService";
+import Countdown from 'react-countdown';
 
 const toastOptions = {
   position: "top-right",
@@ -36,10 +39,11 @@ const cx = classNames.bind(styles);
 
 const Profile = () => {
   const userLogin = useSelector(state => state.auth.login.currentUser.user);
-
+  const loginType = useSelector(state => state.auth.login.type);
   const [userName, setUserName] = useState(userLogin?.userName);
   const [isExistUserName, setIsExistUserName] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [f2aLoading, setF2aLoading] = useState(false);
   const [loadingUpdateProfile, setLoadingUpdateProfile] = useState(false);
   const [email, setEmail] = useState(userLogin?.email);
   const [phone, setPhone] = useState(userLogin?.phone);
@@ -49,12 +53,14 @@ const Profile = () => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isSend, setIsSend] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
   const [file, setFile] = useState(null);
   const [blob, setBlob] = useState(null);
   const [open, setOpen] = useState(false);
-
   const inputFileRef = useRef(null);
   const avatarRef = useRef(null);
+  const popupRef = useRef(null);
 
   const dispatch = useDispatch();
 
@@ -208,8 +214,6 @@ const Profile = () => {
     setIsF2A(!isF2A)
   }
 
-  const closeModal = () => setOpen(false);
-
   const debounced = useDebounce(userName, 500);
   useEffect(() => {
 
@@ -243,16 +247,74 @@ const Profile = () => {
 
   }, [blob])
 
-  const handleSendOTP = async () => {
-    try {
-      setLoading(true);
+  const handleEnableF2A = async () => {
+    setF2aLoading(true);
+    if (!isSend) {
+      try {
+        const res = await getOtpCode("/auth/enable-f2a", {
+          params: {
+            phone: userLogin?.phone
+          }
+        });
+        console.log(res);
+        setIsSend(true);
+      }
+      catch (err) {
+        console.log(err);
+      } finally {
+        setF2aLoading(false);
+      }
     }
-    catch (err) {
-
-    } finally {
-      setLoading(false);
+    else {
+      try {
+        const res = await postVerifyOtp("/auth/verify-otp", {
+          userId: userLogin?.id,
+          phone: userLogin?.phone,
+          otp: otpCode,
+          isF2A,
+        });
+        if (res.data?.statusCode === 200) {
+          setIsSend(true);
+        }
+        dispatch(loginSuccess({
+          ...res?.data,
+          type: loginType
+        }))
+        toast.success(res.data?.message, toastOptions);
+        setOtpCode("");
+        closeModal();
+      }
+      catch (err) {
+        console.log(err);
+        toast.error(err.response?.data?.message, toastOptions);
+      } finally {
+        setF2aLoading(false);
+      }
     }
   }
+
+  const Completionist = () => <span style={{
+    position: 'absolute',
+    right: "5px",
+    textDecoration: "underline",
+    color: "var(--primary)",
+    cursor: "pointer",
+  }}>Resend</span>;
+
+  // Renderer callback with condition
+  const renderer = ({ hours, minutes, seconds, completed }) => {
+    if (completed) {
+      // Render a completed state
+      return <Completionist />;
+    } else {
+      // Render a countdown
+      return <span style={{
+        position: 'absolute',
+        right: "5px"
+      }}>{seconds == 0 ? 60 : seconds}s</span>;
+    }
+  };
+
   return (
     <div className={cx("profile-container")}>
       <ToastContainer
@@ -268,7 +330,7 @@ const Profile = () => {
           <div className={cx("personal-image")}
             onClick={handleUploadAvatar}
           >
-            <input type="file" hidden ref={inputFileRef} onChange={handleAvatarChange} />
+            <input type="file" hidden ref={inputFileRef} onChange={handleAvatarChange} accept=".png, .jpeg, .jpg" />
             <figure className={cx("personal-figure")}>
               {!blob ? <LazyLoadImage src={userLogin?.url || defaultAvatar} className={cx("personal-avatar")} alt={userLogin?.image || "avatar"}
                 effect="blur"
@@ -383,8 +445,9 @@ const Profile = () => {
               </FormGroup>
             </Tippy>
             <Popup
-              onReset={() => setIsF2A(userLogin?.f2a)}
-              onClose={closeModal}
+              ref={popupRef}
+              isSend={isSend}
+              onReset={handleSwitchF2A}
               open={open}
               contentStyle={{
                 width: "25%",
@@ -401,26 +464,49 @@ const Profile = () => {
                   alignItems: "center",
                   gap: "10px"
                 }}>
-                  <PhoneLockedIcon sx={{
+                  {!isSend ? <PhoneLockedIcon sx={{
                     width: "50px",
                     height: "50px",
                     color: "var(--primary)"
-                  }} />
+                  }} /> : <UnpublishedIcon sx={{
+                    width: "50px",
+                    height: "50px",
+                    color: "var(--primary)"
+                  }} />}
                   <h1 style={{
                     fontSize: "20px",
                     fontWeight: "600",
                   }}>Two-Factor Authentication</h1>
+                  <div style={{
+                    maxWidth: "80%",
+                    textAlign: "center",
+                    fontWeight: "500",
+                    fontSize: isSend ? "15px" : "14px"
+                  }}>{!isSend ? "Are you sure you want to enable 2-factor authentication?" : <div>
+                    Please check your phone with number <span style={{
+                      textDecoration: "underline",
+                      color: "var(--primary)",
+                      fontWeight: "400"
+                    }}>{userLogin?.phone}</span> to receive the OTP code.
+                  </div>}</div>
                 </div>
               }
-              content={<span style={{
-                fontSize: "14px",
-                fontWeight: "400",
-              }}>Are you sure you want to enable 2-factor authentication?</span>}
+              content={
+                <div className={cx("otp-info")} style={{
+                  flex: 1
+                }}>
+                  {isSend ? <input type="text" placeholder="Enter Your Otp" required className={cx("input-otp")} value={otpCode} onChange={(e) => setOtpCode(e.target.value)} /> : <></>}
+                  {isSend && <Countdown
+                    date={Date.now() + 60000}
+                    renderer={renderer}
+                  />}
+                </div>
+              }
               action={
-                <Button className={cx("btn-agree")} disable={loading} onClick={handleSendOTP}>
+                <Button className={cx("btn-agree")} disable={f2aLoading || ((!otpCode || otpCode.length < 4) && isSend)} onClick={handleEnableF2A}>
                   <div className={cx("btn-content")}>
                     <span className={cx("btn-text-agree")}>
-                      {!loading ? "Send OTP" : <Loading className={cx("custom-loading", "sending")} />}
+                      {!isSend ? !f2aLoading ? "Send OTP" : <Loading className={cx("custom-loading", "sending")} /> : "Verify OTP"}
                     </span>
                   </div>
                 </Button>

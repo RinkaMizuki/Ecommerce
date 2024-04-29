@@ -11,7 +11,7 @@ import useCustomFetch from "../../hooks/useCustomFetch";
 import useDebounce from "../../hooks/useDebounce";
 import { Helmet } from "react-helmet";
 import { useSelector } from "react-redux";
-import { postAuth } from "../../services/ssoService";
+import { post } from "../../services/ssoService";
 
 const toastOptions = {
   position: "top-right",
@@ -124,7 +124,7 @@ const Register = () => {
       }
       setIsLoading(true);
       // const res = await registerService("/Auth/register", data);
-      const res = await postAuth("/auth/register", data);
+      const res = await post("/auth/register", data);
       if (res?.data?.statusCode == 201) {
         toast.success(res.data.message, toastOptions)
       }

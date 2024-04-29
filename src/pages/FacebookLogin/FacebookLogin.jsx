@@ -5,7 +5,7 @@ import Loading from "../Loading";
 import tokenService from "../../services/tokenService";
 import { loginSuccess } from "../../redux/authSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { postAuth } from "../../services/ssoService";
+import { post } from "../../services/ssoService";
 
 const FacebookLogin = () => {
 
@@ -26,7 +26,7 @@ const FacebookLogin = () => {
         //     userId: userLogin?.id
         //   }
         // })
-        const userAuth = await postAuth("/auth/facebook-login", null, {
+        const userAuth = await post("/auth/facebook-login", null, {
           params: {
             facebookAccessToken: location.state.accessToken,
             type,

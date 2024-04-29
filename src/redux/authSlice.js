@@ -17,8 +17,8 @@ const authSlice = createSlice({
     },
     loginSuccess: (state, action) => {
       state.login.isFetching = false;
-      const { accessToken, type, ...newObj } = action.payload;
-      state.login.currentUser = newObj;
+      const { type, user } = action.payload;
+      state.login.currentUser = { user };
       state.login.erorr = false;
       state.login.message = "Login successfully";
       state.login.type = type;

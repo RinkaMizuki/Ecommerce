@@ -2,34 +2,34 @@ import httpRequests from "../utils/httpRequests";
 import tokenService from "../services/tokenService"
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutSuccess } from "../redux/authSlice";
-import { getToken as refreshTokenGoogle } from "../services/googleService";
-import { getRefreshToken } from "../services/ssoService";
+import { logoutFailed, logoutStart, logoutSuccess } from "../redux/authSlice";
+import { get as refreshTokenGoogle, post as postLogout } from "../services/ssoService";
 
 const useCustomFetch = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const typeLogin = useSelector(state => state.auth.login.type);
-  const refreshToken = async (type) => {
-    try {
-      // const res = await httpRequests.post(`/Auth/refresh-token`);
-      const res = await getRefreshToken('/auth/refresh-token', {
-        params: {
-          type
-        }
-      });
-      return res;
-    } catch (error) {
-      if (error?.response?.status === 403 || error?.response?.status === 401) {
-        tokenService.removeToken();
-        dispatch(logoutSuccess({
-          message: "Logout successfully"
-        }))
-        navigate("/login")
-        return;
-      }
-    }
-  }
+  const userLogin = useSelector(state => state.auth.login.currentUser);
+  // const refreshToken = async (type) => {
+  //   try {
+  //     // const res = await httpRequests.post(`/Auth/refresh-token`);
+  //     const res = await refreshTokenGoogle('/auth/refresh-token', {
+  //       params: {
+  //         type
+  //       }
+  //     });
+  //     return res;
+  //   } catch (error) {
+  //     if (error?.response?.status === 403 || error?.response?.status === 401) {
+  //       tokenService.removeToken();
+  //       dispatch(logoutSuccess({
+  //         message: "Logout successfully"
+  //       }))
+  //       navigate("/login")
+  //       return;
+  //     }
+  //   }
+  // }
   //nếu có token thì trước khi request sẽ đính kèm vào headers
   httpRequests.interceptors.request.use(
     async (config) => {
@@ -54,24 +54,34 @@ const useCustomFetch = () => {
       const originalRequest = error.config;
       if (error.response?.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
-
-        await refreshToken(typeLogin);
-
+        await refreshTokenGoogle('/auth/refresh-token', {
+          params: {
+            type: typeLogin
+          }
+        });
         return httpRequests(originalRequest);
       }
 
       if (error.response?.status === 403 || error.response?.status === 401) {
-        let expires = null;
-        let now = new Date();
-        now.setTime(now.getTime() - 3 * 24 * 60 * 60 * 1000);
-        expires = 'expires=' + now.toUTCString();
-        document.cookie = 'refreshToken=' + document.cookie.split('=')[1] + ';' + expires;
-
-        tokenService.removeToken();
-        dispatch(logoutSuccess({
-          message: "Logout successfully"
-        }))
-        navigate("/login")
+        // let expires = null;
+        // let now = new Date();
+        // now.setTime(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+        // expires = 'expires=' + now.toUTCString();
+        // document.cookie = 'refreshToken=' + document.cookie.split('=')[1] + ';' + expires;
+        // document.cookie = 'accessToken=' + document.cookie.split('=')[1] + ';' + expires;
+        dispatch(logoutStart())
+        let res
+        try {
+          res = await postLogout(`/auth/logout`, {
+            userId: userLogin?.user?.id
+          }, {})
+          dispatch(logoutSuccess(res?.data))
+        } catch (error) {
+          dispatch(logoutFailed(res?.data))
+        } finally {
+          window.location.reload();
+          navigate("/login")
+        }
       }
       return Promise.reject(error);
     }

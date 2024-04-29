@@ -11,7 +11,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { useEffect, useRef } from "react";
 import Popup from "../../components/Popup";
-import { unlinkAccount } from "../../services/ssoService";
+import { remove } from "../../services/ssoService";
 
 const cx = classNames.bind(styles);
 const googleProvider = "Google";
@@ -63,7 +63,7 @@ const Link = () => {
   }
   const handleUnlinkAccount = async (providerKey, type, closePopup) => {
     try {
-      const res = await unlinkAccount("/auth/unlink-provider", {
+      const res = await remove("/auth/unlink-provider", {
         params: {
           userId: currentUser?.id,
           providerId: providerKey,

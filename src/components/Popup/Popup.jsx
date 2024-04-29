@@ -3,12 +3,12 @@ import { default as PopupComponent } from "reactjs-popup"
 import classNames from 'classnames/bind';
 import styles from "./Popup.module.scss";
 import CloseIcon from '@mui/icons-material/Close';
-import { forwardRef, useImperativeHandle } from 'react';
+import { forwardRef, useImperativeHandle, useState } from 'react';
 
 const cx = classNames.bind(styles);
 let closeGlobal = () => { };
 
-const Popup = forwardRef(({ content, contentStyle, action, header, trigger, lockScroll = true, closeOnDocumentClick = false, onReset = () => { }, open = false, onClose = () => { } }, ref) => {
+const Popup = forwardRef(({ content, contentStyle, action, header, trigger, lockScroll = true, closeOnDocumentClick = false, onReset = () => { }, open = false, isSend = false }, ref) => {
 
   const handleClosePopup = () => {
     closeGlobal();
@@ -18,14 +18,14 @@ const Popup = forwardRef(({ content, contentStyle, action, header, trigger, lock
   useImperativeHandle(ref, () => ({
     closePopup: () => {
       closeGlobal();
-    }
+    },
   }));
+
 
   return (
     <PopupComponent
       trigger={trigger}
       open={open}
-      onClose={onClose}
       modal
       nested
       contentStyle={contentStyle}
