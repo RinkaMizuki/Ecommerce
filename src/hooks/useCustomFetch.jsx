@@ -56,19 +56,13 @@ const useCustomFetch = () => {
         originalRequest._retry = true;
         await refreshTokenGoogle('/auth/refresh-token', {
           params: {
-            type: typeLogin
+            type: typeLogin,
+            remember: JSON.parse(localStorage.getItem("remember") || "false")
           }
         });
         return httpRequests(originalRequest);
       }
-
       if (error.response?.status === 403 || error.response?.status === 401) {
-        // let expires = null;
-        // let now = new Date();
-        // now.setTime(now.getTime() - 3 * 24 * 60 * 60 * 1000);
-        // expires = 'expires=' + now.toUTCString();
-        // document.cookie = 'refreshToken=' + document.cookie.split('=')[1] + ';' + expires;
-        // document.cookie = 'accessToken=' + document.cookie.split('=')[1] + ';' + expires;
         dispatch(logoutStart())
         let res
         try {
@@ -79,7 +73,7 @@ const useCustomFetch = () => {
         } catch (error) {
           dispatch(logoutFailed(res?.data))
         } finally {
-          window.location.reload();
+          //window.location.reload();
           navigate("/login")
         }
       }

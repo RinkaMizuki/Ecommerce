@@ -189,9 +189,9 @@ const Register = () => {
         </form>
         <div>
           <Button className={cx("btn-register")} lagre onClick={handleCreateAccount} ref={submitRef}
-            disable={!password || !userName || !email || !confirmPassword || isExistUserName}
+            disable={!password || !userName || !email || !confirmPassword || isExistUserName || isLoading}
           >
-            {!isLoading ? "Create Account" : <Loading className={cx("custom-loading")} />}
+            {!isLoading ? "Register Account" : <Loading className={cx("custom-loading")} />}
           </Button>
         </div>
         <div className={cx("register-redirect")}>

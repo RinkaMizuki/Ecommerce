@@ -110,6 +110,7 @@ const Login = () => {
       // toast.success("Login account successfully !", toastOptions);
       const res = await post("/auth/login", user);
       toast.success(res?.data?.message, toastOptions);
+      localStorage.setItem("remember", isChecked)
       setTimeout(() => {
         dispatch(loginSuccess({
           ...res?.data,

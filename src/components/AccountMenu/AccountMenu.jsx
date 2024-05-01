@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -16,11 +16,10 @@ import { SvgIcon } from '@mui/material';
 import styles from "./AccountMenu.module.scss";
 import classNames from 'classnames/bind';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useState, useLayoutEffect, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import useCustomFetch from '../../hooks/useCustomFetch';
-import { useLayoutEffect } from 'react';
+import { listUserAddress } from '../../redux/addressSlice';
 
 const cx = classNames.bind(styles);
 
@@ -121,11 +120,11 @@ function PlusSquare(props) {
 
 export default function AccountMenu() {
   const [selectedNode, setSelectedNode] = useState("0");
-  const [addresses, setAddresses] = useState([]);
   const userLogin = useSelector(state => state.auth.login.currentUser?.user);
-
+  const isFetching = useSelector(state => state.address.isFetching);
   const [getListUserAddress] = useCustomFetch();
-  const listAddress = useSelector(state => state.address.listAddress)
+  const dispatch = useDispatch();
+  const [listAddress, setListAddress] = useState([]);
   const navigate = useNavigate();
   const location = useLocation()
 
@@ -150,6 +149,20 @@ export default function AccountMenu() {
     }
   }
 
+  useLayoutEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getListUserAddress(`/Address/${userLogin.id}`);
+        setListAddress(response.data);
+        dispatch(listUserAddress(response.data));
+      }
+      catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData();
+  }, [isFetching])
+
   useEffect(() => {
     if (location.pathname.includes("/profile")) {
       setSelectedNode("5");
@@ -170,21 +183,6 @@ export default function AccountMenu() {
       setSelectedNode("11");
     }
   }, [location.pathname])
-
-  useLayoutEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (userLogin?.id) {
-          const response = await getListUserAddress(`/Address/${userLogin?.id}`);
-          setAddresses(response.data);
-        }
-      }
-      catch (error) {
-        console.log(error);
-      }
-    }
-    fetchData();
-  }, [])
 
   return (
     <div className={cx("menu-manager-container")}>
@@ -219,7 +217,7 @@ export default function AccountMenu() {
           />
           <StyledTreeItem
             nodeId="6"
-            labelInfo={addresses.length || listAddress.length}
+            labelInfo={listAddress?.length || 0}
             labelText="Address Book"
             labelIcon={HomeIcon}
             color="#e3742f"

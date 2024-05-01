@@ -40,7 +40,9 @@ const ProductFuture = () => {
 
   const renderer = ({ days, hours, minutes, seconds, completed }) => {
     if (completed) {
-      return <p>{t('cometo')}</p>
+      return <p style={{
+        color: "var(--primary)"
+      }}>{t('cometo')} 🎉</p>
     } else {
       // Render a countdown
       return (

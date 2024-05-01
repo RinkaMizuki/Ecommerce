@@ -115,7 +115,6 @@ const Header = function ({ toggleTopHeader }) {
   }, [userLogin?.user?.id])
 
   useEffect(() => {
-
     const ids = getLocalProductQuantity(userLogin?.user?.id);
     setListProductId(ids);
   }, [userLogin?.user?.id])
@@ -137,16 +136,16 @@ const Header = function ({ toggleTopHeader }) {
   }
 
   function onMount() {
-    setSpring({
+    setSpring.start({
       opacity: 1,
       transform: "scale(1)",
       onRest: () => { },
       config
-    });
+    })
   }
 
   function onHide({ unmount }) {
-    setSpring({
+    setSpring.start({
       ...initialStyles,
       onRest: unmount,
       config: { ...config, clamp: true }

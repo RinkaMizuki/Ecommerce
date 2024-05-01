@@ -101,8 +101,11 @@ const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false
     toast.error("A product has been removed from the favorites list", toastOptions)
   }
 
+  const filterReviewAccepted = (rates) => {
+    const reviewAccepted = rates?.filter(r => r.status === 'accepted');
+    return reviewAccepted;
+  }
   useEffect(() => {
-
     const handleStorageChange = () => {
       const ids = getLocalFavoriteProductId(userInfo.user.id);
       setIdFavorites(ids);
@@ -186,16 +189,16 @@ const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false
             <Skeleton />
           }
         </div>
-        {!hiddenStar && (data?.productRates?.length || data?.title ? <div className={cx("cart-feedback")}>
+        {!hiddenStar && (filterReviewAccepted(data?.productRates)?.length || data?.title ? <div className={cx("cart-feedback")}>
           <StarRatings
-            rating={isNaN(data?.productRates?.reduce((sum, rate) => sum + rate.star, 0) / data?.productRates?.length) ? 0 : data?.productRates?.reduce((sum, rate) => sum + rate.star, 0) / data?.productRates?.length}
+            rating={isNaN(filterReviewAccepted(data?.productRates)?.reduce((sum, rate) => sum + rate.star, 0) / filterReviewAccepted(data?.productRates)?.length) ? 0 : filterReviewAccepted(data?.productRates)?.reduce((sum, rate) => sum + rate.star, 0) / filterReviewAccepted(data?.productRates)?.length}
             starRatedColor="gold"
             numberOfStars={5}
             starDimension="17px"
             starSpacing="1px"
             name='rating'
           />
-          <span>({data?.productRates?.length})</span>
+          <span>({filterReviewAccepted(data?.productRates)?.length})</span>
         </div> : <Skeleton />)
         }
       </div>

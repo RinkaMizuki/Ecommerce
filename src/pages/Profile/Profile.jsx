@@ -1,7 +1,7 @@
 import classNames from "classnames/bind";
 import styles from "./Profile.module.scss";
 import Button from "../../components/Button";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import defaultAvatar from "../../assets/images/avatar.jpeg";
 import { LazyLoadImage } from "react-lazy-load-image-component";
@@ -23,6 +23,7 @@ import Popup from "../../components/Popup";
 import UnpublishedIcon from '@mui/icons-material/Unpublished';
 import { get as getOtpCode, post as postVerifyOtp } from "../../services/ssoService";
 import Countdown from 'react-countdown';
+import Count from "./Count";
 
 const toastOptions = {
   position: "top-right",
@@ -54,10 +55,12 @@ const Profile = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isSend, setIsSend] = useState(false);
+  const [toggleResend, setToggleResend] = useState(false);
   const [otpCode, setOtpCode] = useState("");
   const [file, setFile] = useState(null);
   const [blob, setBlob] = useState(null);
   const [open, setOpen] = useState(false);
+
   const inputFileRef = useRef(null);
   const avatarRef = useRef(null);
   const popupRef = useRef(null);
@@ -210,22 +213,22 @@ const Profile = () => {
   }
 
   const handleSwitchF2A = async () => {
-    setOpen(!open);
+    !isSend && setOpen(!open);
     setIsF2A(!isF2A)
+    if (isSend) {
+      popupRef.current?.hiddenPopup();
+    }
   }
 
   const debounced = useDebounce(userName, 500);
   useEffect(() => {
-
     if (!debounced?.trim()) {
       setIsExistUserName(true);
       return;
     }
-
     if (debounced == userLogin?.userName) {
       return;
     }
-
     const fetchData = async () => {
       setLoading(true);
       const response = await getUserInfo(`/Admin/users/${userName}`);
@@ -247,9 +250,9 @@ const Profile = () => {
 
   }, [blob])
 
-  const handleEnableF2A = async () => {
+  const handleEnableF2A = async (isResend = false) => {
     setF2aLoading(true);
-    if (!isSend) {
+    if (!isSend || isResend) {
       try {
         const res = await getOtpCode("/auth/enable-f2a", {
           params: {
@@ -258,6 +261,7 @@ const Profile = () => {
         });
         console.log(res);
         setIsSend(true);
+        setToggleResend(!toggleResend)
       }
       catch (err) {
         console.log(err);
@@ -274,7 +278,7 @@ const Profile = () => {
           isF2A,
         });
         if (res.data?.statusCode === 200) {
-          setIsSend(true);
+          setIsSend(false);
         }
         dispatch(loginSuccess({
           ...res?.data,
@@ -293,27 +297,7 @@ const Profile = () => {
     }
   }
 
-  const Completionist = () => <span style={{
-    position: 'absolute',
-    right: "5px",
-    textDecoration: "underline",
-    color: "var(--primary)",
-    cursor: "pointer",
-  }}>Resend</span>;
-
-  // Renderer callback with condition
-  const renderer = ({ hours, minutes, seconds, completed }) => {
-    if (completed) {
-      // Render a completed state
-      return <Completionist />;
-    } else {
-      // Render a countdown
-      return <span style={{
-        position: 'absolute',
-        right: "5px"
-      }}>{seconds == 0 ? 60 : seconds}s</span>;
-    }
-  };
+  const handleResendOtp = useCallback(() => handleEnableF2A(true), [toggleResend])
 
   return (
     <div className={cx("profile-container")}>
@@ -496,10 +480,7 @@ const Profile = () => {
                   flex: 1
                 }}>
                   {isSend ? <input type="text" placeholder="Enter Your Otp" required className={cx("input-otp")} value={otpCode} onChange={(e) => setOtpCode(e.target.value)} /> : <></>}
-                  {isSend && <Countdown
-                    date={Date.now() + 60000}
-                    renderer={renderer}
-                  />}
+                  {isSend && <Count onResend={handleResendOtp} />}
                 </div>
               }
               action={

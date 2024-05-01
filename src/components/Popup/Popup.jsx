@@ -3,15 +3,18 @@ import { default as PopupComponent } from "reactjs-popup"
 import classNames from 'classnames/bind';
 import styles from "./Popup.module.scss";
 import CloseIcon from '@mui/icons-material/Close';
-import { forwardRef, useImperativeHandle, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import './Popup.css';
 
 const cx = classNames.bind(styles);
 let closeGlobal = () => { };
 
 const Popup = forwardRef(({ content, contentStyle, action, header, trigger, lockScroll = true, closeOnDocumentClick = false, onReset = () => { }, open = false, isSend = false }, ref) => {
 
+  const [isHidden, setIsHidden] = useState(false);
+
   const handleClosePopup = () => {
-    closeGlobal();
+    !isSend && closeGlobal();
     onReset();
   }
 
@@ -19,13 +22,27 @@ const Popup = forwardRef(({ content, contentStyle, action, header, trigger, lock
     closePopup: () => {
       closeGlobal();
     },
+    hiddenPopup: () => {
+      setIsHidden(!isHidden);
+    }
   }));
 
+  useEffect(() => {
+    if (isHidden) {
+      document.body.style.overflow = "auto";
+    }
+    else {
+      if (isSend) {
+        document.body.style.overflow = "hidden";
+      }
+    }
+  }, [isHidden])
 
   return (
     <PopupComponent
+      className={isHidden ? "popup-display" : ""}
       trigger={trigger}
-      open={open}
+      open={!isSend ? open : true}
       modal
       nested
       contentStyle={contentStyle}

@@ -52,7 +52,11 @@ const ModalReview = ({ onHideModal, data }) => {
             effect="blur"
             alt="samsung"
           ></LazyLoadImage>
-          <p>{data?.description}</p>
+          <p dangerouslySetInnerHTML={{
+            __html: data?.title
+          }} style={{
+            fontSize: "25px"
+          }}></p>
           <StarRatings
             rating={star}
             starRatedColor="#ff9f00"

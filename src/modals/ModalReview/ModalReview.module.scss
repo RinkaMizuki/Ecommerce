@@ -12,7 +12,7 @@
 .review-container {
   background-color: #fff;
   border-radius: 20px;
-  min-width: 500px;
+  max-width: 500px;
   text-align: center;
   padding: 0px 30px 30px 30px;
 
@@ -125,6 +125,7 @@
   margin-top: 30px;
   background-color: #0071e3;
   transition: all .2s ease-in-out;
+
   &:hover {
     opacity: .7;
   }

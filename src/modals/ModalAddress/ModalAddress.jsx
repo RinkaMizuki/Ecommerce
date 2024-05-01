@@ -46,7 +46,6 @@ const ModalAddress = ({ onHideModal, data = null }) => {
   const defaultCheckRef = useRef(null);
   const returnCheckRef = useRef(null);
   const pickupCheckRef = useRef(null);
-
   const userLogin = useSelector(state => state.auth.login.currentUser.user);
   const isFetching = useSelector(state => state.address.isFetching);
   const listAddress = useSelector(state => state.address.listAddress);
@@ -126,7 +125,7 @@ const ModalAddress = ({ onHideModal, data = null }) => {
         state,
         city,
         district,
-        address: detailAddress,
+        address: detailAddress || address,
         town: "",
         IsDeliveryAddress: defaultCheckRef.current.checked,
         IsPickupAddress: pickupCheckRef.current.checked,
@@ -169,7 +168,7 @@ const ModalAddress = ({ onHideModal, data = null }) => {
         state,
         city,
         district,
-        address: localAddress[0].trim(),
+        address: localAddress[0].trim() || detailAddress,
         town: "",
         IsDeliveryAddress: defaultCheckRef.current.checked,
         IsPickupAddress: pickupCheckRef.current.checked,
@@ -233,7 +232,7 @@ const ModalAddress = ({ onHideModal, data = null }) => {
         placeholder: "Enter your address",
         lang: 'vi'
       });
-
+    autocomplete.setValue(detailAddress || "");
     autocomplete.on('select', (location) => {
       autocomplete.setValue(location?.properties?.address_line1?.split(",")[0] || "");
       handleMapAddressChange(location?.properties?.address_line1?.split(",")[0]);
@@ -244,8 +243,8 @@ const ModalAddress = ({ onHideModal, data = null }) => {
       ])
     });
 
-    autocomplete.on('suggestions', (suggestions) => {
-    });
+    //autocomplete.on('suggestions', (suggestions) => {
+    //});
   }, [])
 
   useEffect(() => {
@@ -557,7 +556,7 @@ const ModalAddress = ({ onHideModal, data = null }) => {
             </div>
             <div className={cx("form-action")}>
               <Button type="button" onClick={onHideModal}>Cancel</Button>
-              <Button type="button" disable={searchAddress.split(",").length < 3 || !fullname || !numberphone || !validatePhoneNumber(numberphone) || !detailAddress} onClick={!data ? handleSaveAddress : () => { handleUpdateAddress(data.id) }}>Save Changes</Button>
+              <Button type="button" disable={searchAddress.split(",").length < 3 || !fullname || !numberphone || !validatePhoneNumber(numberphone) || (!detailAddress && !address)} onClick={!data ? handleSaveAddress : () => { handleUpdateAddress(data.id) }}>Save Changes</Button>
             </div>
           </div>
         </form>
