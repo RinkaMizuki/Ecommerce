@@ -36,6 +36,7 @@ const Cart = () => {
   const [coupons, setCoupons] = useState([]);
   const [couponCode, setCouponCode] = useState("");
   const [totalPrice, setTotalPrice] = useState(0);
+  const [totalDiscount, setTotalDiscount] = useState(0);
   const [getListProduct] = useCustomFetch();
   const [isCouponApplied, setIsCouponApplied] = useState(false);
   const [checkedItems, setCheckedItems] = useState(listProductId.map(item => true));
@@ -44,18 +45,29 @@ const Cart = () => {
 
   const navigate = useNavigate();
 
-  const handleCheckboxChange = (index) => {
+  const handleCheckboxChange = (index, productId) => {
     const newCheckedItems = [...checkedItems];
     newCheckedItems[index] = !newCheckedItems[index];
     setCheckedItems(newCheckedItems);
+    setListProductId((preList) => {
+      return preList.map(p => {
+        if (p.id === productId) {
+          return {
+            ...p,
+            active: !p.active
+          }
+        }
+        return p;
+      });
+    })
     setTotalPrice(0);
     setCouponCode("");
   };
-
   useEffect(() => {
 
     const fetchData = async () => {
       try {
+        console.log(listProductId);
         if (listProductId.length !== 0) {
           setLoading(true);
           const queryStringData = queryString.stringify({
@@ -63,6 +75,7 @@ const Cart = () => {
             range: JSON.stringify([0, listProductId.length - 1]),
           })
           const response = await getListProduct(`/Admin/products?${queryStringData}`);
+
           setProducts(response.data);
         } else {
           setProducts([]);
@@ -76,7 +89,7 @@ const Cart = () => {
     fetchData();
 
   }, [listProductId])
-
+  console.log(listProductId);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -106,7 +119,6 @@ const Cart = () => {
 
     return () => {
       window.removeEventListener(`CartDataEvent_${userLogin?.user?.id}`, handleStorageChange);
-      localStorage.setItem('tranId', JSON.stringify(""));
     };
   }, [])
 
@@ -120,13 +132,19 @@ const Cart = () => {
   const calcSubtotal = () => {
 
     listProductId.forEach(p => {
-      const matchingProduct = products.find((prod, index) => prod.id === p.id && checkedItems[index]);
+      const matchingProduct = products.find((prod, index) => {
+        const isSameProd = prod.id === p.id;
+        if (isSameProd) {
+          prod.avaiable = p.active;
+        }
+        return isSameProd && checkedItems[index]
+      });
       if (matchingProduct) {
         matchingProduct.cartQuantity = p.quantity;
       }
     })
 
-    return products?.filter((p, index) => checkedItems[index])?.reduce((sum, p) => (sum + ((p?.price * p.cartQuantity) * (1 - p?.discount / 100))), 0);
+    return products?.filter((p, index) => checkedItems[index] && p.avaiable)?.reduce((sum, p) => (sum + ((p?.price * p.cartQuantity) * (1 - p?.discount / 100))), 0);
   }
 
   const handleApplyCoupon = async () => {
@@ -145,7 +163,8 @@ const Cart = () => {
           "Content-Type": "application/json",
         }
       });
-      setTotalPrice(response.totalPrice)
+      setTotalPrice(response.price.total)
+      setTotalDiscount(response.price.amountDiscount)
       setIsCouponApplied(true)
       toast.success(response.message, toastOptions)
     } catch (error) {
@@ -161,6 +180,7 @@ const Cart = () => {
       setCouponCode(code);
     }
     setTotalPrice(0);
+    setTotalDiscount(0);
     setIsCouponApplied(false)
   }
 
@@ -290,7 +310,11 @@ const Cart = () => {
           <div className={cx("cart-price-detail")}>
             <div>
               <p>Subtotal</p>
-              <p>{totalPrice ? totalPrice?.toLocaleString('it-IT', { style: 'currency', currency: 'VND' }) : calcSubtotal().toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</p>
+              <p>{calcSubtotal().toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</p>
+            </div>
+            <div>
+              <p>Discount</p>
+              <p>{totalDiscount} VND</p>
             </div>
             <div>
               <p>Shipping</p>
@@ -306,7 +330,9 @@ const Cart = () => {
           }}
             state={{
               products,
-              price: totalPrice || calcSubtotal(),
+              totalDiscount,
+              totalPrice: totalPrice || calcSubtotal(),
+              subTotal: calcSubtotal(),
               coupon: coupons.find(c => c.couponCode == couponCode),
             }}
             className={cx("btn-checkout")}

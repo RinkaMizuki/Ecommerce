@@ -19,6 +19,7 @@ import FacebookLogin from 'react-facebook-login';
 import { post } from "../../services/ssoService";
 import Popup from "../../components/Popup";
 import { helpers } from "../../helpers/validate";
+import { TextField } from "@mui/material";
 
 const toastOptions = {
   position: "top-right",
@@ -152,20 +153,21 @@ const Login = () => {
     setEmailForgot("");
   }
 
-  const hanleForgotPassword = async () => {
+  const handleForgotPassword = async () => {
     try {
       setIsLoading(true);
       const res = await post("/auth/forgot-password", {
         email: emailForgot,
         returnUrl: import.meta.env.VITE_ECOMMERCE_RESET_RETURN_URL
       })
-      console.log(res);
+      setIsSend(true);
     }
     catch (error) {
+      toast.error(error.response.data?.message, toastOptions);
       console.log(error);
+      setIsSend(false);
     }
     finally {
-      setIsSend(true);
       setIsLoading(false);
     }
   }
@@ -280,7 +282,7 @@ const Login = () => {
               {!isSend ? <input type="text" placeholder="Enter Your Email" required className={cx("input-forgot")} value={emailForgot} onChange={(e) => setEmailForgot(e.target.value)} /> : <></>}
             </div>}
             action={
-              <Button className={cx("btn-agree")} onClick={hanleForgotPassword} disable={!emailForgot || !helpers.validateEmail(emailForgot)} >
+              <Button className={cx("btn-agree")} onClick={handleForgotPassword} disable={!emailForgot || !helpers.validateEmail(emailForgot)} >
                 <div className={cx("btn-content")}>
                   <span className={cx("btn-text-agree")}>{!isSend ? !isLoading ? "Send Email" : <Loading className={cx("custom-loading", "sending")} /> : "Resend Email"}</span>
                 </div>

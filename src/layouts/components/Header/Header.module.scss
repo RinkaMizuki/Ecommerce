@@ -160,7 +160,8 @@
     font-weight: 300;
   }
 
-  >.icon-search {
+  >.icon-search,
+  .icon-loading {
     position: absolute;
     top: 25%;
     right: 10px;
@@ -168,6 +169,10 @@
     color: #535353;
     cursor: pointer;
   }
+}
+
+.icon-loading {
+  animation: spinner 1s linear infinite;
 }
 
 .icon-heart,
@@ -293,4 +298,15 @@ input::placeholder {
 
 .cart-icon {
   position: relative;
+}
+
+@keyframes spinner {
+  from {
+    transform: rotate(0);
+  }
+
+  //giữ lại thuộc tính translate Y để cho nó k bị ghi đè
+  to {
+    transform: rotate(360deg);
+  }
 }

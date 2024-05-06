@@ -180,6 +180,11 @@ img {
   color: var(--white);
 }
 
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
 :root {
   --form-control-color: rebeccapurple;
   --form-control-disabled: #959495;

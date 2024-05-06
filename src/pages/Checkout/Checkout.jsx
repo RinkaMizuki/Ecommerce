@@ -90,13 +90,8 @@ const Checkout = () => {
     fetchData();
   }, [])
 
-  const handleCalcTotalDiscount = () => {
-    const totalPriceProduct = location.state?.products?.reduce((prev, curr) => (prev + curr.price * curr.cartQuantity), 0);
-    return totalPriceProduct - location.state.price;
-  }
-
   const handleCalcTotalQuantity = () => {
-    return location.state?.products?.reduce((prev, curr) => (
+    return location.state?.products?.filter(p => p?.avaiable).reduce((prev, curr) => (
       prev + curr.cartQuantity
     ), 0);
   }
@@ -107,8 +102,8 @@ const Checkout = () => {
     cartQuantity: "quantityProduct",
   };
 
-  function handleGetInfoProducts(arr, keyMap) {
-    return arr.map(obj => {
+  function handleGetInfoProducts(listProd, keyMap) {
+    return listProd.filter(p => p.avaiable).map(obj => {
       return Object.keys(obj).reduce((acc, key) => {
         if (keyMap.hasOwnProperty(key)) {
           acc[keyMap[key]] = obj[key];
@@ -150,15 +145,14 @@ const Checkout = () => {
             district: handleFindDefaultAddress()?.city,
             city: handleFindDefaultAddress()?.state,
             country: "Việt Nam",
-            totalDiscount: handleCalcTotalDiscount(),
+            totalDiscount: location.state?.totalDiscount,
             totalQuantity: handleCalcTotalQuantity(),
-            requiredAmount: Math.floor(location.state?.price / 1000) * 1000,
+            requiredAmount: Math.floor(location.state?.totalPrice / 1000) * 1000,
             orderDetails: handleGetInfoProducts(location.state.products, keyMap),
             note: noteContent,
             couponId: location.state?.coupon?.id ?? null,
             userId: userLogin?.id
           };
-          console.log(Math.floor(location.state?.price / 1000) * 1000);
           const res = await postPaymentOrder("/Payment/post", paymentData, {
             "Content-Type": "application/json"
           });
@@ -249,7 +243,7 @@ const Checkout = () => {
         <div className={cx("bill-product")}>
           <div className={cx("bill-product-list")}>
             {location.state?.products?.map(p => (
-              <div className={cx("bill-product-item")} key={p.id}>
+              p.avaiable ? <div className={cx("bill-product-item")} key={p.id}>
                 <LazyLoadImage
                   style={{
                     width: "50px",
@@ -272,14 +266,19 @@ const Checkout = () => {
                     }
                   </div>
                 </div>
-              </div>
+              </div> : null
             ))}
           </div>
           <div className={cx("bill-price-wrapper")}>
             <div className={cx("bill-price")}>
               <div className={cx("bill-sub")}>
                 <p>SubTotal:</p>
-                <span>{location?.state?.price?.toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</span>
+                <span>{location?.state?.subTotal?.toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</span>
+              </div>
+              <span></span>
+              <div className={cx("bill-discount")}>
+                <p>Discount</p>
+                <p>{location?.state?.totalDiscount} VND</p>
               </div>
               <span></span>
               <div className={cx("bill-ship")}>
@@ -289,7 +288,7 @@ const Checkout = () => {
               <span></span>
               <div className={cx("bill-total")}>
                 <p>Total:</p>
-                <span>{location?.state?.price?.toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</span>
+                <span>{location?.state?.totalPrice?.toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</span>
               </div>
             </div>
           </div>

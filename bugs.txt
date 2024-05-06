@@ -1,0 +1,2 @@
+1. Bug giao diện category bị render ở 2 layout ✅
+2. Bug bill detail bị lấy tranId đầu tiên khi tạo bill ✅

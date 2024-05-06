@@ -129,6 +129,7 @@
   }
 }
 
+.bill-discount,
 .bill-sub,
 .bill-ship,
 .bill-total {
@@ -198,21 +199,25 @@
   gap: 20px;
   align-items: center;
   justify-content: center;
-  > p {
+
+  >p {
     font-size: 22px;
     text-align: center;
   }
-  > .btn-address {
+
+  >.btn-address {
     width: 100%;
   }
 }
 
 .valid-email {
   position: relative;
-  > label {
+
+  >label {
     color: var(--primary);
   }
-  > span {
+
+  >span {
     bottom: -15px;
     left: 0;
     position: absolute;

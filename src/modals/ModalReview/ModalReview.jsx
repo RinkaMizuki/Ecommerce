@@ -14,9 +14,7 @@ const ModalReview = ({ onHideModal, data }) => {
 
   const [star, setStar] = useState(5);
   const [reviewContent, setReviewContent] = useState("");
-  const userLogin = useSelector(state => state.auth.login.currentUser.user);
-
-  console.log(data.id);
+  const userLogin = useSelector(state => state.auth.login?.currentUser?.user);
 
   const handleSendReview = async () => {
     try {

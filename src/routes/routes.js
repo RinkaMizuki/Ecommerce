@@ -28,7 +28,7 @@ const publicRoutes = [
   {
     path: config.routes.home,
     element: Home,
-    layout: "default"
+    layout: "filter"
   },
   {
     path: config.routes.register,

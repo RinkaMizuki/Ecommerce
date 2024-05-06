@@ -44,7 +44,7 @@ const Sidebar = () => {
           defaultCollapseIcon={<ExpandMore />}
           defaultExpandIcon={<ChevronRight />}
           className={cx("categories")}
-          selected={[location?.state?.categoryTitle.toString(), location.state?.parentCategoryTitle?.toString(), params?.title?.toLocaleLowerCase()]}
+          selected={[location?.state?.categoryTitle?.toString(), location.state?.parentCategoryTitle?.toString(), params?.title?.toLocaleLowerCase()]}
         >
           {categories.length ? categories.map(c => (
             <MenuItem data={c} handleClick={() => onNavigate(c)} key={c.id} />

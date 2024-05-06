@@ -15,7 +15,7 @@ const ProductReview = ({ product }) => {
   const [data, setData] = useState([])
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage] = useState(2);
-  const userLogin = useSelector(state => state.auth.login.currentUser.user);
+  const userLogin = useSelector(state => state.auth.login?.currentUser?.user);
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
   const currentRecords = data?.slice(indexOfFirstRecord, indexOfLastRecord);
@@ -28,7 +28,7 @@ const ProductReview = ({ product }) => {
 
 
   const handleDisable = () => {
-    return data?.some(r => r.userId === userLogin.id);
+    return data?.some(r => r.userId === userLogin?.id);
   }
 
   return (

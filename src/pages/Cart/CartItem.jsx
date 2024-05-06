@@ -102,7 +102,7 @@ const CartItem = ({ p, userId, index, checkedItems, handleCheckboxChange, setTot
         <span className={cx("product-price-sale")}>{((p?.price * quantity) * (1 - p?.discount / 100)).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</span>
       </div>
       <label className={cx("form-control")}>
-        <input type="checkbox" name="checkbox" onChange={() => handleCheckboxChange(index)} checked={checkedItems[index]} />
+        <input type="checkbox" name="checkbox" onChange={() => handleCheckboxChange(index, p.id)} checked={checkedItems[index]} />
       </label>
     </div>
   )

@@ -56,11 +56,6 @@ const Home = () => {
         <title>MT Store - Ecommerce</title>
         <link rel="canonical" href={window.location.origin} />
       </Helmet>
-      <div className={cx("wrapper")}>
-        <ScrollButton />
-        <Sidebar />
-        <Slider />
-      </div>
       <ProductFlashSale></ProductFlashSale>
       <Category></Category>
       <ProductBestSeller></ProductBestSeller>

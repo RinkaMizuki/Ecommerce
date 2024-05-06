@@ -62,6 +62,9 @@ const CategoryDetail = () => {
     price: {},
     saleFilter: "",
   })
+
+  const scrollRef = useRef(null);
+
   const params = useParams();
   const location = useLocation();
   const [getListProductByCate] = useCustomFetch();
@@ -156,13 +159,20 @@ const CategoryDetail = () => {
     return result;
   };
 
+  useEffect(() => {
+    if (location.state?.scrollAble) {
+      scrollRef.current?.scrollIntoView({
+        behavior: "smooth",
+      })
+    }
+  }, [])
 
   useEffect(() => {
     handleFilter(filterValue.saleFilter, filterValue.price, extractSortCriteria(sortArray));
   }, [sortArray, params.title, sortTab])
 
   return (
-    <div className={cx("category-detail-container")}>
+    <div className={cx("category-detail-container")} ref={scrollRef}>
       <Helmet>
         <meta charSet="utf-8" />
         <title>MT Store - {params.title.charAt(0).toUpperCase() + params.title.slice(1)}</title>

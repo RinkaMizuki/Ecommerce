@@ -30,12 +30,8 @@ const Payment = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const tranId = localStorage.getItem('tranId') ?? "";
-        const response = await postPaymentReturn(`/Payment/return?${queryString}`, {
-          tranId
-        });
+        const response = await postPaymentReturn(`/Payment/return?${queryString}`);
         setInvoiceData(response.data);
-        localStorage.setItem('tranId', response.data?.tranId || "");
       }
       catch (err) {
         console.log(err);
@@ -57,7 +53,6 @@ const Payment = () => {
   const formatCurrency = (currency) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(currency)
   }
-
 
   const calcSubtotal = (products) => {
     return products?.reduce((sum, od) => {
@@ -163,8 +158,8 @@ const Payment = () => {
               </div>
               <div className={cx("invoice-total-value")}>
                 <p>{formatCurrency(calcSubtotal(invoiceData?.orderDetails))}</p>
-                <p>-{formatCurrency(20000)}</p>
-                <h1>{formatCurrency(calcSubtotal(invoiceData?.orderDetails) - 20000)}</h1>
+                <p>-{formatCurrency(invoiceData?.totalDiscount)}</p>
+                <h1>{formatCurrency(calcSubtotal(invoiceData?.orderDetails) - invoiceData?.totalDiscount)}</h1>
               </div>
             </div>
             <p className={cx("thank-for")}

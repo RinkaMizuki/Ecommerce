@@ -7,7 +7,6 @@ import 'tippy.js/dist/tippy.css';
 import { logoutFailed, logoutStart, logoutSuccess } from "../../../redux/authSlice";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import { useSpring, animated } from "@react-spring/web";
-//import tokenService from "../../../services/tokenService";
 import { getLocalFavoriteProductId } from "../../../services/favoriteService";
 import { getLocalProductQuantity } from "../../../services/cartService";
 import { useEffect, useRef, useState } from "react";
@@ -15,10 +14,15 @@ import defaultAvatar from "../../../assets/images/avatar.jpeg";
 import Avatar from "../../../components/Avatar";
 import { useTranslation } from 'react-i18next';
 import { useClickOutside } from "../../../hooks/useClickOutside";
-//import { getToken as revokeToken } from "../../../services/googleService";
 import { post as postLogout } from "../../../services/ssoService";
+import useDebounce from "../../../hooks/useDebounce";
+import useCustomFetch from "../../../hooks/useCustomFetch";
+import queryString from "query-string";
+import ProductSearch from "../../../components/ProductSearch/ProductSearch";
 
 const cx = classNames.bind(styles);
+
+export const SHOW_PRODUCT_MAX = 4;
 
 const LANGUAGE = [
   {
@@ -61,6 +65,10 @@ const Header = function ({ toggleTopHeader }) {
   const userLogin = useSelector(state => state.auth.login.currentUser);
   const [listId, setListId] = useState(getLocalFavoriteProductId(userLogin?.user?.id));
   const [listProductId, setListProductId] = useState(getLocalProductQuantity(userLogin?.user?.id));
+  const [productTitle, setProductTitle] = useState('');
+  const [products, setProducts] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [getListProductSearch] = useCustomFetch()
 
   const config = { tension: 300, friction: 20 };
   const initialStyles = { opacity: 0, transform: "scale(0.5)" };
@@ -81,6 +89,31 @@ const Header = function ({ toggleTopHeader }) {
     i18n.changeLanguage(lng)
     setIsShow(false);
   }
+
+  const debounced = useDebounce(productTitle, 500);
+
+  useEffect(() => {
+    if (debounced.trim() != '') {
+      const fetchData = async () => {
+        setIsLoading(true);
+        try {
+          const queryStringData = queryString.stringify({
+            filter: JSON.stringify({ q: debounced }),
+            range: JSON.stringify([0, SHOW_PRODUCT_MAX]),
+          })
+          const res = await getListProductSearch(`/Admin/products?${queryStringData}`);
+          setProducts(res.data);
+        } catch (err) {
+          console.log(err);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+      fetchData();
+    } else {
+      setProducts(null);
+    }
+  }, [debounced])
 
   useClickOutside(expandRef, handleClickOutside);
   useEffect(() => {
@@ -118,7 +151,6 @@ const Header = function ({ toggleTopHeader }) {
     const ids = getLocalProductQuantity(userLogin?.user?.id);
     setListProductId(ids);
   }, [userLogin?.user?.id])
-
 
   const handleLogout = async () => {
     dispatch(logoutStart())
@@ -205,8 +237,9 @@ const Header = function ({ toggleTopHeader }) {
           </div>
           <div className={cx("right-header")}>
             <div className={cx("input-search")}>
-              <input type="text" name="search" id="search" placeholder={t('search-placeholder')} />
-              <i className={cx("icon-search", "fa-solid fa-magnifying-glass")}></i>
+              <input type="text" name="search" id="search" placeholder={t('search-placeholder')} value={productTitle} onChange={(e) => setProductTitle(e.target.value.trim())} />
+              {!isLoading ? <i className={cx("icon-search", "fa-solid fa-magnifying-glass")}></i> : <i className={cx("fa-solid fa-spinner", "icon-loading")} />}
+              {products != null && <ProductSearch products={products} onHideListSearch={setProducts} onClearInputSearch={setProductTitle} />}
             </div>
             {userLogin && (location.pathname !== "/favorite" ? <Link to="/favorite" className={cx("favorite-wrapper")}>
               <span className={cx("favorite-quantity")}>{listId.length || 0}</span>
