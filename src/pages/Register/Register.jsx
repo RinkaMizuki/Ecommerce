@@ -111,6 +111,7 @@ const Register = () => {
 
   const handleCreateAccount = async () => {
     try {
+      setIsLoading(true);
       if (password != confirmPassword) {
         toast.error('Confirm password incorrect.', toastOptions);
         return;
@@ -122,15 +123,12 @@ const Register = () => {
         service: import.meta.env.VITE_ECOMMERCE_SERVICE_NAME,
         confirmPassword,
       }
-      setIsLoading(true);
       // const res = await registerService("/Auth/register", data);
       const res = await post("/auth/register", data);
       if (res?.data?.statusCode == 201) {
         toast.success(res.data.message, toastOptions)
       }
-      setTimeout(() => {
-        clearInput();
-      }, 500);
+      clearInput();
     }
     catch (err) {
 
@@ -157,7 +155,9 @@ const Register = () => {
         <link rel="canonical" href={`${window.location.origin}/register`} />
       </Helmet>
       <div className={cx("register-image")}>
-        <ToastContainer></ToastContainer>
+        <ToastContainer style={{
+          marginTop: "110px",
+        }}></ToastContainer>
         <img src={ecommerceRegister} alt="Ecommerce" />
       </div>
       <div className={cx("register-form")}>

@@ -43,7 +43,10 @@ const authSlice = createSlice({
       state.login.erorr = true;
       state.login.message = "Logout failed";
       state.login.type = "";
-    }
+    },
+    refreshFetching: (state) => {
+      state.login.isFetching = false;
+    },
   }
 })
 
@@ -53,7 +56,8 @@ export const {
   loginSuccess,
   logoutStart,
   logoutFailed,
-  logoutSuccess
+  logoutSuccess,
+  refreshFetching
 } = authSlice.actions
 
 export default authSlice.reducer

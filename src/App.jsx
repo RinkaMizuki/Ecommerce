@@ -11,20 +11,6 @@ import NoSupport from "./pages/NoSupport";
 
 function App() {
   const [toggleTopHeader, setToggleTopHeader] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-
-    const handleLoaded = () => {
-      setLoading(false);
-    }
-
-    window.addEventListener("load", handleLoaded);
-
-    return () => {
-      window.removeEventListener("load", handleLoaded);
-    }
-  }, [])
 
   useEffect(() => {
     const handleScroll = function (e) {

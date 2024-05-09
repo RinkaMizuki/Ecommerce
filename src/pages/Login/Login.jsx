@@ -4,22 +4,24 @@ import ecommerceRegister from "../../assets/images/ecommerce-register.jpg";
 import Button from "../../components/Button"
 import google from "../../assets/images/google.png"
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import { useDispatch, useSelector } from "react-redux";
 import MarkEmailUnreadIcon from '@mui/icons-material/MarkEmailUnread';
 import NoEncryptionIcon from '@mui/icons-material/NoEncryption';
 import FacebookIcon from '@mui/icons-material/Facebook';
-import { loginFailed, loginStart, loginSuccess } from "../../redux/authSlice";
-//import tokenService from "../../services/tokenService"
+import { loginFailed, loginStart, loginSuccess, refreshFetching } from "../../redux/authSlice";
 import Loading from "../../components/Loading";
 import queryString from "query-string";
 import { Helmet } from "react-helmet";
+import PasswordIcon from '@mui/icons-material/Password';
 import FacebookLogin from 'react-facebook-login';
 import { post } from "../../services/ssoService";
 import Popup from "../../components/Popup";
 import { helpers } from "../../helpers/validate";
-import { TextField } from "@mui/material";
+import { get as getOtpCode, post as postVerifyOtp } from "../../services/ssoService";
+import OTP from "../../components/OTP";
+import Count from "../Profile/Count"
 
 const toastOptions = {
   position: "top-right",
@@ -38,12 +40,18 @@ const Login = () => {
   const [userNameOrEmail, setUserNameOrEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailForgot, setEmailForgot] = useState("");
+  const [phoneOtp, setPhoneOtp] = useState("");
+  const [open, setOpen] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
   const [isHidePassword, setIsHidePassword] = useState(true);
+  const [isOtpLoading, setIsOtpLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSend, setIsSend] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [toggleResend, setToggleResend] = useState(false);
   const passwordRef = useRef(null);
   const submitRef = useRef(null);
+  const popupRef = useRef(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -110,15 +118,21 @@ const Login = () => {
       // })
       // toast.success("Login account successfully !", toastOptions);
       const res = await post("/auth/login", user);
-      toast.success(res?.data?.message, toastOptions);
       localStorage.setItem("remember", isChecked)
-      setTimeout(() => {
-        dispatch(loginSuccess({
-          ...res?.data,
-          type: "default"
-        }))
-        navigate("/")
-      }, 1000);
+      if (!res.data?.user?.f2a) {
+        toast.success(res?.data?.message, toastOptions);
+        setTimeout(() => {
+          dispatch(loginSuccess({
+            ...res?.data,
+            type: "default"
+          }))
+          navigate("/")
+        }, 1000);
+        return;
+      }
+      setPhoneOtp(res.data?.user?.phone);
+      setOpen(true);
+      await handleLoginWithF2A(res.data?.user?.phone)
     } catch (error) {
       if (error.response.status != 200) {
         toast.error("Login failed. Please try to again !", toastOptions);
@@ -130,6 +144,29 @@ const Login = () => {
     }
   }
 
+  const handleLoginWithF2A = async (phone = "") => {
+    setIsOtpLoading(true);
+    try {
+      const res = await getOtpCode("/auth/enable-f2a", {
+        params: {
+          phone: phone || phoneOtp
+        }
+      });
+      setToggleResend(!toggleResend)
+      console.log(res);
+    }
+    catch (err) {
+      console.log(err);
+    } finally {
+      setIsOtpLoading(false);
+    }
+  }
+
+  const handleResendOtp = useCallback(() => {
+    handleLoginWithF2A();
+    setOtpCode("");
+  }, [toggleResend])
+
   const responseFacebook = (res) => {
     localStorage.setItem("authType", JSON.stringify("login"))
     navigate("/signin-facebook", {
@@ -138,6 +175,7 @@ const Login = () => {
   }
 
   useEffect(() => {
+    dispatch(refreshFetching())
     if (location.state) {
       toast.error(location.state.message, toastOptions);
       window.history.replaceState({}, '')
@@ -153,6 +191,33 @@ const Login = () => {
     setEmailForgot("");
   }
 
+  const handleVerifyOTP = async () => {
+    try {
+      const res = await postVerifyOtp("/auth/verify-otp", {
+        phone: phoneOtp,
+        otp: otpCode,
+      }, {
+        params: {
+          type: "verify-login"
+        }
+      });
+      dispatch(loginSuccess({
+        ...res?.data,
+        type: "default"
+      }))
+      toast.success(res.data?.message, toastOptions);
+      setOtpCode("");
+      closeModal();
+    }
+    catch (err) {
+      console.log(err);
+      toast.error(err.response?.data?.message, toastOptions);
+    }
+    finally {
+      setIsOtpLoading(false);
+    }
+  }
+
   const handleForgotPassword = async () => {
     try {
       setIsLoading(true);
@@ -160,6 +225,7 @@ const Login = () => {
         email: emailForgot,
         returnUrl: import.meta.env.VITE_ECOMMERCE_RESET_RETURN_URL
       })
+      console.log(res);
       setIsSend(true);
     }
     catch (error) {
@@ -179,9 +245,83 @@ const Login = () => {
         <title>MT Store - Login</title>
         <link rel="canonical" href={`${window.location.origin}/login`} />
       </Helmet>
+      <Popup
+        ref={popupRef}
+        open={open}
+        onClose={() => {
+          toast.error("Login failed. Please try to again!", toastOptions);
+          setPassword("")
+          dispatch(loginFailed({
+            message: "Login failed."
+          }))
+          setOpen(false)
+        }
+        }
+        contentStyle={{
+          width: "25%",
+          padding: "2px",
+          borderRadius: "5px",
+          border: "0",
+          animation: ".3s cubic-bezier(.38,.1,.36,.9) forwards a"
+        }}
+        header={
+          <div style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "10px"
+          }}>
+            <PasswordIcon sx={{
+              width: "50px",
+              height: "50px",
+              color: "var(--primary)"
+            }} />
+            <h1 style={{
+              fontSize: "20px",
+              fontWeight: "600",
+            }}>Login With OTP</h1>
+            <div style={{
+              maxWidth: "80%",
+              textAlign: "center",
+              fontWeight: "500",
+              fontSize: "14px"
+            }}>
+              Please check your phone with number <span style={{
+                textDecoration: "underline",
+                color: "var(--primary)",
+                fontWeight: "400"
+              }}>{phoneOtp}</span> to receive the OTP code.
+            </div>
+          </div>
+        }
+        content={
+          <div className={cx("otp-info")} style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "10px"
+          }}>
+            <OTP separator={<span>-</span>} value={otpCode} onChange={setOtpCode} length={4} />
+            <Count
+              onResend={handleResendOtp}
+              className={cx('count-resend')} />
+          </div>
+        }
+        action={
+          <Button className={cx("btn-agree")} disable={((!otpCode || otpCode.length < 4) || isOtpLoading)} onClick={handleVerifyOTP}>
+            <div className={cx("btn-content")}>
+              <span className={cx("btn-text-agree")}>
+                Verify OTP
+              </span>
+            </div>
+          </Button>
+        }
+      />
       <div className={cx("login-image")}>
         <ToastContainer style={{
-          width: "30%",
           marginTop: "110px",
         }}></ToastContainer>
         <img src={ecommerceRegister} alt="Ecommerce" />

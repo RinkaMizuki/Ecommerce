@@ -9,13 +9,14 @@ import './Popup.css';
 const cx = classNames.bind(styles);
 let closeGlobal = () => { };
 
-const Popup = forwardRef(({ content, contentStyle, action, header, trigger, lockScroll = true, closeOnDocumentClick = false, onReset = () => { }, open = false, isSend = false }, ref) => {
+const Popup = forwardRef(({ content, contentStyle, action, header, trigger, lockScroll = true, closeOnDocumentClick = false, onReset = () => { }, onClose = () => { }, open = false, isSend = false }, ref) => {
 
   const [isHidden, setIsHidden] = useState(false);
 
   const handleClosePopup = () => {
     !isSend && closeGlobal();
     onReset();
+    onClose();
   }
 
   useImperativeHandle(ref, () => ({

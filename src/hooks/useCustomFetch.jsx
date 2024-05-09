@@ -3,7 +3,7 @@ import tokenService from "../services/tokenService"
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutFailed, logoutStart, logoutSuccess } from "../redux/authSlice";
-import { get as refreshTokenGoogle, post as postLogout } from "../services/ssoService";
+import { get as refreshToken, post as postLogout } from "../services/ssoService";
 
 const useCustomFetch = () => {
   const navigate = useNavigate();
@@ -54,7 +54,7 @@ const useCustomFetch = () => {
       const originalRequest = error.config;
       if (error.response?.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
-        await refreshTokenGoogle('/auth/refresh-token', {
+        await refreshToken('/auth/refresh-token', {
           params: {
             type: typeLogin,
             remember: JSON.parse(localStorage.getItem("remember") || "false")

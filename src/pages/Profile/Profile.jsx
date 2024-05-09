@@ -22,7 +22,6 @@ import { FormControlLabel, FormGroup, Switch } from "@mui/material";
 import Popup from "../../components/Popup";
 import UnpublishedIcon from '@mui/icons-material/Unpublished';
 import { get as getOtpCode, post as postVerifyOtp } from "../../services/ssoService";
-import Countdown from 'react-countdown';
 import Count from "./Count";
 
 const toastOptions = {
@@ -142,14 +141,12 @@ const Profile = () => {
       dispatch(loginSuccess(response.data))
 
       toast.success("Profile updated successfully.", toastOptions)
-      setConfirmPassword("");
-      setNewPassword("");
-      setCurrentPassword("");
-
     } catch (error) {
       toast.error(error?.response?.data?.message, toastOptions)
       console.log(error);
+    } finally {
       setLoadingUpdateProfile(false);
+      setIsDisable(true);
     }
   }
 
@@ -219,6 +216,7 @@ const Profile = () => {
       popupRef.current?.hiddenPopup();
     }
   }
+  const closeModal = () => setOpen(false);
 
   const debounced = useDebounce(userName, 500);
   useEffect(() => {
@@ -256,7 +254,7 @@ const Profile = () => {
       try {
         const res = await getOtpCode("/auth/enable-f2a", {
           params: {
-            phone: userLogin?.phone
+            phone: userLogin?.phone,
           }
         });
         console.log(res);
@@ -276,6 +274,10 @@ const Profile = () => {
           phone: userLogin?.phone,
           otp: otpCode,
           isF2A,
+        }, {
+          params: {
+            type: "verify-f2a"
+          }
         });
         if (res.data?.statusCode === 200) {
           setIsSend(false);
@@ -297,7 +299,10 @@ const Profile = () => {
     }
   }
 
-  const handleResendOtp = useCallback(() => handleEnableF2A(true), [toggleResend])
+  const handleResendOtp = useCallback(() => {
+    handleEnableF2A(true)
+    setOtpCode("");
+  }, [toggleResend])
 
   return (
     <div className={cx("profile-container")}>
@@ -430,6 +435,7 @@ const Profile = () => {
             </Tippy>
             <Popup
               ref={popupRef}
+              onClose={() => setOpen(false)}
               isSend={isSend}
               onReset={handleSwitchF2A}
               open={open}
@@ -484,7 +490,7 @@ const Profile = () => {
                 </div>
               }
               action={
-                <Button className={cx("btn-agree")} disable={f2aLoading || ((!otpCode || otpCode.length < 4) && isSend)} onClick={handleEnableF2A}>
+                <Button className={cx("btn-agree")} disable={f2aLoading || ((!otpCode || otpCode.length < 4) && isSend)} onClick={() => handleEnableF2A(!isSend)}>
                   <div className={cx("btn-content")}>
                     <span className={cx("btn-text-agree")}>
                       {!isSend ? !f2aLoading ? "Send OTP" : <Loading className={cx("custom-loading", "sending")} /> : "Verify OTP"}

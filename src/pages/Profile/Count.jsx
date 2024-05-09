@@ -1,7 +1,7 @@
 import { memo, useState } from "react";
 import Countdown from "react-countdown";
 
-const Count = ({ onResend }) => {
+const Count = ({ onResend, className }) => {
 
   const [key, setKey] = useState(false);
 
@@ -30,7 +30,7 @@ const Count = ({ onResend }) => {
     <div style={{
       position: 'absolute',
       right: "5px"
-    }}>
+    }} className={className}>
       <Countdown
         key={key}
         date={Date.now() + 60000}

@@ -29,10 +29,11 @@ const Confirm = () => {
   useEffect(() => {
     const email = searchParams.get("email") ?? "";
     const token = searchParams.get("token") ?? "";
+    const serviceName = searchParams.get("serviceName") ?? "";
     if (!email || !token) return;
     const fetchData = async () => {
       try {
-        const response = await getConfirm(`/auth/confirm-email?email=${email}&token=${token}`);
+        const response = await getConfirm(`/auth/confirm-email?email=${email}&token=${token}&serviceName=${serviceName}`);
         if (response?.data?.statusCode === 200) {
           toast.success(response?.data?.message, toastOptions);
         } else {
