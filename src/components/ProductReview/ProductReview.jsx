@@ -3,7 +3,7 @@ import styles from "./ProductReview.module.scss";
 import classNames from "classnames/bind";
 import Button from "../../components/Button";
 import ProductReviewItem from "./ProductReviewItem";
-import Pagination from "./Pagination";
+import PaginationReview from "./PaginationReview";
 import { useState, useContext, useEffect } from "react";
 import { ModalContext } from "../../context/ModalContext";
 import { useSelector } from "react-redux";
@@ -112,7 +112,7 @@ const ProductReview = ({ product }) => {
           ))}
         </ul>
         <div className={cx("review-tool")}>
-          <Pagination
+          <PaginationReview
             nPages={nPages || 1}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}

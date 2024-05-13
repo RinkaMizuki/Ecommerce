@@ -35,11 +35,7 @@ const ProductSearch = ({ products, onHideListSearch, onClearInputSearch }) => {
   const handleShowMoreProduct = async () => {
     try {
       const res = await getCategoryById(`/Admin/categories/${products[0]?.categoryId}`);
-      navigate(`/category/${res.data.title}`, {
-        state: {
-          scrollAble: true
-        }
-      });
+      navigate(`/category/${res.data.title}`);
     } catch (error) {
       console.log(error);
     } finally {

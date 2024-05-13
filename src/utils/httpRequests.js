@@ -3,7 +3,7 @@ import axios from "axios"
 const httpRequests = axios.create({
   baseURL: import.meta.env.VITE_ECOMMERCE_BASE_URL,
   withCredentials: true,
-  timeout: 5000,
+  //timeout: 5000,
 })
 
 export const httpRequestAddress = axios.create({
@@ -17,7 +17,7 @@ export const httpRequestGoogle = axios.create({
 export const httpRequestSso = axios.create({
   baseURL: import.meta.env.VITE_ECOMMERCE_SSO_BASE_URL,
   withCredentials: true,
-  timeout: 5000,
+  //timeout: 5000,
 })
 
 export const httpRequestGeoapify = axios.create({

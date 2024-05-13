@@ -160,12 +160,10 @@ const CategoryDetail = () => {
   };
 
   useEffect(() => {
-    if (location.state?.scrollAble) {
-      scrollRef.current?.scrollIntoView({
-        behavior: "smooth",
-      })
-    }
-  }, [])
+    scrollRef.current?.scrollIntoView({
+      behavior: "smooth",
+    })
+  }, [params.title])
 
   useEffect(() => {
     handleFilter(filterValue.saleFilter, filterValue.price, extractSortCriteria(sortArray));

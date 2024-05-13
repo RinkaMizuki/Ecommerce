@@ -147,7 +147,7 @@ const Checkout = () => {
             country: "Việt Nam",
             totalDiscount: location.state?.totalDiscount,
             totalQuantity: handleCalcTotalQuantity(),
-            requiredAmount: Math.floor(location.state?.totalPrice / 1000) * 1000,
+            requiredAmount: location.state?.totalPrice,
             orderDetails: handleGetInfoProducts(location.state.products, keyMap),
             note: noteContent,
             couponId: location.state?.coupon?.id ?? null,
@@ -278,7 +278,7 @@ const Checkout = () => {
               <span></span>
               <div className={cx("bill-discount")}>
                 <p>Discount</p>
-                <p>{location?.state?.totalDiscount} VND</p>
+                <p>{location?.state?.totalDiscount?.toLocaleString('it-IT', { style: 'currency', currency: 'VND' })} VND</p>
               </div>
               <span></span>
               <div className={cx("bill-ship")}>

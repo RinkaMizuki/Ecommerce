@@ -1,6 +1,6 @@
 import classNames from "classnames/bind";
 import styles from "./Cart.module.scss";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { getLocalProductQuantity } from "../../services/cartService";
 import { useSelector } from "react-redux";
 import useCustomFetch from "../../hooks/useCustomFetch";
@@ -63,11 +63,10 @@ const Cart = () => {
     setTotalPrice(0);
     setCouponCode("");
   };
-  useEffect(() => {
+  useLayoutEffect(() => {
 
     const fetchData = async () => {
       try {
-        console.log(listProductId);
         if (listProductId.length !== 0) {
           setLoading(true);
           const queryStringData = queryString.stringify({
@@ -89,7 +88,7 @@ const Cart = () => {
     fetchData();
 
   }, [listProductId])
-  console.log(listProductId);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -314,7 +313,7 @@ const Cart = () => {
             </div>
             <div>
               <p>Discount</p>
-              <p>{totalDiscount} VND</p>
+              <p>{totalDiscount.toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</p>
             </div>
             <div>
               <p>Shipping</p>

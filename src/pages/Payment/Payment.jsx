@@ -162,13 +162,6 @@ const Payment = () => {
                 <h1>{formatCurrency(calcSubtotal(invoiceData?.orderDetails) - invoiceData?.totalDiscount)}</h1>
               </div>
             </div>
-            <p className={cx("thank-for")}
-              style={{
-                fontSize: "20px",
-                fontWeight: "500",
-                fontFamily: "Montserrat"
-              }}
-            >{invoiceData?.message}</p>
           </div>
         </div>
       </> : <Loading />}
