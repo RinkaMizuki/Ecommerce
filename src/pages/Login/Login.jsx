@@ -134,10 +134,15 @@ const Login = () => {
       setOpen(true);
       await handleLoginWithF2A(res.data?.user?.phone)
     } catch (error) {
-      if (error.response.status != 200) {
-        toast.error("Login failed. Please try to again !", toastOptions);
-        setPassword("")
+      if (error.response?.status === 403) {
+        if (error.response?.data?.isBan) {
+          toast.error(error.response?.data.message, toastOptions);
+        }
       }
+      else if (error.response.status != 200) {
+        toast.error("Login failed. Please try to again !", toastOptions);
+      }
+      setPassword("")
       dispatch(loginFailed({
         message: "Login failed."
       }))
@@ -176,8 +181,14 @@ const Login = () => {
 
   useEffect(() => {
     dispatch(refreshFetching())
-    if (location.state) {
-      toast.error(location.state.message, toastOptions);
+    const state = location.state;
+    console.log(state);
+    if (state) {
+      if (state?.error) {
+        console.log(error);
+      } else {
+        toast.error(state.message, toastOptions);
+      }
       window.history.replaceState({}, '')
     }
   }, [location.state])

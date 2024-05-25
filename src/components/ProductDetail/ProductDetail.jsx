@@ -177,7 +177,7 @@ const ProductDetail = () => {
             }}>
               ({product?.productRates?.length} Reviews)
               <span>&nbsp; &nbsp; |</span>
-              <span> &nbsp;{product?.quantity ? " In Stock" : "Out Stock"}</span>
+              <span> &nbsp;{product?.productStock?.stockQuantity ? " In Stock" : "Out Stock"}</span>
             </span>
           </div>
           <div className={cx("product-price-wrapper")}>
@@ -233,6 +233,7 @@ const ProductDetail = () => {
               </i> : <i className={cx("fa-solid fa-heart", "active")}></i>}
             </span>
           </div>
+          <span className={cx("stock-text")}>We have <span className={cx("stock-quantity")}>{product?.productStock?.stockQuantity}</span> in Stock</span>
           <div className={cx("product-delivery")}>
             <div className={cx("free-delivery-wrapper")}>
               <i className="fa-solid fa-truck"></i>

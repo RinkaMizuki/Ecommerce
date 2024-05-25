@@ -6,7 +6,6 @@
 }
 
 .product-container {
-  max-height: 600px;
   display: flex;
   justify-content: center;
   gap: 50px;
@@ -89,6 +88,7 @@
   font-weight: 400;
   font-size: 15px;
   line-height: 1.5;
+
   span {
     overflow: hidden;
     max-width: 468px;
@@ -181,6 +181,14 @@ input[type='number']::-webkit-outer-spin-button {
 .btn-buynow {
   width: 165px;
   cursor: pointer;
+}
+
+.stock-text {
+  font-weight: 500;
+}
+
+.stock-quantity {
+  color: var(--primary);
 }
 
 .heart-wrapper {

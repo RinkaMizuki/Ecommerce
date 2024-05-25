@@ -14,6 +14,7 @@ const configRoutes = {
   manager: "/manager",
   profile: "/manager/profile",
   link: "/manager/links",
+  order: "/manager/orders",
   return: "/manager/returns",
   confirm: "/confirm-email",
   cart: "/cart",

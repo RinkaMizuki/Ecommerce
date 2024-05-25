@@ -8,6 +8,7 @@ import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
 import AddLinkIcon from '@mui/icons-material/AddLink';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import PaymentIcon from '@mui/icons-material/Payment';
+import LocalMallIcon from '@mui/icons-material/LocalMall';
 import HomeIcon from '@mui/icons-material/Home';
 import ManageHistoryIcon from '@mui/icons-material/ManageHistory';
 import { TreeView } from '@mui/x-tree-view/TreeView';
@@ -120,11 +121,13 @@ function PlusSquare(props) {
 
 export default function AccountMenu() {
   const [selectedNode, setSelectedNode] = useState("0");
+  const [listAddress, setListAddress] = useState([]);
+  const [listOrder, setListOrder] = useState([]);
   const userLogin = useSelector(state => state.auth.login.currentUser?.user);
-  const isFetching = useSelector(state => state.address.isFetching);
+  const isAddressFetching = useSelector(state => state.address.isFetching);
+  const isOrderFetching = useSelector(state => state.order.isFetching);
   const [getListUserAddress] = useCustomFetch();
   const dispatch = useDispatch();
-  const [listAddress, setListAddress] = useState([]);
   const navigate = useNavigate();
   const location = useLocation()
 
@@ -147,6 +150,9 @@ export default function AccountMenu() {
     else if (nodeId == 11) {
       navigate("/manager/cancellations")
     }
+    else if (nodeId == 12) {
+      navigate("/manager/orders")
+    }
   }
 
   useLayoutEffect(() => {
@@ -161,7 +167,26 @@ export default function AccountMenu() {
       }
     }
     fetchData();
-  }, [isFetching])
+  }, [isAddressFetching])
+
+  // useLayoutEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const queryStringData = queryString.stringify({
+  //         filter: JSON.stringify({
+  //           userId: userLogin.id
+  //         })
+  //       })
+  //       const response = await getListUserAddress(`/Admin/orders?${queryStringData}`);
+
+  //       console.log(response);
+  //     }
+  //     catch (error) {
+  //       console.log(error);
+  //     }
+  //   }
+  //   fetchData();
+  // }, [isOrderFetching])
 
   useEffect(() => {
     if (location.pathname.includes("/profile")) {
@@ -181,6 +206,9 @@ export default function AccountMenu() {
     }
     else if (location.pathname.includes("/cancellations")) {
       setSelectedNode("11");
+    }
+    else if (location.pathname.includes("/orders")) {
+      setSelectedNode("12");
     }
   }, [location.pathname])
 
@@ -268,7 +296,7 @@ export default function AccountMenu() {
         <StyledTreeItem nodeId="9" labelText="Manage Orders" labelIcon={ManageHistoryIcon}>
           <StyledTreeItem
             nodeId="10"
-            labelText="Returns"
+            labelText="Returneds"
             labelIcon={RecyclingIcon}
             labelInfo="10"
             color="#a250f5"
@@ -278,12 +306,22 @@ export default function AccountMenu() {
           />
           <StyledTreeItem
             nodeId="11"
-            labelText="Cancellations"
+            labelText="Cancellationeds"
             labelIcon={DisabledByDefaultIcon}
             labelInfo="5"
             color="#e3742f"
             bgColor="#fcefe3"
             colorForDarkMode="#FFE2B7"
+            bgColorForDarkMode="#191207"
+          />
+          <StyledTreeItem
+            nodeId="12"
+            labelText="Ordereds"
+            labelIcon={LocalMallIcon}
+            labelInfo="5"
+            color="#a8729a"
+            bgColor="#c5a6bd"
+            colorForDarkMode="#c5a6bd"
             bgColorForDarkMode="#191207"
           />
 

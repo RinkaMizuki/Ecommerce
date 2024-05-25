@@ -62,7 +62,7 @@ const useCustomFetch = () => {
         });
         return httpRequests(originalRequest);
       }
-      if (error.response?.status === 403 || error.response?.status === 401) {
+      else if (error.response?.status === 403 || error.response?.status === 401) {
         dispatch(logoutStart())
         let res
         try {

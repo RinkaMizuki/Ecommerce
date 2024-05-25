@@ -8,6 +8,7 @@ import AccountMenu from "../../components/AccountMenu";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Helmet } from "react-helmet";
+import AuthRequired from "../../HOC/AuthRequired";
 
 const cx = classNames.bind(styles);
 
@@ -64,4 +65,4 @@ const LayoutManagement = ({ toggleTopHeader, children }) => {
   )
 };
 
-export default LayoutManagement;
+export default AuthRequired(LayoutManagement);

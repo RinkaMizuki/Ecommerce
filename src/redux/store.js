@@ -3,10 +3,12 @@ import authSlice from "./authSlice";
 import addressSlice from "./addressSlice";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
+import orderSlice from "./orderSlice";
 
 const rootReducer = combineReducers({
   auth: authSlice,
   address: addressSlice,
+  order: orderSlice,
 })
 
 const persistConfig = {

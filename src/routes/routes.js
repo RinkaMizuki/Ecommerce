@@ -23,6 +23,7 @@ import GoogleLogin from "../pages/GoogleLogin";
 import Link from "../pages/Link";
 import FacebookLogin from "../pages/FacebookLogin";
 import ResetPassword from "../pages/ResetPassword";
+import Order from "../pages/Order";
 
 const publicRoutes = [
   {
@@ -88,6 +89,11 @@ const publicRoutes = [
   {
     path: config.routes.profile,
     element: AuthRequired(Profile),
+    layout: "management"
+  },
+  {
+    path: config.routes.order,
+    element: AuthRequired(Order),
     layout: "management"
   },
   {

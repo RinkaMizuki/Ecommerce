@@ -39,6 +39,15 @@ const Sidebar = () => {
     <>
       <div className={cx("sidebar-wrapper")}>
         <TreeView
+          sx={{
+            ".MuiTreeItem-iconContainer": {
+              width: "30px !important",
+              height: "30px !important"
+            },
+            ".MuiCollapse-root": {
+              marginLeft: "10px",
+            },
+          }}
           aria-label="Categories"
           defaultExpanded={[`${location.state?.parentCategoryTitle?.toLowerCase() || 0}`]}
           defaultCollapseIcon={<ExpandMore />}

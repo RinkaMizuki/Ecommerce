@@ -44,7 +44,7 @@ const MENU = [
   {
     title: "Manage My Orders",
     icon: "fa-solid fa-bag-shopping",
-    to: "/manager/returns"
+    to: "/manager/orders"
   },
   {
     title: "Manage My Reviews",
