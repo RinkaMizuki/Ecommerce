@@ -12,7 +12,7 @@ import AuthRequired from "../../HOC/AuthRequired";
 
 const cx = classNames.bind(styles);
 
-const LayoutManagement = ({ toggleTopHeader, children }) => {
+const LayoutManagement = AuthRequired(({ toggleTopHeader, children }) => {
 
   const userLogin = useSelector(state => state.auth.login.currentUser);
   const navigate = useNavigate();
@@ -63,6 +63,6 @@ const LayoutManagement = ({ toggleTopHeader, children }) => {
       <Footer />
     </>
   )
-};
+});
 
-export default AuthRequired(LayoutManagement);
+export default LayoutManagement;

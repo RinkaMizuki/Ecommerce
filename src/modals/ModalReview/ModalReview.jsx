@@ -7,6 +7,7 @@ import StarRatings from "react-star-ratings";
 import { useState } from "react";
 import { postReivew } from "../../services/reviewService";
 import { useSelector } from "react-redux";
+import ReactHtmlParser from "react-html-parser"
 
 const cx = classNames.bind(styles);
 
@@ -50,11 +51,9 @@ const ModalReview = ({ onHideModal, data }) => {
             effect="blur"
             alt="samsung"
           ></LazyLoadImage>
-          <p dangerouslySetInnerHTML={{
-            __html: data?.title
-          }} style={{
+          <p style={{
             fontSize: "25px"
-          }}></p>
+          }}>{ReactHtmlParser(data?.title || "")}</p>
           <StarRatings
             rating={star}
             starRatedColor="#ff9f00"

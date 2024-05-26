@@ -89,7 +89,6 @@ const Link = () => {
       console.log(err);
     }
   }
-
   useEffect(() => {
     if (location.state) {
       toast.error(location.state?.message, toastOptions);

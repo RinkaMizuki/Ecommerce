@@ -3,6 +3,7 @@ import styles from "./ProductSearch.module.scss";
 import classNames from "classnames/bind";
 import { Fragment } from "react";
 import Avatar from "../Avatar";
+import ReactHtmlParser from "react-html-parser"
 import { useNavigate } from "react-router-dom";
 import { SHOW_PRODUCT_MAX } from "../../layouts/components/Header/Header";
 import useCustomFetch from "../../hooks/useCustomFetch";
@@ -11,9 +12,7 @@ const cx = classNames.bind(styles);
 
 const Title = ({ title }) => {
   return (
-    <span dangerouslySetInnerHTML={{
-      __html: title
-    }} className={cx("product-title")}></span>
+    <span className={cx("product-title")}>{ReactHtmlParser(title || "")}</span>
   )
 }
 

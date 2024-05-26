@@ -4,7 +4,7 @@ import classNames from "classnames/bind";
 import Link from '@mui/material/Link';
 import useCustomFetch from "../../hooks/useCustomFetch";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import StarRatings from "react-star-ratings";
 import ReactHtmlParser from "react-html-parser"
 import Button from "../Button/Button";
@@ -16,6 +16,7 @@ import "react-lazy-load-image-component/src/effects/blur.css";
 import ProductReview from "../ProductReview";
 import { ToastContainer, toast } from "react-toastify";
 import { setLocalProductQuantity } from "../../services/cartService";
+import ProductColor from "./ProductColor";
 
 const cx = classNames.bind(styles);
 
@@ -39,6 +40,8 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const userLogin = useSelector(state => state.auth.login.currentUser);
   const [idFavorites, setIdFavorites] = useState(getLocalFavoriteProductId(userLogin?.user?.id));
+
+  const colorRef = useRef(null);
   const params = useParams();
   const navigate = useNavigate();
 
@@ -81,6 +84,13 @@ const ProductDetail = () => {
     };
   }, [])
 
+  useEffect(() => {
+    if (colorRef.current.children.length > 1) {
+      const listColor = Array.from(colorRef.current.children).slice(1);
+      setColor(listColor[0].getAttribute('id'));
+    }
+  }, [product])
+
   const handleChooseColor = (e) => {
     setColor(e.target.getAttribute("id"));
   }
@@ -107,7 +117,7 @@ const ProductDetail = () => {
   const handleClickBuy = () => {
     const currentProductId = params.productId;
     toast.info("Products has been added to cart", toastOptions)
-    setLocalProductQuantity(currentProductId, userLogin?.user?.id, quantity, "addMany")
+    setLocalProductQuantity(currentProductId, userLogin?.user?.id, quantity, "addMany", false, color)
   }
 
   return (
@@ -121,7 +131,7 @@ const ProductDetail = () => {
           <Link
             underline="hover"
             color="text.primary"
-            href={`/category/${category.id}`}
+            href={`/category/${category.title}`}
             aria-current="category"
           >
             {category.title}
@@ -186,21 +196,13 @@ const ProductDetail = () => {
           </div>
           <div className={cx("product-desc")}>{ReactHtmlParser(product?.description || "")}</div>
           <hr />
-          <div className={cx("product-colors")}>
+          <div className={cx("product-colors")} ref={colorRef}>
             <span>Colors: </span>
-            {product?.productColors?.length ? product?.productColors?.map(c => (
-              <div
-                style={{
-                  backgroundColor: `#${c.colorCode}`,
-                  border: `${color == c.colorCode ? "2px solid var(--white)" : "none"}`,
-                  outline: `${color == c.colorCode ? "2px solid var(--black)" : "none"}`
-                }}
-                id={c.colorCode}
-                className={cx("color")}
-                onClick={(e) => handleChooseColor(e)}
-                key={c.colorId}
-              />
-            )) : "No colors"}
+            <ProductColor
+              color={color}
+              handleChooseColor={handleChooseColor}
+              colors={product.productColors}
+            />
           </div>
           <div className={cx("product-sell")}>
             <div className={cx("number-input")}>

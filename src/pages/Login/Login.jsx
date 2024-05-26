@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import MarkEmailUnreadIcon from '@mui/icons-material/MarkEmailUnread';
 import NoEncryptionIcon from '@mui/icons-material/NoEncryption';
 import FacebookIcon from '@mui/icons-material/Facebook';
-import { loginFailed, loginStart, loginSuccess, refreshFetching } from "../../redux/authSlice";
+import { loginFailed, loginStart, loginSuccess, refreshError, refreshFetching } from "../../redux/authSlice";
 import Loading from "../../components/Loading";
 import queryString from "query-string";
 import { Helmet } from "react-helmet";
@@ -55,9 +55,9 @@ const Login = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
+  const error = useSelector(state => state.auth.login.error);
+  const message = useSelector(state => state.auth.login.message);
   const isFetching = useSelector(state => state.auth.login.isFetching);
-  const userLogin = useSelector(state => state.auth.login.currentUser);
   //logics handle
   const handleTogglePassword = () => {
     const typePassword = passwordRef.current?.getAttribute("type")
@@ -134,18 +134,8 @@ const Login = () => {
       setOpen(true);
       await handleLoginWithF2A(res.data?.user?.phone)
     } catch (error) {
-      if (error.response?.status === 403) {
-        if (error.response?.data?.isBan) {
-          toast.error(error.response?.data.message, toastOptions);
-        }
-      }
-      else if (error.response.status != 200) {
-        toast.error("Login failed. Please try to again !", toastOptions);
-      }
       setPassword("")
-      dispatch(loginFailed({
-        message: "Login failed."
-      }))
+      dispatch(loginFailed(error.response?.data))
     }
   }
 
@@ -181,21 +171,18 @@ const Login = () => {
 
   useEffect(() => {
     dispatch(refreshFetching())
-    const state = location.state;
-    console.log(state);
-    if (state) {
-      if (state?.error) {
-        console.log(error);
-      } else {
-        toast.error(state.message, toastOptions);
+    if (error) {
+      if (error?.isBan) {
+        toast.error(error.message, toastOptions);
       }
-      window.history.replaceState({}, '')
+      else {
+        toast.error(error.message, toastOptions);
+      }
+    } else if (message) {
+      toast.success(message, toastOptions);
     }
-  }, [location.state])
-
-  if (userLogin) {
-    return <Navigate to="/" />
-  }
+    dispatch(refreshError())
+  }, [error, message])
 
   const resetInput = () => {
     setIsSend(false);

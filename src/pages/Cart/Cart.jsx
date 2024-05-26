@@ -140,6 +140,7 @@ const Cart = () => {
       });
       if (matchingProduct) {
         matchingProduct.cartQuantity = p.quantity;
+        matchingProduct.color = p.color;
       }
     })
 
@@ -215,6 +216,7 @@ const Cart = () => {
       <section className={cx("cart-section")}>
         <div className={cx("card-header")}>
           <span>Product</span>
+          <span>Colors</span>
           <span>Price</span>
           <span>Quantity</span>
           <span>Subtotal</span>
@@ -222,7 +224,16 @@ const Cart = () => {
         <div className={cx("card-product")}>
           {products?.length !== 0 ? products?.map((p, index) => {
             return (
-              <CartItem p={p} key={p.id} userId={userLogin?.user?.id} index={index} checkedItems={checkedItems} handleCheckboxChange={handleCheckboxChange} setTotalPrice={setTotalPrice} setCouponCode={setCouponCode} />
+              <CartItem
+                key={p.id}
+                p={p}
+                userId={userLogin?.user?.id}
+                index={index}
+                checkedItems={checkedItems}
+                handleCheckboxChange={handleCheckboxChange}
+                setTotalPrice={setTotalPrice}
+                setCouponCode={setCouponCode}
+              />
             )
           }) : <span className={cx("not-available")}>The product is not available in the shopping cart.</span>
           }

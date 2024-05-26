@@ -143,10 +143,6 @@ const Register = () => {
     }
   }
 
-  if (userLogin) {
-    return <Navigate to="/" />
-  }
-
   return (
     <div className={cx("register-wrapper")}>
       <Helmet>

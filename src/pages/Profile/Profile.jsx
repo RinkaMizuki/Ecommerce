@@ -179,7 +179,6 @@ const Profile = () => {
     //   window.removeEventListener("storage", handleLoadProfile);
     // }
   }, [])
-
   const validateSaveChanges = () => {
     return isExistUserName || !email || ((new Date(birth).getTime() - 7 * 60 * 60 * 1000) > new Date().getTime()) || !helpers.validatePhoneNumber(phone) || !phone || !helpers.validateEmail(email) || isDisable;
   }

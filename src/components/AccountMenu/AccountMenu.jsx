@@ -21,6 +21,9 @@ import { useState, useLayoutEffect, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useCustomFetch from '../../hooks/useCustomFetch';
 import { listUserAddress } from '../../redux/addressSlice';
+import queryString from 'query-string';
+import { listUserOrder } from '../../redux/orderSlice';
+import { listUserReturn } from '../../redux/returnSlice';
 
 const cx = classNames.bind(styles);
 
@@ -122,11 +125,13 @@ function PlusSquare(props) {
 export default function AccountMenu() {
   const [selectedNode, setSelectedNode] = useState("0");
   const [listAddress, setListAddress] = useState([]);
+  const [listReturn, setListReturn] = useState([]);
   const [listOrder, setListOrder] = useState([]);
   const userLogin = useSelector(state => state.auth.login.currentUser?.user);
-  const isAddressFetching = useSelector(state => state.address.isFetching);
   const isOrderFetching = useSelector(state => state.order.isFetching);
-  const [getListUserAddress] = useCustomFetch();
+  const isReturnFetching = useSelector(state => state.return.isFetching);
+  const isAddressFetching = useSelector(state => state.address.isFetching);
+  const [getListInfo] = useCustomFetch();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation()
@@ -158,7 +163,7 @@ export default function AccountMenu() {
   useLayoutEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getListUserAddress(`/Address/${userLogin.id}`);
+        const response = await getListInfo(`/Address/${userLogin.id}`);
         setListAddress(response.data);
         dispatch(listUserAddress(response.data));
       }
@@ -169,24 +174,45 @@ export default function AccountMenu() {
     fetchData();
   }, [isAddressFetching])
 
-  // useLayoutEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const queryStringData = queryString.stringify({
-  //         filter: JSON.stringify({
-  //           userId: userLogin.id
-  //         })
-  //       })
-  //       const response = await getListUserAddress(`/Admin/orders?${queryStringData}`);
+  useLayoutEffect(() => {
+    const fetchData = async () => {
+      try {
+        const queryStringData = queryString.stringify({
+          filter: JSON.stringify({
+            userId: userLogin.id
+          })
+        })
+        const response = await getListInfo(`/Admin/orders?${queryStringData}`);
+        setListOrder(response.data)
+        dispatch(listUserOrder(response.data));
+      }
+      catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData();
+  }, [isOrderFetching])
 
-  //       console.log(response);
-  //     }
-  //     catch (error) {
-  //       console.log(error);
-  //     }
-  //   }
-  //   fetchData();
-  // }, [isOrderFetching])
+  useLayoutEffect(() => {
+    const fetchData = async () => {
+      try {
+        const queryStringData = queryString.stringify({
+          filter: JSON.stringify({
+            userId: userLogin.id,
+            returned: "true"
+          })
+        })
+        const response = await getListInfo(`/Admin/orders?${queryStringData}`);
+        console.log(response.data);
+        setListReturn(response.data)
+        dispatch(listUserReturn(response.data));
+      }
+      catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData();
+  }, [isReturnFetching])
 
   useEffect(() => {
     if (location.pathname.includes("/profile")) {
@@ -298,7 +324,7 @@ export default function AccountMenu() {
             nodeId="10"
             labelText="Returneds"
             labelIcon={RecyclingIcon}
-            labelInfo="10"
+            labelInfo={listReturn?.length}
             color="#a250f5"
             bgColor="#f3e8fd"
             colorForDarkMode="#D9B8FB"
@@ -318,9 +344,9 @@ export default function AccountMenu() {
             nodeId="12"
             labelText="Ordereds"
             labelIcon={LocalMallIcon}
-            labelInfo="5"
+            labelInfo={listOrder?.length}
             color="#a8729a"
-            bgColor="#c5a6bd"
+            bgColor="#f9d6f0"
             colorForDarkMode="#c5a6bd"
             bgColorForDarkMode="#191207"
           />

@@ -31,7 +31,7 @@
   padding-left: 1.5rem;
   padding-right: 1.5rem;
   gap: 0.75rem;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   display: grid;
 
   >span {
@@ -48,6 +48,25 @@
   flex-direction: column;
 }
 
+.product-colors {
+  >span {
+    margin-right: 10px;
+  }
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  >.custom-color {
+    clear: both;
+    margin-left: 10px;
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+    border-radius: 50%;
+  }
+}
+
 .card-product-item {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
   padding-top: 1.75rem;
@@ -56,7 +75,7 @@
   padding-right: 1.5rem;
   gap: 0.75rem;
   place-content: center;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   display: grid;
   position: relative;
   align-content: center;

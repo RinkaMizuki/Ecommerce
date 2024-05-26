@@ -81,7 +81,7 @@ const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false
       return;
     }
     toast.success("A product has been added to cart", toastOptions)
-    setLocalProductQuantity(id, userInfo?.user?.id, quantity, "add")
+    setLocalProductQuantity(id, userInfo?.user?.id, quantity, "add", false, data.productColors[0]?.colorCode)
     setQuantity(preQuantity => preQuantity + 1);
   }
   const handleRemoveProduct = (id) => {
@@ -90,7 +90,7 @@ const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false
       return;
     }
     toast.info("A product has been removed from the cart", toastOptions)
-    setLocalProductQuantity(id, userInfo?.user?.id, quantity, "remove")
+    setLocalProductQuantity(id, userInfo?.user?.id, quantity, "remove", data.productColors[0]?.colorCode)
     if (quantity >= 1) {
       setQuantity(preQuantity => preQuantity - 1);
     }

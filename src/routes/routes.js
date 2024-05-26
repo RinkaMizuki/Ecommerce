@@ -24,6 +24,7 @@ import Link from "../pages/Link";
 import FacebookLogin from "../pages/FacebookLogin";
 import ResetPassword from "../pages/ResetPassword";
 import Order from "../pages/Order";
+import LoggedIn from "../HOC/LoggedIn";
 
 const publicRoutes = [
   {
@@ -33,12 +34,12 @@ const publicRoutes = [
   },
   {
     path: config.routes.register,
-    element: Register,
+    element: LoggedIn(Register),
     layout: "default"
   },
   {
     path: config.routes.login,
-    element: Login,
+    element: LoggedIn(Login),
     layout: "default"
   },
   {
@@ -88,17 +89,17 @@ const publicRoutes = [
   },
   {
     path: config.routes.profile,
-    element: AuthRequired(Profile),
+    element: Profile,
     layout: "management"
   },
   {
     path: config.routes.order,
-    element: AuthRequired(Order),
+    element: Order,
     layout: "management"
   },
   {
     path: config.routes.link,
-    element: AuthRequired(Link),
+    element: Link,
     layout: "management"
   },
   {

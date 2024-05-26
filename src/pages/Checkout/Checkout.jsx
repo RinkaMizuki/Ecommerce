@@ -100,13 +100,14 @@ const Checkout = () => {
     discount: 'discountProduct',
     id: "productId",
     cartQuantity: "quantityProduct",
+    color: "color"
   };
 
   function handleGetInfoProducts(listProd, keyMap) {
-    return listProd.filter(p => p.avaiable).map(obj => {
-      return Object.keys(obj).reduce((acc, key) => {
+    return listProd.filter(p => p.avaiable).map(p => {
+      return Object.keys(p).reduce((acc, key) => {
         if (keyMap.hasOwnProperty(key)) {
-          acc[keyMap[key]] = obj[key];
+          acc[keyMap[key]] = p[key];
         }
         return acc;
       }, {});
@@ -151,7 +152,7 @@ const Checkout = () => {
             orderDetails: handleGetInfoProducts(location.state.products, keyMap),
             note: noteContent,
             couponId: location.state?.coupon?.id ?? null,
-            userId: userLogin?.id
+            userId: userLogin?.id,
           };
           const res = await postPaymentOrder("/Payment/post", paymentData, {
             "Content-Type": "application/json"
@@ -253,10 +254,17 @@ const Checkout = () => {
                   alt={p.image}
                   effect="blur"
                 />
+                {console.log(p)}
                 <div>
                   <p>{p.title} <span style={{
                     color: "var(--text-gray-700)"
                   }}>(x{p.cartQuantity})</span></p>
+                  <span style={{
+                    height: "20px",
+                    width: "20px",
+                    borderRadius: "5px",
+                    backgroundColor: `#${p.color}`
+                  }}></span>
                   <div className={cx("product-price")}>
                     {p?.price ? <>
                       <span className={cx("product-price-sale")}>{(p?.price * (1 - p?.discount / 100)).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</span>

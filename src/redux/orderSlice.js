@@ -1,25 +1,24 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const orderSlice = createSlice({
-  name: "address",
+  name: "order",
   initialState: {
     isFetching: false,
-    listAddress: [],
-    idAddressSelected: "",
+    listOrder: [],
   },
   reducers: {
-    saveUserAddress: (state, action) => {
+    saveUserOrder: (state, action) => {
       state.isFetching = action.payload;
     },
-    listUserAddress: (state, action) => {
-      state.listAddress = action.payload;
+    listUserOrder: (state, action) => {
+      state.listOrder = action.payload;
     },
   }
 })
 
 export const {
-  saveUserAddress,
-  listUserAddress,
+  saveUserOrder,
+  listUserOrder,
 } = orderSlice.actions
 
 export default orderSlice.reducer

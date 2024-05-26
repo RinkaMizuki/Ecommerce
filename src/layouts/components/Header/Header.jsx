@@ -154,16 +154,15 @@ const Header = function ({ toggleTopHeader }) {
 
   const handleLogout = async () => {
     dispatch(logoutStart())
-    let res
     try {
-      res = await postLogout(`/auth/logout`, {
+      const res = await postLogout(`/auth/logout`, {
         userId: userLogin?.user?.id
       }, {})
+      console.log(456);
       dispatch(logoutSuccess(res?.data))
       navigate("/login");
-      window.location.reload();
     } catch (error) {
-      dispatch(logoutFailed(res?.data))
+      dispatch(logoutFailed(error?.response.data))
     }
   }
 

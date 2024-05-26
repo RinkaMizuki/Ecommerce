@@ -13,7 +13,6 @@ import Snowfall from "react-snowfall";
 import ProductBestSeller from "../../components/ProductBestSeller/ProductBestSeller";
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import ScrollButton from "../../components/ScrollButton";
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useEffect } from "react";

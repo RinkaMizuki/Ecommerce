@@ -4,10 +4,11 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css'
-import { getLocalProductQuantity, setLocalProductQuantity } from "../../services/cartService";
-import { useEffect, useState } from "react";
+import { getLocalProductQuantity, setLocalProductColor, setLocalProductQuantity } from "../../services/cartService";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import ProductColor from "../../components/ProductDetail/ProductColor";
 
 const toastOptions = {
   position: "top-right",
@@ -25,10 +26,10 @@ const cx = classNames.bind(styles)
 const CartItem = ({ p, userId, index, checkedItems, handleCheckboxChange, setTotalPrice, setCouponCode }) => {
 
   const productsLocal = getLocalProductQuantity(userId);
-  const quantityLocal = productsLocal.find(prod => prod.id === p.id)?.quantity;
-
-  const [quantity, setQuantity] = useState(quantityLocal || 0);
-
+  const productLocal = productsLocal.find(prod => prod.id === p.id);
+  const [color, setColor] = useState(productLocal?.color);
+  const [quantity, setQuantity] = useState(productLocal?.quantity || 0);
+  const colorRef = useRef(null);
   const navigate = useNavigate();
 
   const handleAddProduct = (id, quantity = 1) => {
@@ -37,7 +38,7 @@ const CartItem = ({ p, userId, index, checkedItems, handleCheckboxChange, setTot
       return;
     }
     toast.info("Shopping cart successfully updated.", toastOptions)
-    setLocalProductQuantity(id, userId, quantity, "add")
+    setLocalProductQuantity(id, userId, quantity, "add", false, color)
     setQuantity(preQuantity => preQuantity + 1);
     setTotalPrice(0);
     setCouponCode("");
@@ -49,7 +50,7 @@ const CartItem = ({ p, userId, index, checkedItems, handleCheckboxChange, setTot
       return;
     }
     toast.info("Shopping cart successfully updated.", toastOptions)
-    setLocalProductQuantity(id, userId, quantity, "remove", remove)
+    setLocalProductQuantity(id, userId, quantity, "remove", remove, color)
     if (quantity >= 1) {
       setQuantity(preQuantity => preQuantity - 1);
     }
@@ -59,6 +60,21 @@ const CartItem = ({ p, userId, index, checkedItems, handleCheckboxChange, setTot
 
   const handleRedirectDetail = (productId) => {
     navigate(`/product-detail/${productId}`)
+  }
+
+  useEffect(() => {
+    if (colorRef.current.children.length) {
+      const listColor = Array.from(colorRef.current.children);
+      if (!color) {
+        setColor(listColor[0].getAttribute('id'));
+      }
+    }
+  }, [])
+
+  const handleChooseColor = (e, productId) => {
+    const colorChanged = e.target.getAttribute("id");
+    setColor(colorChanged);
+    setLocalProductColor(userId, productId, colorChanged)
   }
 
   return (
@@ -78,6 +94,15 @@ const CartItem = ({ p, userId, index, checkedItems, handleCheckboxChange, setTot
           </div>
         </div>
         <p className={cx("product-title")}>{p?.title}</p>
+      </div>
+      <div className={cx("product-colors")} ref={colorRef}>
+        <ProductColor
+          colors={p.productColors}
+          className={cx("custom-color")}
+          handleChooseColor={handleChooseColor}
+          color={color}
+          productId={p.id}
+        />
       </div>
       <div className={cx("product-price")}>
         {p?.price ? <>

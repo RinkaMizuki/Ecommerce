@@ -54,27 +54,27 @@ const useCustomFetch = () => {
       const originalRequest = error.config;
       if (error.response?.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
-        await refreshToken('/auth/refresh-token', {
-          params: {
-            type: typeLogin,
-            remember: JSON.parse(localStorage.getItem("remember") || "false")
-          }
-        });
-        return httpRequests(originalRequest);
-      }
-      else if (error.response?.status === 403 || error.response?.status === 401) {
-        dispatch(logoutStart())
-        let res
         try {
-          res = await postLogout(`/auth/logout`, {
-            userId: userLogin?.user?.id
-          }, {})
-          dispatch(logoutSuccess(res?.data))
-        } catch (error) {
-          dispatch(logoutFailed(res?.data))
-        } finally {
-          //window.location.reload();
-          navigate("/login")
+          await refreshToken('/auth/refresh-token', {
+            params: {
+              type: typeLogin,
+              remember: JSON.parse(localStorage.getItem("remember") || "false")
+            }
+          });
+          return httpRequests(originalRequest);
+        } catch (err) {
+          dispatch(logoutStart())
+          try {
+            await postLogout(`/auth/logout`, {
+              userId: userLogin?.user?.id
+            }, {})
+            dispatch(logoutFailed(err.response.data))
+          } catch (error) {
+            dispatch(logoutFailed(error.response.data))
+            console.log(error);
+          } finally {
+            navigate("/login")
+          }
         }
       }
       return Promise.reject(error);

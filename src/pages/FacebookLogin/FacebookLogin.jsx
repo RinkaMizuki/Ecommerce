@@ -3,7 +3,7 @@ import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import useCustomFetch from "../../hooks/useCustomFetch";
 import Loading from "../Loading";
 import tokenService from "../../services/tokenService";
-import { loginSuccess } from "../../redux/authSlice";
+import { loginFailed, loginSuccess } from "../../redux/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { post } from "../../services/ssoService";
 
@@ -45,9 +45,9 @@ const FacebookLogin = () => {
       }
       catch (error) {
         console.log(error);
+        dispatch(loginFailed(error.response?.data))
         navigate(`${type === "login" ? "/login" : "/manager/links"}`, {
           replace: true,
-          state: error?.response?.data
         })
       }
     }

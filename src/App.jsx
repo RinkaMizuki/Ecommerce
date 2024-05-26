@@ -53,7 +53,7 @@ function App() {
             </Routes>
           </ModalContextProvider>
         </BrowserRouter>
-      </BrowserView>
+      </BrowserView >
       <MobileView>
         <NoSupport />
       </MobileView>
