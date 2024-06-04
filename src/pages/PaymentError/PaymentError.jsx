@@ -13,13 +13,15 @@ const PaymentError = () => {
   function handleBackToHome() {
     navigate("/")
   }
-
+  console.log(location.state?.error);
   return (
     <>
       {location?.state?.error ? <div className={cx("payment-error-container")}>
         <img src={paymentFailed} alt="Payment Failed" />
         <div className={cx("payment-error-content")}>
-          <h1>{`${location.state?.error?.statusCode} Internal Server Error`}</h1>
+          <h1 style={{
+            color: "var(--primary)"
+          }}>{`Status Code: ${location.state?.error?.statusCode}`}</h1>
           <p>{location.state?.error?.message}</p>
           <Button
             className={cx("notfound-btn")}

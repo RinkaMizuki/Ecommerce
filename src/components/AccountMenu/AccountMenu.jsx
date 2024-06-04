@@ -22,8 +22,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import useCustomFetch from '../../hooks/useCustomFetch';
 import { listUserAddress } from '../../redux/addressSlice';
 import queryString from 'query-string';
+import ReviewsIcon from '@mui/icons-material/Reviews';
 import { listUserOrder } from '../../redux/orderSlice';
 import { listUserReturn } from '../../redux/returnSlice';
+import { listUserCancel } from '../../redux/cancelSlice';
+import { listUserReview } from '../../redux/reviewSlice';
 
 const cx = classNames.bind(styles);
 
@@ -127,9 +130,13 @@ export default function AccountMenu() {
   const [listAddress, setListAddress] = useState([]);
   const [listReturn, setListReturn] = useState([]);
   const [listOrder, setListOrder] = useState([]);
+  const [listCancel, setListCancel] = useState([]);
+  const [listReview, setListReview] = useState([]);
   const userLogin = useSelector(state => state.auth.login.currentUser?.user);
   const isOrderFetching = useSelector(state => state.order.isFetching);
   const isReturnFetching = useSelector(state => state.return.isFetching);
+  const isCancelFetching = useSelector(state => state.cancel.isFetching);
+  const isReviewFetching = useSelector(state => state.review.isFetching);
   const isAddressFetching = useSelector(state => state.address.isFetching);
   const [getListInfo] = useCustomFetch();
   const dispatch = useDispatch();
@@ -150,12 +157,15 @@ export default function AccountMenu() {
       navigate("/manager/payments")
     }
     else if (nodeId == 10) {
-      navigate("/manager/returns")
+      navigate("/manager/reviews")
     }
     else if (nodeId == 11) {
-      navigate("/manager/cancellations")
+      navigate("/manager/returns")
     }
     else if (nodeId == 12) {
+      navigate("/manager/cancels")
+    }
+    else if (nodeId == 13) {
       navigate("/manager/orders")
     }
   }
@@ -179,8 +189,10 @@ export default function AccountMenu() {
       try {
         const queryStringData = queryString.stringify({
           filter: JSON.stringify({
-            userId: userLogin.id
-          })
+            userId: userLogin.id,
+            ordered: "ordered"
+          }),
+          sort: JSON.stringify(['OrderDate', 'DESC'])
         })
         const response = await getListInfo(`/Admin/orders?${queryStringData}`);
         setListOrder(response.data)
@@ -200,10 +212,12 @@ export default function AccountMenu() {
           filter: JSON.stringify({
             userId: userLogin.id,
             returned: "true"
-          })
+          }),
+          sort: JSON.stringify(['OrderDate', 'DESC'])
         })
-        const response = await getListInfo(`/Admin/orders?${queryStringData}`);
-        console.log(response.data);
+        const response = await getListInfo(`/Admin/orders?${queryStringData}`, {
+
+        });
         setListReturn(response.data)
         dispatch(listUserReturn(response.data));
       }
@@ -213,6 +227,48 @@ export default function AccountMenu() {
     }
     fetchData();
   }, [isReturnFetching])
+
+  useLayoutEffect(() => {
+    const fetchData = async () => {
+      try {
+        const queryStringData = queryString.stringify({
+          filter: JSON.stringify({
+            userId: userLogin.id,
+            cancelled: "cancelled"
+          }),
+          sort: JSON.stringify(['OrderDate', 'DESC'])
+        })
+        const response = await getListInfo(`/Admin/orders?${queryStringData}`, {
+
+        });
+        setListCancel(response.data)
+        dispatch(listUserCancel(response.data));
+      }
+      catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData();
+  }, [isCancelFetching])
+
+  useLayoutEffect(() => {
+    const fetchData = async () => {
+      try {
+        const queryStringData = queryString.stringify({
+          filter: JSON.stringify({
+            userId: userLogin.id,
+          }),
+        })
+        const response = await getListInfo(`/Admin/rates?${queryStringData}`);
+        setListReview(response.data)
+        dispatch(listUserReview(response.data));
+      }
+      catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData();
+  }, [isReviewFetching])
 
   useEffect(() => {
     if (location.pathname.includes("/profile")) {
@@ -227,14 +283,17 @@ export default function AccountMenu() {
     else if (location.pathname.includes("/payments")) {
       setSelectedNode("8");
     }
-    else if (location.pathname.includes("/returns")) {
+    else if (location.pathname.includes("/reviews")) {
       setSelectedNode("10");
     }
-    else if (location.pathname.includes("/cancellations")) {
+    else if (location.pathname.includes("/returns")) {
       setSelectedNode("11");
     }
-    else if (location.pathname.includes("/orders")) {
+    else if (location.pathname.includes("/cancels")) {
       setSelectedNode("12");
+    }
+    else if (location.pathname.includes("/orders")) {
+      setSelectedNode("13");
     }
   }, [location.pathname])
 
@@ -272,7 +331,7 @@ export default function AccountMenu() {
           <StyledTreeItem
             nodeId="6"
             labelInfo={listAddress?.length || 0}
-            labelText="Address Book"
+            labelText="Addresses Book"
             labelIcon={HomeIcon}
             color="#e3742f"
             bgColor="#fcefe3"
@@ -322,26 +381,36 @@ export default function AccountMenu() {
         <StyledTreeItem nodeId="9" labelText="Manage Orders" labelIcon={ManageHistoryIcon}>
           <StyledTreeItem
             nodeId="10"
+            labelText="Reviews"
+            labelIcon={ReviewsIcon}
+            labelInfo={listReview.length || 0}
+            color="#20c441"
+            bgColor="#d6f9d6"
+            colorForDarkMode="#20c441"
+            bgColorForDarkMode="#191207"
+          />
+          <StyledTreeItem
+            nodeId="11"
             labelText="Returneds"
             labelIcon={RecyclingIcon}
-            labelInfo={listReturn?.length}
+            labelInfo={listReturn.length || 0}
             color="#a250f5"
             bgColor="#f3e8fd"
             colorForDarkMode="#D9B8FB"
             bgColorForDarkMode="#100719"
           />
           <StyledTreeItem
-            nodeId="11"
-            labelText="Cancellationeds"
+            nodeId="12"
+            labelText="Cancelleds"
             labelIcon={DisabledByDefaultIcon}
-            labelInfo="5"
+            labelInfo={listCancel.length || 0}
             color="#e3742f"
             bgColor="#fcefe3"
             colorForDarkMode="#FFE2B7"
             bgColorForDarkMode="#191207"
           />
           <StyledTreeItem
-            nodeId="12"
+            nodeId="13"
             labelText="Ordereds"
             labelIcon={LocalMallIcon}
             labelInfo={listOrder?.length}

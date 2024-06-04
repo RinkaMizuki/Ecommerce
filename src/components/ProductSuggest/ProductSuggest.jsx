@@ -54,8 +54,10 @@ const ProductSuggest = () => {
       <ViewTitle
         label={t('suggest')}
         title={t('suggest-for')}
-        prevRef={prevRef}
-        nextRef={nextRef}
+        refs={{
+          prevRef,
+          nextRef
+        }}
       />
       {productSuggest?.map(p => {
         if (p.id == productId) {

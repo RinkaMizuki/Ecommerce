@@ -60,4 +60,9 @@ const getLocalProductQuantity = (userId = "") => {
   return listProduct;
 }
 
-export { setLocalProductQuantity, getLocalProductQuantity, setLocalProductColor };
+const deleteLocalProduct = (userId) => {
+  localStorage.removeItem(`cart_${userId}`)
+  window.dispatchEvent(new Event(`CartDataEvent_${userId}`));
+}
+
+export { setLocalProductQuantity, getLocalProductQuantity, setLocalProductColor, deleteLocalProduct };

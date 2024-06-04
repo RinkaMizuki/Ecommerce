@@ -158,7 +158,6 @@ const Header = function ({ toggleTopHeader }) {
       const res = await postLogout(`/auth/logout`, {
         userId: userLogin?.user?.id
       }, {})
-      console.log(456);
       dispatch(logoutSuccess(res?.data))
       navigate("/login");
     } catch (error) {

@@ -1,12 +1,12 @@
 import styles from "./ViewTitle.module.scss"
 import classNames from "classnames/bind"
 import CountDown from "../CountDown";
-import Button from "../Button";
-import { useTranslation } from "react-i18next";
+import { forwardRef } from "react";
+import NavigateBtn from "./NavigateBtn";
 const cx = classNames.bind(styles);
 
-const ViewTitle = ({ className, flashsale = false, title, label, nextRef, prevRef, btnView = false, emptyBtn = false, hiddenArrow = false }) => {
-  const { t } = useTranslation();
+const ViewTitle = forwardRef(({ className, flashsale = false, title, label, btnView = false, emptyBtn = false, hiddenArrow = false, refs }, ref) => {
+  const { nextRef, prevRef } = refs || {};
   return (
     <div className={cx("container", {
       [className]: className,
@@ -20,13 +20,13 @@ const ViewTitle = ({ className, flashsale = false, title, label, nextRef, prevRe
           </div>
           {flashsale && <CountDown />}
         </div>
-        {!hiddenArrow ? (!btnView ? <div className={cx("title-navigate")}>
-          <i className={cx("icon-arrow-left", "fa-solid fa-arrow-left-long")} ref={prevRef}></i>
-          <i className={cx("icon-arrow-right", "fa-solid fa-arrow-right-long")} ref={nextRef}></i>
-        </div> : !emptyBtn ? <Button small={true} className={className} >{t('view')}</Button> : null) : null}
+        <NavigateBtn btnView={btnView} emptyBtn={emptyBtn} hiddenArrow={hiddenArrow} refs={{
+          prevRef,
+          nextRef
+        }} />
       </div>
     </div>
   )
-};
+});
 
 export default ViewTitle;

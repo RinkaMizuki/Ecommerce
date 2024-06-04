@@ -16,6 +16,8 @@ const configRoutes = {
   link: "/manager/links",
   order: "/manager/orders",
   return: "/manager/returns",
+  cancel: "/manager/cancels",
+  review: "/manager/reviews",
   confirm: "/confirm-email",
   cart: "/cart",
   address: "/manager/address",

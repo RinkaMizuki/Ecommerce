@@ -1,0 +1,24 @@
+.review-product-title {
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.review-comment-content,
+.review-product-desc {
+  line-height: 1.5;
+}
+
+.review-product-img {
+  width: 400px;
+  height: auto;
+}
+
+.unavaible-review {
+  width: 100%;
+  height: 50vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 25px;
+  font-weight: 400;
+}

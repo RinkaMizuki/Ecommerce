@@ -6,6 +6,8 @@ import { default as LinkMui } from "@mui/material/Link";
 import { useLayoutEffect, useState } from "react";
 import useCustomFetch from "../../hooks/useCustomFetch";
 import Loading from "../../pages/Loading";
+import { deleteLocalProduct } from "../../services/cartService";
+import { useSelector } from "react-redux";
 
 const cx = classNames.bind(styles);
 
@@ -15,6 +17,7 @@ const Payment = () => {
   const navigate = useNavigate();
   const [invoiceData, setInvoiceData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const userLogin = useSelector(state => state.auth.login.currentUser.user);
 
   function handleClick(event) {
     event.preventDefault();
@@ -30,12 +33,13 @@ const Payment = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await postPaymentReturn(`/Payment/return?${queryString}`);
+        const response = await postPaymentReturn(`/Payment/${JSON.parse(localStorage.getItem("paymentType"))}/return?${queryString}`);
         setInvoiceData(response.data);
+        deleteLocalProduct(userLogin?.id)
       }
       catch (err) {
         console.log(err);
-        if (err?.response?.status === 500) {
+        if (err?.response?.status !== 200) {
           navigate("/payment/error", {
             state: {
               error: err?.response?.data,

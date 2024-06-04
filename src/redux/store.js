@@ -5,12 +5,16 @@ import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
 import orderSlice from "./orderSlice";
 import returnSlice from "./returnSlice";
+import cancelSlice from "./cancelSlice";
+import reviewSlice from "./reviewSlice";
 
 const rootReducer = combineReducers({
   auth: authSlice,
   address: addressSlice,
   order: orderSlice,
-  return: returnSlice
+  return: returnSlice,
+  cancel: cancelSlice,
+  review: reviewSlice
 })
 
 const persistConfig = {

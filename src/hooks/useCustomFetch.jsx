@@ -2,7 +2,7 @@ import httpRequests from "../utils/httpRequests";
 import tokenService from "../services/tokenService"
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutFailed, logoutStart, logoutSuccess } from "../redux/authSlice";
+import { logoutFailed, logoutStart } from "../redux/authSlice";
 import { get as refreshToken, post as postLogout } from "../services/ssoService";
 
 const useCustomFetch = () => {
@@ -45,14 +45,29 @@ const useCustomFetch = () => {
     }
   )
 
-  //nếu response trả về có lỗi và nếu lỗi là do unauthorize thì gửi một request yêu cầu refresh token sau khi có token sẽ thực hiện lại request origin với token mới chỉ 1 lần.
+  //nếu response trả về có lỗi và nếu lỗi là do unauthorize thì gửi một request yêu cầu refresh token sau khi có token sẽ thực hiện lại request origin với token mới chỉ 1 lần, nếu lỗi thì gọi api logout
   httpRequests.interceptors.response.use(
     (response) => {
       return response;
     },
-    async function (error) {
+    async (error) => {
       const originalRequest = error.config;
-      if (error.response?.status === 401 && !originalRequest._retry) {
+      if (error.response?.status === 403 && !originalRequest._retry) {
+        originalRequest._retry = true;
+        dispatch(logoutStart())
+        try {
+          await postLogout(`/auth/logout`, {
+            userId: userLogin?.user?.id
+          }, {})
+          dispatch(logoutFailed(error.response.data))
+        } catch (err) {
+          dispatch(logoutFailed(err.response.data))
+          console.log(err);
+        } finally {
+          navigate("/login")
+        }
+      }
+      else if (error.response?.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
         try {
           await refreshToken('/auth/refresh-token', {

@@ -1,7 +1,7 @@
 import classNames from "classnames/bind";
 import styles from "./Cart.module.scss";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { getLocalProductQuantity } from "../../services/cartService";
+import { deleteLocalProduct, getLocalProductQuantity } from "../../services/cartService";
 import { useSelector } from "react-redux";
 import useCustomFetch from "../../hooks/useCustomFetch";
 import queryString from "query-string";
@@ -35,7 +35,7 @@ const Cart = () => {
   const [products, setProducts] = useState([]);
   const [coupons, setCoupons] = useState([]);
   const [couponCode, setCouponCode] = useState("");
-  const [totalPrice, setTotalPrice] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(-1);
   const [totalDiscount, setTotalDiscount] = useState(0);
   const [getListProduct] = useCustomFetch();
   const [isCouponApplied, setIsCouponApplied] = useState(false);
@@ -60,8 +60,9 @@ const Cart = () => {
         return p;
       });
     })
-    setTotalPrice(0);
+    setTotalPrice(-1);
     setCouponCode("");
+    setTotalDiscount(0);
   };
   useLayoutEffect(() => {
 
@@ -128,6 +129,11 @@ const Cart = () => {
     }
   }
 
+  const handleRemoveAllCart = () => {
+    deleteLocalProduct(userLogin?.user?.id)
+    setProducts([])
+  }
+
   const calcSubtotal = () => {
 
     listProductId.forEach(p => {
@@ -179,7 +185,7 @@ const Cart = () => {
     } else {
       setCouponCode(code);
     }
-    setTotalPrice(0);
+    setTotalPrice(-1);
     setTotalDiscount(0);
     setIsCouponApplied(false)
   }
@@ -242,7 +248,7 @@ const Cart = () => {
           <Link to="/" style={{ textDecoration: "none" }}>
             <button className={cx("btn-return")}>Return To Shop</button>
           </Link>
-          <button className={cx("btn-update")}>Update Cart</button>
+          <button className={cx("btn-update")} onClick={handleRemoveAllCart}>Clear Cart</button>
         </div>
       </section>
       <section className={cx("total-section")}>
@@ -250,7 +256,7 @@ const Cart = () => {
           <div className={cx("coupon-input")}>
             <input type="text" placeholder="Coupon Code" onChange={(e) => {
               if (!e.target.value) {
-                setTotalPrice(0)
+                setTotalPrice(-1)
               }
               setCouponCode(e.target.value)
             }} value={couponCode} />
@@ -332,7 +338,7 @@ const Cart = () => {
             </div>
             <div>
               <p>Total</p>
-              <p>{totalPrice ? totalPrice?.toLocaleString('it-IT', { style: 'currency', currency: 'VND' }) : calcSubtotal().toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</p>
+              <p>{totalPrice >= 0 ? totalPrice?.toLocaleString('it-IT', { style: 'currency', currency: 'VND' }) : calcSubtotal().toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</p>
             </div>
           </div>
           <Button to={{
@@ -341,7 +347,7 @@ const Cart = () => {
             state={{
               products,
               totalDiscount,
-              totalPrice: totalPrice || calcSubtotal(),
+              totalPrice: totalPrice >= 0 ? totalPrice : calcSubtotal(),
               subTotal: calcSubtotal(),
               coupon: coupons.find(c => c.couponCode == couponCode),
             }}

@@ -82,7 +82,6 @@
 }
 
 .product-image {
-  padding-left: 2.5rem;
   gap: 1.25rem;
   align-items: center;
   display: flex;
@@ -129,6 +128,12 @@
 }
 
 .product-title {
+  max-width: 155px;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  overflow: hidden;
+  word-break: break-word;
   font-size: 1.125rem;
   line-height: 1.75rem;
 }

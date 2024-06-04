@@ -12,7 +12,6 @@ import Notfound from "../pages/Notfound";
 import Profile from "../pages/Profile";
 import AuthRequired from "../HOC/AuthRequired";
 import Confirm from "../pages/Confirm";
-import Return from "../pages/Return";
 import Cart from "../pages/Cart";
 import Address from "../pages/Address";
 import CategoryDetail from "../components/CategoryDetail";
@@ -25,6 +24,7 @@ import FacebookLogin from "../pages/FacebookLogin";
 import ResetPassword from "../pages/ResetPassword";
 import Order from "../pages/Order";
 import LoggedIn from "../HOC/LoggedIn";
+import Review from "../pages/Review/Review";
 
 const publicRoutes = [
   {
@@ -94,22 +94,32 @@ const publicRoutes = [
   },
   {
     path: config.routes.order,
-    element: Order,
+    element: AuthRequired(Order),
     layout: "management"
   },
   {
-    path: config.routes.link,
-    element: Link,
+    path: config.routes.cancel,
+    element: AuthRequired(Order),
     layout: "management"
   },
   {
     path: config.routes.return,
-    element: AuthRequired(Return),
+    element: AuthRequired(Order),
+    layout: "management"
+  },
+  {
+    path: config.routes.link,
+    element: AuthRequired(Link),
     layout: "management"
   },
   {
     path: config.routes.address,
     element: AuthRequired(Address),
+    layout: "management"
+  },
+  {
+    path: config.routes.review,
+    element: AuthRequired(Review),
     layout: "management"
   },
   {

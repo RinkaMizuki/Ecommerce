@@ -18,8 +18,10 @@
     color: var(--primary);
   }
 }
+
 .manager-container {
   display: flex;
+  position: relative;
   gap: 130px;
   flex: 1;
 }

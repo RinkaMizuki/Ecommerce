@@ -133,33 +133,39 @@ const Checkout = () => {
 
   const handlePayment = async () => {
     try {
+      const paymentData = {
+        destinationId: desId,
+        merchantId: import.meta.env.VITE_ECOMMERCE_MERCHANT_ID,
+        email,
+        fullName: handleFindDefaultAddress()?.name,
+        phone: handleFindDefaultAddress()?.phone,
+        address: handleFindDefaultAddress()?.address,
+        ward: handleFindDefaultAddress()?.district,
+        district: handleFindDefaultAddress()?.city,
+        city: handleFindDefaultAddress()?.state,
+        country: "Việt Nam",
+        totalDiscount: location.state?.totalDiscount,
+        totalQuantity: handleCalcTotalQuantity(),
+        requiredAmount: location.state?.totalPrice == 0 ? 2000 : location.state?.totalPrice,
+        orderDetails: handleGetInfoProducts(location.state.products, keyMap),
+        note: noteContent,
+        couponId: location.state?.coupon?.id ?? null,
+        userId: userLogin?.id,
+      };
       switch (paymentMethod) {
         case "vnpay":
-          const paymentData = {
-            destinationId: desId,
-            merchantId: import.meta.env.VITE_ECOMMERCE_MERCHANT_ID,
-            email,
-            fullName: handleFindDefaultAddress()?.name,
-            phone: handleFindDefaultAddress()?.phone,
-            address: handleFindDefaultAddress()?.address,
-            ward: handleFindDefaultAddress()?.district,
-            district: handleFindDefaultAddress()?.city,
-            city: handleFindDefaultAddress()?.state,
-            country: "Việt Nam",
-            totalDiscount: location.state?.totalDiscount,
-            totalQuantity: handleCalcTotalQuantity(),
-            requiredAmount: location.state?.totalPrice,
-            orderDetails: handleGetInfoProducts(location.state.products, keyMap),
-            note: noteContent,
-            couponId: location.state?.coupon?.id ?? null,
-            userId: userLogin?.id,
-          };
-          const res = await postPaymentOrder("/Payment/post", paymentData, {
+          const vnpayRes = await postPaymentOrder("/Payment/vnpay/post", paymentData, {
             "Content-Type": "application/json"
           });
-          window.location.replace(res.data.paymentUrl);
+          localStorage.setItem("paymentType", JSON.stringify("vnpay"));
+          window.location.replace(vnpayRes.data.paymentUrl);
           break;
-        case "cash":
+        case "payos":
+          const payOSRes = await postPaymentOrder("/Payment/payos/post", paymentData, {
+            "Content-Type": "application/json"
+          });
+          localStorage.setItem("paymentType", JSON.stringify("payos"));
+          window.location.replace(payOSRes.data.paymentUrl);
           break;
         default:
           break;
@@ -169,8 +175,8 @@ const Checkout = () => {
     }
   }
 
-  const handleFindPaymentId = () => {
-    return listDes?.find(d => d?.desShortName?.toLowerCase() == "vnpay")?.destinationId;
+  const handleFindPaymentId = (destination) => {
+    return listDes?.find(d => d?.desShortName?.toLowerCase() === destination)?.destinationId;
   };
 
   return (
@@ -286,7 +292,7 @@ const Checkout = () => {
               <span></span>
               <div className={cx("bill-discount")}>
                 <p>Discount</p>
-                <p>{location?.state?.totalDiscount?.toLocaleString('it-IT', { style: 'currency', currency: 'VND' })} VND</p>
+                <p>{location?.state?.totalDiscount?.toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</p>
               </div>
               <span></span>
               <div className={cx("bill-ship")}>
@@ -311,16 +317,28 @@ const Checkout = () => {
             <span datapay="cash">Payment By Cash</span>
             <svg datapay="cash" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xmlSpace="preserve" width="30px" height="30px" fill="#000000" stroke="#000000"><g datapay="cash" id="SVGRepo_bgCarrier" strokeWidth="0"></g><g datapay="cash" id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <rect datapay="cash" y="112.219" style={{ fill: "#75EF84" }} width="512" height="287.566"></rect> <rect datapay="cash" y="112.219" style={{ fill: "#B7FFB9" }} width="256" height="287.566"></rect> <circle datapay="cash" style={{ fill: "#75EF84" }} cx="77.667" cy="255.997" r="24.871"></circle> <g> <circle datapay="cash" style={{ fill: "#3AB94B" }} cx="434.333" cy="255.997" r="24.871"></circle> <path datapay="cash" style={{ fill: "#3AB94B" }} d="M0,112.215v287.563h512V112.215H0z M31.347,316.008V195.985 c26.828-4.426,47.996-25.596,52.423-52.423h103.044c-37.692,23.243-62.819,64.902-62.819,112.435s25.128,89.191,62.819,112.435 H83.769C79.343,341.604,58.175,320.435,31.347,316.008z M480.653,316.008c-26.828,4.426-47.996,25.596-52.423,52.423H325.187 c37.692-23.243,62.819-64.902,62.819-112.435s-25.128-89.191-62.819-112.435h103.044c4.426,26.828,25.596,47.996,52.423,52.423 V316.008z"></path> </g> <path datapay="cash" style={{ fill: "#75EF84" }} d="M256,112.215H0v287.563h256V112.215z M83.769,368.432c-4.426-26.828-25.596-47.996-52.423-52.423 V195.985c26.828-4.426,47.996-25.596,52.423-52.423h103.044c-37.692,23.243-62.819,64.902-62.819,112.435 s25.128,89.191,62.819,112.435H83.769V368.432z"></path> <path datapay="cash" style={{ fill: "#B7FFB9" }} d="M301.485,251.928c-8.122-5.419-18.114-8.949-29.812-10.57V194.18 c4.987,1.065,9.18,2.689,12.417,4.847c3.846,2.566,8.262,6.872,8.262,17.481h31.347c0-18.802-7.681-33.864-22.214-43.559 c-8.122-5.418-18.114-8.949-29.812-10.57v-18.818h-31.347v18.818c-11.698,1.622-21.69,5.152-29.812,10.57 c-14.532,9.695-22.213,24.757-22.213,43.559c0,18.801,7.681,33.863,22.213,43.558c8.122,5.419,18.114,8.949,29.812,10.57v47.178 c-4.987-1.065-9.18-2.689-12.417-4.847c-3.846-2.566-8.262-6.872-8.262-17.481h-31.347c0,18.802,7.681,33.864,22.213,43.559 c8.122,5.418,18.114,8.948,29.812,10.57v18.818h31.347v-18.818c11.698-1.622,21.69-5.152,29.812-10.57 c14.532-9.695,22.214-24.757,22.214-43.559C323.699,276.685,316.018,261.623,301.485,251.928z M227.911,233.989 c-3.847-2.566-8.263-6.872-8.263-17.481c0-10.609,4.416-14.915,8.262-17.481c3.236-2.159,7.429-3.781,12.417-4.847v44.656 C235.339,237.771,231.146,236.147,227.911,233.989z M284.09,312.967c-3.236,2.159-7.429,3.781-12.417,4.847v-44.656 c4.987,1.065,9.18,2.689,12.415,4.846c3.847,2.566,8.263,6.872,8.263,17.481C292.352,306.095,287.936,310.401,284.09,312.967z"></path> </g></svg>
           </div>
-          <div className={cx("payment-vnpay")} onClick={handleChoosePaymentMethod} datapay="vnpay" dataid={handleFindPaymentId()}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" datapay="vnpay" dataid={handleFindPaymentId()}>
-              <circle cx="12" cy="12" r="11.25" stroke="black" strokeWidth="1.5" datapay="vnpay" dataid={handleFindPaymentId()} />
+          <div className={cx("payment-vnpay")} onClick={handleChoosePaymentMethod} datapay="vnpay" dataid={handleFindPaymentId("vnpay")}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" datapay="vnpay" dataid={handleFindPaymentId("vnpay")}>
+              <circle cx="12" cy="12" r="11.25" stroke="black" strokeWidth="1.5" datapay="vnpay" dataid={handleFindPaymentId("vnpay")} />
               {paymentMethod === "vnpay" && <circle cx="12" cy="12" r="7" fill="black" />}
             </svg>
-            <span datapay="vnpay" dataid={handleFindPaymentId()}>Payment By VnPay</span>
+            <span datapay="vnpay" dataid={handleFindPaymentId("vnpay")}>Payment By VnPay</span>
             <img src="/src/assets/images/vnpay.png" style={{
               width: "110px",
               height: "30px"
-            }} datapay="vnpay" dataid={handleFindPaymentId()} />
+            }} datapay="vnpay" dataid={handleFindPaymentId("vnpay")} />
+          </div>
+          <div className={cx("payment-payos")} onClick={handleChoosePaymentMethod} datapay="payos" dataid={handleFindPaymentId("payos")}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" datapay="payos" dataid={handleFindPaymentId("payos")}>
+              <circle cx="12" cy="12" r="11.25" stroke="black" strokeWidth="1.5" datapay="payos" dataid={handleFindPaymentId("payos")} />
+              {paymentMethod === "payos" && <circle cx="12" cy="12" r="7" fill="black" />}
+            </svg>
+            <span datapay="payos" dataid={handleFindPaymentId("payos")}>Payment By PayOS</span>
+            <img src="/src/assets/images/payos.jpg" style={{
+              width: "130px",
+              height: "35px",
+              marginLeft: "-10px"
+            }} datapay="payos" dataid={handleFindPaymentId("payos")} />
           </div>
           <Button
             className={cx("order-btn")}

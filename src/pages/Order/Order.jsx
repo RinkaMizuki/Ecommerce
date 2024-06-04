@@ -6,6 +6,11 @@ import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import 'swiper/scss';
 import 'swiper/scss/navigation';
+import { useRef, useState } from "react";
+import NavigateBtn from "../../components/ViewTitle/NavigateBtn";
+import { useLocation } from "react-router-dom";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const cx = classNames.bind(styles)
 
@@ -17,8 +22,23 @@ const ORDER_STATE = {
 
 const Order = () => {
 
+  const orderPathName = useLocation().pathname;
   const userLogin = useSelector(state => state.auth.login?.currentUser?.user);
-  const listOrder = useSelector(state => state.order.listOrder);
+  const listOrder = useSelector(state => {
+    if (orderPathName === "/manager/orders") {
+      return state.order.listOrder;
+    }
+    else if (orderPathName === "/manager/returns") {
+      return state.return.listReturn;
+    }
+    else {
+      return state.cancel.listCancel;
+    }
+  });
+  const [activeIndex, setActiveIndex] = useState(1);
+
+  const prevRef = useRef(null);
+  const nextRef = useRef(null);
 
   const formatDate = (date) => {
     const formattedDate = new Intl.DateTimeFormat('en-GB', {
@@ -42,38 +62,59 @@ const Order = () => {
     }}>
       <div className="h-100">
         <div className="row d-flex justify-content-start align-items-center h-100">
-          <div className="col-lg-10 col-xl-8">
+          <div className={`col-lg-10 ${listOrder.length <= 1 ? "col-xl-12" : "col-xl-8"}`}>
             <div className="card" style={{
               borderRadius: "10px",
               overflow: "hidden",
             }}>
-              <div className="card-header px-4 py-5">
+              <div className="card-header px-4 py-5 d-flex justify-content-between align-items-center">
                 <h5 className="text-muted mb-0">Thanks for your Order, <span style={{ color: "#a8729a" }}>{userLogin.userName}</span>!</h5>
+                <div className="d-flex justify-content-center align-items-center gap-3">
+                  <span className="text-muted">{listOrder?.length ? activeIndex : 0}/{listOrder?.length}</span>
+                  <NavigateBtn
+                    refs={{
+                      prevRef,
+                      nextRef
+                    }}
+                  />
+                </div>
               </div>
-              <Swiper
-                rewind={true}
-                speed={1000}
-                centeredSlides={true}
-                // zoom={true} //cho phép zoom ảnh
-                grabCursor={true}
-                navigation={true} //cho phép click vào thanh điều hướng
+              {listOrder.length ? <Swiper
+                onInit={(swiper) => {
+                  swiper.params.navigation.prevEl = prevRef.current;
+                  swiper.params.navigation.nextEl = nextRef.current;
+                  swiper.navigation.init();
+                  swiper.navigation.update();
+                }}
+                slidesPerView={1}
+                freeMode={true}
                 modules={[Navigation]}
+                grabCursor={true}
+                onSlideChange={(slide) => setActiveIndex(slide.activeIndex + 1)}
               >
-                {listOrder.map(order =>
+                {listOrder.map((order) =>
                 (<SwiperSlide key={order.id}>
                   <div className={cx("card-content")}>
                     <div className="card-body p-4">
                       <div className="d-flex justify-content-between align-items-center mb-4">
-                        <p className="lead fw-normal mb-0" style={{ color: "#a8729a" }}>Order</p>
+                        {orderPathName === "/manager/orders" ? <p className="lead fw-normal mb-0" style={{ color: "#a8729a" }}>Orders <i className="fa-solid fa-receipt"></i></p> : orderPathName === "/manager/cancels" ? <p className="lead fw-normal mb-0" style={{ color: "#a8729a" }}>Cancels <i className="fa-regular fa-rectangle-xmark"></i></p> : <p className="lead fw-normal mb-0" style={{ color: "#a8729a" }}>Returns <i className="fa-solid fa-rotate-left"></i></p>}
+
                         <p className="small text-muted mb-0">Order Voucher : {order.coupon?.couponCode || "No voucher"}</p>
                       </div>
                       {order.orderDetails.map(item => (
                         <div className="card shadow-0 border mb-4" key={item.productId}>
                           <div className="card-body">
                             <div className="row">
-                              <div className="col-md-2">
-                                <img src={item.product?.url}
-                                  className="img-fluid" alt={item.product?.image} />
+                              <div className="col-md-2" style={{
+                                position: "relative",
+                                height: "auto"
+                              }}>
+                                <LazyLoadImage
+                                  src={item.product?.url}
+                                  className="img-fluid" alt={item.product?.image}
+                                  effect="blur"
+                                />
+                                <div className="swiper-lazy-preloader"></div>
                               </div>
                               <div className="col-md-2 text-center d-flex justify-content-center align-items-center">
                                 <p className="text-muted mb-0">{item.product?.title}</p>
@@ -99,11 +140,10 @@ const Order = () => {
                             <hr className="mb-4" style={{
                               backgroundColor: "#e0e0e0", opacity: 1
                             }} />
-
                           </div>
                         </div>
                       ))}
-                      <div className="row d-flex align-items-center">
+                      <div className="row d-flex align-items-center mb-4">
                         <div className="col-md-12">
                           <div className="progress" style={{
                             height: "6px",
@@ -142,7 +182,6 @@ const Order = () => {
                           </div>
                         </div>
                       </div>
-                      {console.log(order)}
                       <div className="d-flex justify-content-between pt-2">
                         <p className="fw-bold mb-0">Order Details</p>
                         <p className="text-muted mb-0"><span className="fw-bold me-4">Total</span>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(order.totalPrice)}</p>
@@ -176,7 +215,12 @@ const Order = () => {
                   </div>
                 </SwiperSlide>)
                 )}
-              </Swiper>
+              </Swiper> : <span style={{
+                padding: "20px",
+                fontWeight: "500",
+                textAlign: "center",
+                fontSize: "17px",
+              }}>You don't have any order.</span>}
             </ div >
           </div >
         </div >

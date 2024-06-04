@@ -330,9 +330,9 @@ const Login = () => {
           <p>Enter your details below</p>
         </div>
         <form className={cx("login-info")}>
-          <input type="text" placeholder="User Name or Email" value={userNameOrEmail} required onChange={(e) => setUserNameOrEmail(e.target.value)} />
+          <input type="text" placeholder="User Name or Email" value={userNameOrEmail} required onChange={(e) => setUserNameOrEmail(e.target.value.trim())} />
           <div className={cx("password-wrapper")}>
-            <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} ref={passwordRef} value={password} />
+            <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value.trim())} ref={passwordRef} value={password} />
             {!isHidePassword ? <i className="fa-regular fa-eye" onClick={handleTogglePassword}></i> : <i className="fa-regular fa-eye-slash" onClick={handleTogglePassword}></i>}
           </div>
           <div className={cx("remember-me")}>

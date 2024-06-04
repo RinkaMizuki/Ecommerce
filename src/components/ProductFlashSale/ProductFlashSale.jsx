@@ -59,8 +59,10 @@ const ProductFlashSale = () => {
         <div className={cx("flashsale-container")} >
             <ViewTitle
                 flashsale={true}
-                prevRef={prevRef}
-                nextRef={nextRef}
+                refs={{
+                    prevRef,
+                    nextRef
+                }}
                 label={t("today")}
                 title={t("flashsale")}
             />
