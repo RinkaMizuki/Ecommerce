@@ -220,7 +220,7 @@ const Order = () => {
                 fontWeight: "500",
                 textAlign: "center",
                 fontSize: "17px",
-              }}>You don't have any order.</span>}
+              }}>You don't have any {orderPathName.split('/').pop()} order.</span>}
             </ div >
           </div >
         </div >

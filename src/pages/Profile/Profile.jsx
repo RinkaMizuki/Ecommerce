@@ -12,17 +12,20 @@ import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import NotificationsOffIcon from '@mui/icons-material/NotificationsOff';
 import { toast, ToastContainer } from "react-toastify";
 import { loginSuccess } from "../../redux/authSlice";
-import PhoneLockedIcon from '@mui/icons-material/PhoneLocked';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import moment from "moment";
 import Loading from "../../components/Loading";
 import { helpers } from "../../helpers/validate";
-import { FormControlLabel, FormGroup, Switch } from "@mui/material";
+import { Collapse, FormControlLabel, FormGroup, List, ListItemButton, ListItemIcon, ListItemText, ListSubheader, Switch } from "@mui/material";
 import Popup from "../../components/Popup";
+import PhoneLockedIcon from '@mui/icons-material/PhoneLocked';
 import UnpublishedIcon from '@mui/icons-material/Unpublished';
+import FingerprintIcon from '@mui/icons-material/Fingerprint';
 import { get as getOtpCode, post as postVerifyOtp } from "../../services/ssoService";
 import Count from "./Count";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import PasswordIcon from '@mui/icons-material/Password';
 
 const toastOptions = {
   position: "top-right",
@@ -59,6 +62,12 @@ const Profile = () => {
   const [file, setFile] = useState(null);
   const [blob, setBlob] = useState(null);
   const [open, setOpen] = useState(false);
+  const [openPassword, setOpenPassword] = useState(false);
+  const [openSecure, setOpenSecure] = useState(false);
+
+  const handleClick = () => {
+    setOpenSecure(!openSecure);
+  };
 
   const inputFileRef = useRef(null);
   const avatarRef = useRef(null);
@@ -71,64 +80,10 @@ const Profile = () => {
   const handleUploadAvatar = () => {
     inputFileRef.current.click();
   }
+
   const handleSaveProfile = async () => {
     try {
-
-      if (confirmPassword && newPassword && currentPassword) {
-        if (!(confirmPassword.length >= 3) || !(newPassword.length >= 3) || !(currentPassword.length >= 3)) {
-          toast.error("Requires must least 3 characters.", toastOptions);
-          return;
-        }
-      }
-
-      if (!currentPassword && !newPassword && confirmPassword) {
-        toast.error("Please enter your password.", toastOptions);
-        return;
-      }
-      else if (!newPassword && !confirmPassword && currentPassword) {
-        toast.error("Please enter your new password.", toastOptions);
-        return;
-      }
-      else if (!confirmPassword && !currentPassword && newPassword) {
-        toast.error("Please enter your password.", toastOptions);
-        return;
-      }
-      else if (currentPassword && newPassword) {
-        if (!confirmPassword) {
-          toast.error("Please enter your confirm password.", toastOptions);
-          return;
-        }
-        else if (!(confirmPassword.length >= 3)) {
-          toast.error("Requires must least 3 characters.", toastOptions);
-          return;
-        }
-        else if (newPassword != confirmPassword) {
-          toast.error("Confirm password incorrect.", toastOptions);
-          return;
-        }
-      } else if (newPassword && confirmPassword) {
-        if (!currentPassword) {
-          toast.error("Please enter your password.", toastOptions);
-          return;
-        }
-        else if (!(currentPassword.length >= 3)) {
-          toast.error("Requires must least 3 characters.", toastOptions);
-          return;
-        }
-      } else if (confirmPassword && currentPassword) {
-        if (!newPassword) {
-          toast.error("Please enter your new password.", toastOptions);
-          return;
-        }
-        else if (!(newPassword.length >= 3)) {
-          toast.error("Requires must least 3 characters.", toastOptions);
-          return;
-        }
-      }
-
       const formData = new FormData();
-      formData.append("password", currentPassword);
-      formData.append("newPassword", newPassword);
       formData.append("phone", phone);
       formData.append("userName", userName);
       formData.append("email", email);
@@ -161,6 +116,32 @@ const Profile = () => {
     setIsDisable(true);
   }
 
+  const handleResetInputPassword = () => {
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+  }
+
+  const handleChangePassword = async () => {
+    const isValidPassword = validatePassword();
+    if (isValidPassword) {
+      try {
+        const updateRes = await postVerifyOtp('/auth/change-password', {
+          currentPassword,
+          newPassword,
+          userId: userLogin?.id
+        })
+        setOpenPassword(false);
+        toast.success(`${updateRes.data.message}`, toastOptions)
+      } catch (error) {
+        console.log(error)
+        toast.error(error.response.data?.message, toastOptions);
+      } finally {
+        handleResetInputPassword();
+      }
+    }
+  }
+
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -179,8 +160,64 @@ const Profile = () => {
     //   window.removeEventListener("storage", handleLoadProfile);
     // }
   }, [])
+
   const validateSaveChanges = () => {
     return isExistUserName || !email || ((new Date(birth).getTime() - 7 * 60 * 60 * 1000) > new Date().getTime()) || !helpers.validatePhoneNumber(phone) || !phone || !helpers.validateEmail(email) || isDisable;
+  }
+
+  const validatePassword = () => {
+    if (confirmPassword && newPassword && currentPassword) {
+      if (!(confirmPassword.length >= 3) || !(newPassword.length >= 3) || !(currentPassword.length >= 3)) {
+        toast.error("Requires must least 3 characters.", toastOptions);
+        return false;
+      }
+    }
+
+    if (!currentPassword && !newPassword && confirmPassword) {
+      toast.error("Please enter your password.", toastOptions);
+      return false;
+    }
+    else if (!newPassword && !confirmPassword && currentPassword) {
+      toast.error("Please enter your new password.", toastOptions);
+      return false;
+    }
+    else if (!confirmPassword && !currentPassword && newPassword) {
+      toast.error("Please enter your password.", toastOptions);
+      return false;
+    }
+    else if (currentPassword && newPassword) {
+      if (!confirmPassword) {
+        toast.error("Please enter your confirm password.", toastOptions);
+        return false;
+      }
+      else if (!(confirmPassword.length >= 3)) {
+        toast.error("Requires must least 3 characters.", toastOptions);
+        return false;
+      }
+      else if (newPassword != confirmPassword) {
+        toast.error("Confirm password incorrect.", toastOptions);
+        return false;
+      }
+    } else if (newPassword && confirmPassword) {
+      if (!currentPassword) {
+        toast.error("Please enter your password.", toastOptions);
+        return false;
+      }
+      else if (!(currentPassword.length >= 3)) {
+        toast.error("Requires must least 3 characters.", toastOptions);
+        return false;
+      }
+    } else if (confirmPassword && currentPassword) {
+      if (!newPassword) {
+        toast.error("Please enter your new password.", toastOptions);
+        return false;
+      }
+      else if (!(newPassword.length >= 3)) {
+        toast.error("Requires must least 3 characters.", toastOptions);
+        return false;
+      }
+    }
+    return true;
   }
 
   const handleAvatarChange = (e) => {
@@ -395,110 +432,191 @@ const Profile = () => {
             </div>
           </div>
         </div>
-        <div className={cx("password-wrapper")}>
-          <div className={cx("info-password")}>
-            <label htmlFor="currentPassword">Password Changes</label>
-            <input type="password" name="currentPassword" id="currentPassword"
-              placeholder="Current Password"
-              value={currentPassword}
-              onChange={(e) => {
-                setCurrentPassword(e.target.value.trim())
-                isDisable && setIsDisable(false);
-              }}
-            />
-            <input type="password" name="newPassword" placeholder="New password"
-              value={newPassword}
-              onChange={(e) => {
-                setNewPassword(e.target.value.trim())
-                isDisable && setIsDisable(false);
-              }}
-            />
-            <span className={cx("new-password-note")}>New password requires at least 3 characters.</span>
-            <input type="password" name="confirmPassword" placeholder="Confirm New Password"
-              value={confirmPassword}
-              onChange={(e) => {
-                setConfirmPassword(e.target.value.trim())
-                isDisable && setIsDisable(false);
-              }}
-            />
-            <span className={cx("confirm-password-note")}>Confirm password must match the new password.</span>
-          </div>
-          <div className={cx("featured-wrapper")}>
-            <h1>Security Account</h1>
-            <Tippy content={<span style={{
-              fontFamily: "Poppins",
-            }}>{!userLogin?.phone ? "Verify Your Phone" : "Verified"}</span>}>
-              <FormGroup>
-                <FormControlLabel disabled={!userLogin?.phone} control={<Switch checked={isF2A} onChange={handleSwitchF2A} />} label="Enabled F2A" />
-              </FormGroup>
-            </Tippy>
-            <Popup
-              ref={popupRef}
-              onClose={() => setOpen(false)}
-              isSend={isSend}
-              onReset={handleSwitchF2A}
-              open={open}
-              contentStyle={{
-                width: "25%",
-                padding: "2px",
-                borderRadius: "5px",
-                border: "0",
-                animation: ".3s cubic-bezier(.38,.1,.36,.9) forwards a"
-              }}
-              header={
-                <div style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: "10px"
-                }}>
-                  {!isSend ? <PhoneLockedIcon sx={{
-                    width: "50px",
-                    height: "50px",
-                    color: "var(--primary)"
-                  }} /> : <UnpublishedIcon sx={{
-                    width: "50px",
-                    height: "50px",
-                    color: "var(--primary)"
-                  }} />}
-                  <h1 style={{
-                    fontSize: "20px",
-                    fontWeight: "600",
-                  }}>Two-Factor Authentication</h1>
-                  <div style={{
-                    maxWidth: "80%",
-                    textAlign: "center",
-                    fontWeight: "500",
-                    fontSize: isSend ? "15px" : "14px"
-                  }}>{!isSend ? "Are you sure you want to enable 2-factor authentication?" : <div>
-                    Please check your phone with number <span style={{
-                      textDecoration: "underline",
-                      color: "var(--primary)",
-                      fontWeight: "400"
-                    }}>{userLogin?.phone}</span> to receive the OTP code.
-                  </div>}</div>
-                </div>
-              }
-              content={
-                <div className={cx("otp-info")} style={{
-                  flex: 1
-                }}>
-                  {isSend ? <input type="text" placeholder="Enter Your Otp" required className={cx("input-otp")} value={otpCode} onChange={(e) => setOtpCode(e.target.value)} /> : <></>}
-                  {isSend && <Count onResend={handleResendOtp} />}
-                </div>
-              }
-              action={
-                <Button className={cx("btn-agree")} disable={f2aLoading || ((!otpCode || otpCode.length < 4) && isSend)} onClick={() => handleEnableF2A(!isSend)}>
-                  <div className={cx("btn-content")}>
-                    <span className={cx("btn-text-agree")}>
-                      {!isSend ? !f2aLoading ? "Send OTP" : <Loading className={cx("custom-loading", "sending")} /> : "Verify OTP"}
-                    </span>
+        <div className={cx("secure-wrapper")}>
+          <List
+            sx={{ width: '100%', bgcolor: '#f5f5f5', paddingBottom: "0px" }}
+            component="nav"
+            aria-labelledby="nested-list-subheader"
+            subheader={
+              <ListSubheader component="div" id="nested-list-subheader" sx={{
+                fontSize: "20px"
+              }}>
+                Account Security
+              </ListSubheader>
+            }
+          >
+            <ListItemButton onClick={handleClick}>
+              <ListItemIcon>
+                <FingerprintIcon />
+              </ListItemIcon>
+              <ListItemText primary="Authentication" />
+              {openSecure ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+            <Collapse in={openSecure} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding sx={{
+                bgcolor: '#fff'
+              }}>
+                <ListItemButton sx={{ pl: 4 }} onClick={() => setOpenPassword(true)}>
+                  <ListItemIcon>
+                    <PasswordIcon />
+                    <Popup
+                      onClose={() => setOpenPassword(false)}
+                      onReset={handleResetInputPassword}
+                      open={openPassword}
+                      contentStyle={{
+                        width: "50%",
+                        padding: "2px",
+                        borderRadius: "5px",
+                        border: "0",
+                        animation: ".3s cubic-bezier(.38,.1,.36,.9) forwards a"
+                      }}
+                      header={
+                        <div style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          gap: "10px"
+                        }}>
+                          <PasswordIcon sx={{
+                            width: "50px",
+                            height: "50px",
+                            color: "var(--primary)"
+                          }} />
+                          <h1 style={{
+                            fontSize: "20px",
+                            fontWeight: "600",
+                          }}>New Password</h1>
+                          <div style={{
+                            maxWidth: "80%",
+                            textAlign: "center",
+                            fontWeight: "500",
+                            fontSize: isSend ? "15px" : "14px"
+                          }}>Enter your current password to change new password.</div>
+                        </div>
+                      }
+                      content={
+                        <div className={cx("info-password")}>
+                          <input type="password" name="currentPassword" id="currentPassword"
+                            placeholder="Current Password"
+                            value={currentPassword}
+                            onChange={(e) => {
+                              setCurrentPassword(e.target.value.trim())
+                            }}
+                          />
+                          <input type="password" name="newPassword" placeholder="New password"
+                            value={newPassword}
+                            onChange={(e) => {
+                              setNewPassword(e.target.value.trim())
+                            }}
+                          />
+                          <span className={cx("new-password-note")}>New password requires at least 3 characters.</span>
+                          <input type="password" name="confirmPassword" placeholder="Confirm New Password"
+                            value={confirmPassword}
+                            onChange={(e) => {
+                              setConfirmPassword(e.target.value.trim())
+                            }}
+                          />
+                          <span className={cx("confirm-password-note")}>Confirm password must match the new password.</span>
+                        </div>
+                      }
+                      action={
+                        <Button className={cx("btn-agree")} onClick={handleChangePassword}>
+                          <div className={cx("btn-content")}>
+                            <span className={cx("btn-text-agree")}>
+                              Change Password
+                            </span>
+                          </div>
+                        </Button>
+                      }
+                    />
+                  </ListItemIcon>
+                  <ListItemText primary="Change Password" />
+                </ListItemButton>
+                <ListItemButton sx={{ pl: 4 }}>
+                  <div className={cx("featured-wrapper")}>
+                    <Tippy content={<span style={{
+                      fontFamily: "Poppins",
+                    }}>{!userLogin?.phone ? "Verify Your Phone" : "Verified"}</span>}>
+                      <FormGroup sx={{
+                        ".MuiFormControlLabel-label": {
+                          marginLeft: "8px"
+                        }
+                      }}>
+                        <FormControlLabel disabled={!userLogin?.phone} control={<Switch checked={isF2A} onChange={handleSwitchF2A} />} label="Enabled F2A" />
+                      </FormGroup>
+                    </Tippy>
+                    <Popup
+                      ref={popupRef}
+                      onClose={() => setOpen(false)}
+                      isSend={isSend}
+                      onReset={handleSwitchF2A}
+                      open={open}
+                      contentStyle={{
+                        width: "25%",
+                        padding: "2px",
+                        borderRadius: "5px",
+                        border: "0",
+                        animation: ".3s cubic-bezier(.38,.1,.36,.9) forwards a"
+                      }}
+                      header={
+                        <div style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          gap: "10px"
+                        }}>
+                          {!isSend ? <PhoneLockedIcon sx={{
+                            width: "50px",
+                            height: "50px",
+                            color: "var(--primary)"
+                          }} /> : <UnpublishedIcon sx={{
+                            width: "50px",
+                            height: "50px",
+                            color: "var(--primary)"
+                          }} />}
+                          <h1 style={{
+                            fontSize: "20px",
+                            fontWeight: "600",
+                          }}>Two-Factor Authentication</h1>
+                          <div style={{
+                            maxWidth: "80%",
+                            textAlign: "center",
+                            fontWeight: "500",
+                            fontSize: isSend ? "15px" : "14px"
+                          }}>{!isSend ? "Are you sure you want to enable 2-factor authentication?" : <div>
+                            Please check your phone with number <span style={{
+                              textDecoration: "underline",
+                              color: "var(--primary)",
+                              fontWeight: "400"
+                            }}>{userLogin?.phone}</span> to receive the OTP code.
+                          </div>}</div>
+                        </div>
+                      }
+                      content={
+                        <div className={cx("otp-info")} style={{
+                          flex: 1
+                        }}>
+                          {isSend ? <input type="text" placeholder="Enter Your Otp" required className={cx("input-otp")} value={otpCode} onChange={(e) => setOtpCode(e.target.value)} /> : <></>}
+                          {isSend && <Count onResend={handleResendOtp} />}
+                        </div>
+                      }
+                      action={
+                        <Button className={cx("btn-agree")} disable={f2aLoading || ((!otpCode || otpCode.length < 4) && isSend)} onClick={() => handleEnableF2A(!isSend)}>
+                          <div className={cx("btn-content")}>
+                            <span className={cx("btn-text-agree")}>
+                              {!isSend ? !f2aLoading ? "Send OTP" : <Loading className={cx("custom-loading", "sending")} /> : "Verify OTP"}
+                            </span>
+                          </div>
+                        </Button>
+                      }
+                    />
                   </div>
-                </Button>
-              }
-            />
-          </div>
+                </ListItemButton>
+              </List>
+            </Collapse>
+          </List>
         </div>
       </div>
       <div className={cx("btn-wrapper")}>

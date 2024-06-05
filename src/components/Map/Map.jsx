@@ -1,6 +1,6 @@
 import classNames from "classnames/bind";
 import styles from "./Map.module.scss";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getCoordinates } from "../../services/geoapifyService";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet"
 
@@ -10,7 +10,6 @@ const url = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 
 const Map = ({ address = "", zoom = 16, coordinates = [] }) => {
   const [center, setCenter] = useState([]);
-
   useEffect(() => {
     const fetchCenter = async () => {
       try {

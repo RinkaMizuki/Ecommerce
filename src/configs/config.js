@@ -4,7 +4,6 @@ const configRoutes = {
   login: "/login",
   googleLogin: "/signin-google",
   facebookLogin: "/signin-facebook",
-  user: "/user",
   favorite: "/favorite",
   contact: "/contact",
   about: "/about",

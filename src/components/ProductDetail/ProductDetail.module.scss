@@ -177,6 +177,10 @@ input[type='number']::-webkit-outer-spin-button {
   color: var(--white);
 }
 
+.plus-disabled {
+  opacity: .5;
+}
+
 .btn-buynow {
   width: 165px;
   cursor: pointer;

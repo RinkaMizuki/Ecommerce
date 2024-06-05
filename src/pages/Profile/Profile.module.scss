@@ -66,6 +66,7 @@
     border-radius: 5px;
     height: 100%;
     width: 245px;
+    font-size: 20px;
     padding: 10px 35px 10px 10px;
     background-color: #F5F5F5 !important;
     font-weight: 300;
@@ -80,11 +81,11 @@
 }
 
 .new-password-note {
-  bottom: 33%;
+  bottom: 29%;
 }
 
 .confirm-password-note {
-  bottom: 2%;
+  bottom: 0;
 }
 
 ::placeholder {
@@ -249,7 +250,7 @@
   }
 }
 
-.password-wrapper {
+.secure-wrapper {
   display: flex;
   gap: 30px;
 }

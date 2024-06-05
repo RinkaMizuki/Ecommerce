@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react"
 import styles from "./Sidebar.module.scss";
 import classNames from "classnames/bind";
 import { TreeView } from "@mui/x-tree-view";
 import { ExpandMore, ChevronRight } from "@mui/icons-material"
-import useCustomFetch from "../../../hooks/useCustomFetch";
 import MenuItem from "../MenuItem";
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css'
@@ -11,21 +9,12 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const cx = classNames.bind(styles);
 
-const Sidebar = () => {
+const Sidebar = ({ categories }) => {
 
-  const [categories, setCategories] = useState([])
-  const [getCategories] = useCustomFetch();
   const location = useLocation();
   const navigate = useNavigate();
   const params = useParams();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await getCategories("/Admin/categories")
-      setCategories(response.data)
-    }
-    fetchData();
-  }, [])
 
   const onNavigate = (c) => {
     navigate(`/category/${c.title}`, {

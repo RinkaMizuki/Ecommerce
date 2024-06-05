@@ -199,13 +199,15 @@ const Login = () => {
           type: "verify-login"
         }
       });
-      dispatch(loginSuccess({
-        ...res?.data,
-        type: "default"
-      }))
-      toast.success(res.data?.message, toastOptions);
       setOtpCode("");
-      closeModal();
+      toast.success(res.data?.message, toastOptions);
+      setOpen(false);
+      setTimeout(() => {
+        dispatch(loginSuccess({
+          ...res?.data,
+          type: "default"
+        }))
+      }, 1000);
     }
     catch (err) {
       console.log(err);

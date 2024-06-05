@@ -122,7 +122,9 @@ const ProductDetail = () => {
 
   return (
     <div className={cx("main-container")}>
-      <ToastContainer></ToastContainer>
+      <ToastContainer style={{
+        marginTop: "70px"
+      }}></ToastContainer>
       <div role="presentation" onClick={handleClick} style={{ marginTop: "10px" }}>
         <Breadcrumbs aria-label="breadcrumb">
           <Link underline="hover" color="inherit" href="/">
@@ -223,7 +225,13 @@ const ProductDetail = () => {
                 type="number"
                 onChange={() => { }} />
               <button
-                className={cx("plus")}
+                disabled={quantity >= product?.productStock?.stockQuantity}
+                className={cx("plus", {
+                  "plus-disabled": quantity >= product?.productStock?.stockQuantity
+                })}
+                style={{
+                  cursor: quantity >= product?.productStock?.stockQuantity ? "not-allowed" : "pointer"
+                }}
                 onClick={() => setQuantity(quantity + 1)}
               >+</button>
             </div>

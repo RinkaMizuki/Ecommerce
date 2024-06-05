@@ -3,7 +3,6 @@ import config from "../configs";
 import Home from "../pages/Home";
 import Register from "../pages/Register";
 import Login from "../pages/Login";
-import User from "../pages/User";
 import Contact from "../pages/Contact";
 import WishList from "../components/WishList";
 import About from "../pages/About/About";
@@ -58,11 +57,6 @@ const publicRoutes = [
     layout: "default"
   },
   {
-    path: config.routes.user,
-    element: User,
-    layout: "default"
-  },
-  {
     path: config.routes.favorite,
     element: AuthRequired(WishList),
     layout: "default"
@@ -89,7 +83,7 @@ const publicRoutes = [
   },
   {
     path: config.routes.profile,
-    element: Profile,
+    element: AuthRequired(Profile),
     layout: "management"
   },
   {

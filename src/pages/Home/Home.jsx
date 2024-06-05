@@ -5,8 +5,6 @@ import Category from "../../components/Category";
 import ProductFuture from "../../components/ProductFuture";
 import ProductSuggest from "../../components/ProductSuggest";
 import ProductArrival from "../../components/ProductArrival";
-import Sidebar from "../../layouts/components/Sidebar";
-import Slider from "../../layouts/components/Slider";
 import ProductService from "../../components/ProductService";
 import { ToastContainer } from "react-toastify"
 import Snowfall from "react-snowfall";
@@ -20,7 +18,7 @@ import { Helmet } from "react-helmet";
 
 const cx = classNames.bind(styles);
 
-const Home = () => {
+const Home = ({ categories }) => {
 
   useEffect(() => {
     window.scrollTo({
@@ -49,19 +47,19 @@ const Home = () => {
         style={{
           marginTop: "60px",
         }}
-      ></ToastContainer>
+      />
       <Helmet>
         <meta name="description" content="Welcome to MT STORE, your one-stop destination for cutting-edge technology products. At MT STORE, we pride ourselves on offering a wide range of high-quality gadgets, electronics, and accessories to meet all your tech needs." />
         <title>MT Store - Ecommerce</title>
         <link rel="canonical" href={window.location.origin} />
       </Helmet>
-      <ProductFlashSale></ProductFlashSale>
-      <Category></Category>
-      <ProductBestSeller></ProductBestSeller>
-      <ProductFuture></ProductFuture>
-      <ProductSuggest></ProductSuggest>
-      <ProductArrival></ProductArrival>
-      <ProductService></ProductService>
+      <ProductFlashSale />
+      <Category categories={categories} />
+      <ProductBestSeller />
+      <ProductFuture />
+      <ProductSuggest />
+      <ProductArrival />
+      <ProductService />
     </>
   )
 };

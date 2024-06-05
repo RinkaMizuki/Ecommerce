@@ -31,18 +31,12 @@
   transition: all .2s ease-in-out;
 
   >i {
-    font-size: 35px;
-  }
-
-  >img {
-    width: 40px;
-    height: 40px;
+    display: block;
+    width: 70px;
+    height: 70px;
   }
 
   &:hover {
-    >img {
-      background-image: url("https://icons8.com/icon/116313/watches-front-view");
-    }
 
     color: var(--text-white);
     background-color: var(--primary);

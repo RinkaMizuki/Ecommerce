@@ -116,9 +116,19 @@ const CartItem = ({ p, userId, index, checkedItems, handleCheckboxChange, setTot
         <div>
           <span className={cx("product-quantity-count")}>{quantity}</span>
           <div className={cx("product-quantity-input")}>
-            <svg className={cx({ "disable": quantity >= 20 })} stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" onClick={() => quantity < 20 ? handleAddProduct(p.id) : () => { }}><path d="M128 320l128-128 128 128z"></path>
+            <svg
+              className={cx({ "disable": quantity >= p.productStock.stockQuantity })}
+              stroke="currentColor"
+              fill="currentColor"
+              style={{
+                cursor: quantity >= p.productStock.stockQuantity ? "not-allowed" : "pointer"
+              }}
+              strokeWidth="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" onClick={() => !(quantity >= p.productStock.stockQuantity) ? handleAddProduct(p.id) : () => { }}><path d="M128 320l128-128 128 128z"></path>
             </svg>
-            <svg className={cx({ "disable": quantity == 1 })} stroke="currentColor" fill="currentColor" strokeWidth="0" onClick={() => quantity != 1 ? handleRemoveProduct(p.id) : () => { }} viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M128 192l128 128 128-128z"></path>
+            <svg className={cx({ "disable": quantity == 1 })}
+              style={{
+                cursor: quantity == 1 ? "not-allowed" : "pointer"
+              }} stroke="currentColor" fill="currentColor" strokeWidth="0" onClick={() => quantity != 1 ? handleRemoveProduct(p.id) : () => { }} viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M128 192l128 128 128-128z"></path>
             </svg>
           </div>
         </div>
