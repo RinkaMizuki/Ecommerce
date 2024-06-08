@@ -1,6 +1,11 @@
 .review-product-title {
   font-size: 25px;
   font-weight: 600;
+
+  >a {
+    color: var(--black);
+    text-decoration: none;
+  }
 }
 
 .review-comment-content,

@@ -150,7 +150,7 @@ const ProductDetail = () => {
       </div>
       <div className={cx("product-container")}>
         <div className={cx("product-images")}>
-          {product?.productImages?.slice(0, 4).map(p => (
+          {product?.productImages?.slice(0, 5).map(p => (
             <div className={cx("product-background-image")} key={p.productImageId} >
               <LazyLoadImage
                 src={p.url}

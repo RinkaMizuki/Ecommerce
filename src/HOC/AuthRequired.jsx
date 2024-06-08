@@ -6,7 +6,6 @@ const AuthRequired = (OrignalComponent) => {
 
     const location = useLocation();
     const userLogin = useSelector(state => state.auth.login.currentUser);
-
     return (userLogin ? <OrignalComponent {...props} /> : <Navigate to="/login" state={{ from: location }} replace />)
 
   }

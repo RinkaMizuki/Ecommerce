@@ -190,7 +190,7 @@ export default function AccountMenu() {
         const queryStringData = queryString.stringify({
           filter: JSON.stringify({
             userId: userLogin.id,
-            ordered: "ordered"
+            status: "ordered"
           }),
           sort: JSON.stringify(['OrderDate', 'DESC'])
         })
@@ -211,7 +211,7 @@ export default function AccountMenu() {
         const queryStringData = queryString.stringify({
           filter: JSON.stringify({
             userId: userLogin.id,
-            returned: "true"
+            status: "returned"
           }),
           sort: JSON.stringify(['OrderDate', 'DESC'])
         })
@@ -234,7 +234,7 @@ export default function AccountMenu() {
         const queryStringData = queryString.stringify({
           filter: JSON.stringify({
             userId: userLogin.id,
-            cancelled: "cancelled"
+            status: "cancelled"
           }),
           sort: JSON.stringify(['OrderDate', 'DESC'])
         })

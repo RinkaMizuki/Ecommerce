@@ -2,13 +2,20 @@ import React from "react"
 import styles from "./Footer.module.scss";
 import classNames from "classnames/bind";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const cx = classNames.bind(styles);
 
 const Footer = () => {
-
+  const navigate = useNavigate();
+  const userLogin = useSelector(state => state.auth.login?.currentUser?.user);
   const { t } = useTranslation();
-
+  const handleSendVoucher = () => {
+    if (!userLogin) {
+      navigate('/login')
+    }
+  }
   return (
     <div className={cx("footer-wrapper")}>
       <div className={cx("footer-content")}>
@@ -18,7 +25,7 @@ const Footer = () => {
           <span>{t('get-off')}</span>
           <div className={cx("input-email-wrapper")}>
             <input type="text" name="email" id="email" placeholder={t('your-email')} />
-            <i className="fa-regular fa-paper-plane"></i>
+            <i className="fa-regular fa-paper-plane" onClick={handleSendVoucher}></i>
           </div>
         </div>
         <div className={cx("content-wrapper")}>

@@ -395,7 +395,7 @@ const Profile = () => {
               <Tippy content={<span style={{
                 fontFamily: "Poppins"
               }}>{!userLogin?.emailConfirm ? "Unverified" : "Verified"}</span>}>
-                <span onClick={handleVerifyEmail} className={cx("verify-status")}>
+                <span className={cx("verify-status")}>
                   {!userLogin?.emailConfirm ? <NotificationsOffIcon className={cx("notifi-icon")}
                     style={{
                       color: !userLogin?.emailConfirm && "#9d9d9d",

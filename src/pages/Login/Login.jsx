@@ -3,7 +3,7 @@ import classNames from "classnames/bind";
 import ecommerceRegister from "../../assets/images/ecommerce-register.jpg";
 import Button from "../../components/Button"
 import google from "../../assets/images/google.png"
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import { useDispatch, useSelector } from "react-redux";
@@ -58,6 +58,10 @@ const Login = () => {
   const error = useSelector(state => state.auth.login.error);
   const message = useSelector(state => state.auth.login.message);
   const isFetching = useSelector(state => state.auth.login.isFetching);
+
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname || "/";
   //logics handle
   const handleTogglePassword = () => {
     const typePassword = passwordRef.current?.getAttribute("type")
@@ -121,13 +125,10 @@ const Login = () => {
       localStorage.setItem("remember", isChecked)
       if (!res.data?.user?.f2a) {
         toast.success(res?.data?.message, toastOptions);
-        setTimeout(() => {
-          dispatch(loginSuccess({
-            ...res?.data,
-            type: "default"
-          }))
-          navigate("/")
-        }, 1000);
+        dispatch(loginSuccess({
+          ...res?.data,
+          type: "default"
+        }))
         return;
       }
       setPhoneOtp(res.data?.user?.phone);

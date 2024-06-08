@@ -63,7 +63,7 @@ const publicRoutes = [
   },
   {
     path: config.routes.contact,
-    element: Contact,
+    element: AuthRequired(Contact),
     layout: "default"
   },
   {

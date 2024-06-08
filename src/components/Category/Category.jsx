@@ -22,7 +22,7 @@ const Category = ({ categories }) => {
       />
       <div className={cx("category-container")}>
         {categories.map(category => (
-          <div className={cx("category-item")} onClick={() => handleNavigateCate(category.title)}>
+          <div className={cx("category-item")} onClick={() => handleNavigateCate(category.title)} key={category.id}>
             <i className="icons-cate" style={{
               backgroundImage: `url(${category.icon})`,
               backgroundRepeat: "no-repeat",

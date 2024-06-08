@@ -9,6 +9,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import React, { useEffect, useState } from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { Link } from "react-router-dom";
 
 const cx = classNames.bind(styles);
 
@@ -52,11 +53,12 @@ const Review = () => {
           <SwiperSlide key={review.id}>
             <section>
               <div className="row d-flex justify-content-center">
-                <div className="col-md-10 col-xl-8 text-center">
-                  <h3 className={cx("review-product-title", "mb-4")}>{review.productRateResponse?.title}</h3>
-                  <p className={cx("review-product-desc", "mb-4 pb-2 mb-md-5 pb-md-0")}>
-                    {review.productRateResponse?.description}
-                  </p>
+                <div className="col-md-10 col-xl-12 text-center">
+                  <h3 className={cx("review-product-title", "mb-4")}>
+                    <Link to={`/product-detail/${review.productId}`}>
+                      {review.productRateResponse?.title}
+                    </Link>
+                  </h3>
                 </div>
               </div>
 

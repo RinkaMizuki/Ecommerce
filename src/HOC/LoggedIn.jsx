@@ -5,7 +5,9 @@ const LoggedIn = (OriginComponent) => {
   return function ExtendComponent(props) {
     const userLogin = useSelector(state => state.auth.login.currentUser);
     const location = useLocation();
-    return !userLogin ? <OriginComponent {...props} /> : <Navigate to="/" state={{ from: location }} replace />
+    const from = location.state?.from?.pathname || "/";
+
+    return !userLogin ? <OriginComponent {...props} /> : <Navigate to={from} replace />
   }
 };
 
