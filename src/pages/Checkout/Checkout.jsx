@@ -1,17 +1,32 @@
 import styles from "./Checkout.module.scss";
 import classNames from "classnames/bind";
 import { default as LinkMui } from "@mui/material/Link";
-import { Breadcrumbs } from "@mui/material";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Box, Breadcrumbs, Modal, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useContext, useEffect, useRef, useState } from "react";
 import Button from "../../components/Button";
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import AddLocationIcon from '@mui/icons-material/AddLocation';
 import useCustomFetch from "../../hooks/useCustomFetch";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { useSelector } from "react-redux";
 import { ModalContext } from "../../context/ModalContext";
 import Skeleton from "react-loading-skeleton";
+import { setLocalProductQuantity } from "../../services/cartService";
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+
+  transform: 'translate(-50%, -50%)',
+  bgcolor: '#f1f1f1',
+  boxShadow: 24,
+  borderRadius: "5px",
+  overflow: "hidden"
+};
 
 const cx = classNames.bind(styles);
 
@@ -20,11 +35,16 @@ const Checkout = () => {
   const [paymentMethod, setPaymentMethod] = useState("cash");
   const [listUserAddress, setListUserAddress] = useState([]);
   const [listDes, setListDes] = useState([]);
+  const [listSoldOut, setListSoldOut] = useState([]);
   const [desId, setDesId] = useState("");
   const [email, setEmail] = useState("");
+  const [open, setOpen] = useState(false);
   const [isValidEmail, setIsValidEmail] = useState(true);
   const [noteContent, setNoteContent] = useState("");
   const emailInputRef = useRef(null);
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const idAddress = useSelector(state => state.address.idAddressSelected);
   const userLogin = useSelector(state => state.auth.login.currentUser.user);
@@ -44,6 +64,12 @@ const Checkout = () => {
     else {
       navigate("/")
     }
+  }
+
+  const handleRemoveOutStockCart = () => {
+    listSoldOut.forEach(item => {
+      setLocalProductQuantity(item.productId, userLogin.id, 1, "remove", true)
+    })
   }
 
   const handleFindDefaultAddress = () => {
@@ -88,6 +114,7 @@ const Checkout = () => {
       }
     }
     fetchData();
+    return () => setOpen(false);
   }, [])
 
   const handleCalcTotalQuantity = () => {
@@ -172,13 +199,17 @@ const Checkout = () => {
       }
     } catch (error) {
       console.log(error);
+      if (error.response.status === 409) {
+        handleOpen();
+        setListSoldOut(error.response.data?.data);
+      }
     }
   }
 
   const handleFindPaymentId = (destination) => {
     return listDes?.find(d => d?.desShortName?.toLowerCase() === destination)?.destinationId;
   };
-
+  console.log(location.state?.products)
   return (
     <div className={cx("checkout-container")}>
       <div role="presentation" onClick={handleClick} className={cx("breadcrumb")}>
@@ -204,6 +235,98 @@ const Checkout = () => {
           </LinkMui>
         </Breadcrumbs>
       </div>
+      <Modal
+        open={open}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Box sx={{
+            padding: "20px 20px 0 20px",
+            display: 'flex',
+            flexDirection: 'column',
+          }}>
+            <Typography id="modal-modal-title" variant="h6" component="h2" textAlign="center" sx={{
+              lineHeight: 1.3,
+              fontWeight: "500",
+              fontSize: "23px"
+            }}>
+              Some product not avaiable in your cart. Please check again
+              <ErrorOutlineIcon sx={{
+                marginLeft: '5px',
+                color: 'var(--primary)'
+              }} />
+            </Typography>
+            <TableContainer component={Paper} sx={{
+              mt: 2
+            }}>
+              <Table sx={{ minWidth: 650 }} aria-label="caption table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Title</TableCell>
+                    <TableCell align="right">Quantity</TableCell>
+                    <TableCell align="right">Price</TableCell>
+                    <TableCell align="right">Discount</TableCell>
+                    <TableCell align="right">Stock remain</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {listSoldOut.map((row) => (
+                    <TableRow key={row.productId}>
+                      <TableCell component="th" scope="row">
+                        <Link to={`/product-detail/${row.productId}`} style={{
+                          color: "#4874ff"
+                        }}>{row.title}</Link>
+                      </TableCell>
+                      <TableCell align="right">{row.quantityProduct}</TableCell>
+                      <TableCell align="right">{row.priceProduct}đ</TableCell>
+                      <TableCell align="right">{row.discountProduct} %</TableCell>
+                      <TableCell align="right">{row.stockQuantity}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <Button
+              onClick={handleRemoveOutStockCart}
+              to="/cart"
+              lagre={true}
+              style={{
+                textDecoration: 'none',
+                display: 'flex',
+                alignSelf: 'flex-end',
+                alignItems: 'center',
+                width: "unset",
+                borderRadius: "0px",
+                backgroundColor: "transparent",
+                color: "var(--primary)",
+                fontWeight: "500",
+                textTransform: "uppercase"
+              }}
+            >
+              <ArrowRightIcon />
+              <span>Go to cart</span>
+            </Button>
+
+          </Box>
+          <Button
+            lagre={true}
+            style={{
+              width: '100%',
+              borderRadius: "0px",
+              fontWeight: "500",
+              textTransform: "uppercase"
+            }}
+            onClick={() => {
+              navigate(location.pathname, { state: { products: [] } });
+              setNoteContent('');
+              setEmail('');
+              handleClose();
+              handleRemoveOutStockCart()
+            }}
+          >I understand</Button>
+        </Box>
+      </Modal>
       <div className={cx("bill-wrapper")}>
         {listUserAddress.length ? <div className={cx("bill-info")}>
           <h1>Billing Details</h1>
@@ -260,7 +383,6 @@ const Checkout = () => {
                   alt={p.image}
                   effect="blur"
                 />
-                {console.log(p)}
                 <div>
                   <p>{p.title} <span style={{
                     color: "var(--text-gray-700)"
@@ -287,12 +409,12 @@ const Checkout = () => {
             <div className={cx("bill-price")}>
               <div className={cx("bill-sub")}>
                 <p>SubTotal:</p>
-                <span>{location?.state?.subTotal?.toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</span>
+                <span>{location.state?.subTotal?.toLocaleString('it-IT', { style: 'currency', currency: 'VND' }) || '0 VND'}</span>
               </div>
               <span></span>
               <div className={cx("bill-discount")}>
                 <p>Discount</p>
-                <p>{location?.state?.totalDiscount?.toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</p>
+                <p>{location.state?.totalDiscount?.toLocaleString('it-IT', { style: 'currency', currency: 'VND' }) || '0 VND'}</p>
               </div>
               <span></span>
               <div className={cx("bill-ship")}>
@@ -302,12 +424,12 @@ const Checkout = () => {
               <span></span>
               <div className={cx("bill-total")}>
                 <p>Total:</p>
-                <span>{location?.state?.totalPrice?.toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</span>
+                <span>{location?.state?.totalPrice?.toLocaleString('it-IT', { style: 'currency', currency: 'VND' }) || '0 VND'}</span>
               </div>
             </div>
           </div>
           <div className={cx("bill-note")}>
-            <textarea name="note" id="note" cols="48" placeholder="Enter your note..." onChange={(e) => setNoteContent(e.target.value)}></textarea>
+            <textarea name="note" id="note" cols="48" placeholder="Enter your note..." onChange={(e) => setNoteContent(e.target.value)} value={noteContent}></textarea>
           </div>
           <div className={cx("payment-cash")} onClick={handleChoosePaymentMethod} datapay="cash">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" datapay="cash">
@@ -343,7 +465,7 @@ const Checkout = () => {
           <Button
             className={cx("order-btn")}
             onClick={handlePayment}
-            disable={!validateEmail(email) || !email}
+            disable={!validateEmail(email) || !email || !location.state?.products.length}
           >Place Order</Button>
         </div>
       </div>

@@ -41,6 +41,16 @@
     border-radius: 4px;
   }
 
+  >.cart-outstock {
+    left: 80px;
+    top: 0px;
+    position: absolute;
+
+    >img {
+      height: 45px;
+    }
+  }
+
   >.cart-like,
   >.cart-trash,
   >.cart-review {

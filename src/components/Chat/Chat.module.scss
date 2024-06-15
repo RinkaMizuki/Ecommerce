@@ -1,0 +1,30 @@
+.chat-container {
+    position: fixed;
+    z-index: 77;
+    bottom: 30%;
+    right: 0;
+    font-family: "Montserrat";
+}
+
+.chat-area {
+    > span {
+        cursor: pointer;
+    }
+}
+
+.card-body {
+    padding: 10px;
+    overflow-y: scroll;
+}
+
+.card-body::-webkit-scrollbar-thumb {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border-radius: 5px;
+    background-color: var(--text-gray-500);
+}
+
+.card-custom {
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 rgba(0, 0, 0, 0)),
+        var(--tw-ring-shadow, 0 0 rgba(0, 0, 0, 0)), var(--tw-shadow);
+}

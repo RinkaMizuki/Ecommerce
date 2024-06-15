@@ -13,6 +13,7 @@ import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css';
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
+import outStock from "../../assets/images/out-of-stock.png";
 
 const cx = classNames.bind(styles);
 
@@ -63,8 +64,7 @@ const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false
   }
 
   const handleSaveFavorite = (id) => {
-    if (!userInfo) {
-      navigate("/login")
+    if (!checkUserLogin()) {
       return;
     }
     const isRemove = setLocalFavoriteProductId(id, userInfo.user.id)
@@ -76,8 +76,13 @@ const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false
   }
 
   const handleAddProduct = (id, quantity = 1) => {
-    if (!userInfo) {
-      navigate("/login")
+    const localProducts = getLocalProductQuantity(userInfo?.user?.id)
+    const matchProduct = localProducts.find(p => p.id === data.id)
+    if (matchProduct?.quantity + 1 > data.productStock?.stockQuantity && matchProduct) {
+      toast.info("A product quantity is not enough", toastOptions)
+      return;
+    }
+    if (!checkUserLogin()) {
       return;
     }
     toast.success("A product has been added to cart", toastOptions)
@@ -85,8 +90,7 @@ const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false
     setQuantity(preQuantity => preQuantity + 1);
   }
   const handleRemoveProduct = (id) => {
-    if (!userInfo) {
-      navigate("/login")
+    if (!checkUserLogin()) {
       return;
     }
     toast.info("A product has been removed from the cart", toastOptions)
@@ -105,6 +109,16 @@ const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false
     const reviewAccepted = rates?.filter(r => r.status === 'accepted');
     return reviewAccepted;
   }
+
+  const checkUserLogin = () => {
+    console.log({ state: { from: { pathname: location.pathname } } })
+    if (!userInfo) {
+      navigate("/login", { state: { from: { pathname: location.pathname } } })
+      return false;
+    }
+    return true;
+  }
+
   useEffect(() => {
     const handleStorageChange = () => {
       const ids = getLocalFavoriteProductId(userInfo.user.id);
@@ -142,6 +156,7 @@ const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false
           className={cx("cart-sale")}
         >-{data?.discount}%
         </span>
+        {!data.productStock?.stockQuantity && <div className={cx("cart-outstock")}><img src={outStock} /></div>}
         {!isRemove ? <>
           {!hiddenHeart && <span
             className={cx("cart-like")}
@@ -164,7 +179,7 @@ const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false
           style={{ ...springs }}
           ref={cartRef}
         >
-          {quantity == 0 ? <>
+          {data.productStock?.stockQuantity ? quantity == 0 ? <>
             <i className="fa-solid fa-cart-shopping"></i>
             <span style={{ marginLeft: "10px" }} ref={addRef} onClick={() => handleAddProduct(data?.id)}>{t('add-cart')}</span>
           </>
@@ -176,7 +191,10 @@ const Cart = ({ className, onCloseLightBox, data, img = null, hiddenStar = false
               <button className={cx("plus-btn", "btn")}
                 onClick={() => handleAddProduct(data?.id)}
               >+</button>
-            </div>}
+            </div> : <>
+            {!idFavorites.includes(data.id) || !userInfo ? <i className="fa-solid fa-heart"></i> : <i className={cx("fa-solid fa-heart", "active")}></i>}
+            <span style={{ marginLeft: "10px" }} onClick={() => { handleSaveFavorite(data.id) }} >Add To Wishlist</span>
+          </>}
         </animated.div>
       </animated.div>
       <div className={cx("cart-content")}>

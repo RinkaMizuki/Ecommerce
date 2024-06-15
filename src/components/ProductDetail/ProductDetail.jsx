@@ -3,7 +3,7 @@ import styles from "./ProductDetail.module.scss";
 import classNames from "classnames/bind";
 import Link from '@mui/material/Link';
 import useCustomFetch from "../../hooks/useCustomFetch";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import StarRatings from "react-star-ratings";
 import ReactHtmlParser from "react-html-parser"
@@ -44,6 +44,7 @@ const ProductDetail = () => {
   const colorRef = useRef(null);
   const params = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -107,17 +108,31 @@ const ProductDetail = () => {
   }
 
   const handleSaveFavorite = (id) => {
-    if (!userLogin) {
-      navigate("/login")
+    if (!checkUserLogin()) {
       return;
     }
-    setLocalFavoriteProductId(id, userLogin.user.id)
+    const isRemove = setLocalFavoriteProductId(id, userLogin.user.id)
+    if (!isRemove) {
+      toast.success("A product has been added to wishlist", toastOptions)
+    } else {
+      toast.info("A product has been removed from the favorites list", toastOptions)
+    }
   }
 
   const handleClickBuy = () => {
+    if (!checkUserLogin()) {
+      return;
+    }
     const currentProductId = params.productId;
     toast.info("Products has been added to cart", toastOptions)
     setLocalProductQuantity(currentProductId, userLogin?.user?.id, quantity, "addMany", false, color)
+  }
+  const checkUserLogin = () => {
+    if (!userLogin?.user) {
+      navigate("/login", { state: { from: { pathname: location.pathname } } })
+      return false;
+    }
+    return true;
   }
 
   return (
@@ -189,7 +204,9 @@ const ProductDetail = () => {
             }}>
               ({product?.productRates?.length} Reviews)
               <span>&nbsp; &nbsp; |</span>
-              <span> &nbsp;{product?.productStock?.stockQuantity ? " In Stock" : "Out Stock"}</span>
+              <span style={{
+                color: product?.productStock?.stockQuantity ? "#66FFA3" : "var(--primary)"
+              }}> &nbsp;{product?.productStock?.stockQuantity ? " In Stock" : "Out Stock"}</span>
             </span>
           </div>
           <div className={cx("product-price-wrapper")}>
@@ -235,7 +252,7 @@ const ProductDetail = () => {
                 onClick={() => setQuantity(quantity + 1)}
               >+</button>
             </div>
-            <Button className={cx("btn-buynow")} onClick={handleClickBuy}>Buy Now</Button>
+            <Button disable={!product?.productStock?.stockQuantity} className={cx("btn-buynow")} onClick={product?.productStock?.stockQuantity ? handleClickBuy : () => { }}>Buy Now</Button>
             <span className={cx("heart-wrapper")}
               onClick={() => { handleSaveFavorite(product.id) }}
             >

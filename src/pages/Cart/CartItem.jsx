@@ -31,12 +31,7 @@ const CartItem = ({ p, userId, index, checkedItems, handleCheckboxChange, setTot
   const [quantity, setQuantity] = useState(productLocal?.quantity || 0);
   const colorRef = useRef(null);
   const navigate = useNavigate();
-
   const handleAddProduct = (id, quantity = 1) => {
-    if (!userId) {
-      navigate("/login")
-      return;
-    }
     toast.info("Shopping cart successfully updated.", toastOptions)
     setLocalProductQuantity(id, userId, quantity, "add", false, color)
     setQuantity(preQuantity => preQuantity + 1);
@@ -45,10 +40,6 @@ const CartItem = ({ p, userId, index, checkedItems, handleCheckboxChange, setTot
   }
   const handleRemoveProduct = (id, remove = false) => {
     setCouponCode("");
-    if (!userId) {
-      navigate("/login")
-      return;
-    }
     toast.info("Shopping cart successfully updated.", toastOptions)
     setLocalProductQuantity(id, userId, quantity, "remove", remove, color)
     if (quantity >= 1) {

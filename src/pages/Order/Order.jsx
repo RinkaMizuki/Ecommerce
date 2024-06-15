@@ -124,6 +124,7 @@ const Order = () => {
                                   height: "20px",
                                   width: "20px",
                                   borderRadius: "5px",
+                                  border: "0.5px solid var(--black)",
                                   backgroundColor: `#${item.color}`
                                 }}></p> : <span className="text-muted">No color</span>}
                               </div>

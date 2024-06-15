@@ -11,9 +11,8 @@ import NoSupport from "./pages/NoSupport";
 
 function App() {
   const [toggleTopHeader, setToggleTopHeader] = useState(false);
-
   useEffect(() => {
-    const handleScroll = function (e) {
+    const handleScroll = function () {
       if (this.scrollY > 48) {
         setToggleTopHeader(true);
       } else {

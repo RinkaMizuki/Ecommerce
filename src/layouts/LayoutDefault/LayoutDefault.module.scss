@@ -1,3 +1,14 @@
 .content-wrapper {
-  padding: 30px 110px 0px 110px;
+    padding: 30px 110px 0px 110px;
+    position: relative;
+}
+
+.chat-icon {
+    position: fixed;
+    z-index: 99999999;
+    bottom: 10%;
+    cursor: pointer;
+    font-size: 50px;
+    color: #0866ff;
+    right: 6%;
 }
