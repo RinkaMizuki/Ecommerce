@@ -34,7 +34,11 @@ const LayoutDefault = ({ toggleTopHeader, children }) => {
             >
                 {userLogin &&
                     (isShowChat ? (
-                        <Chat setIsShowChat={setIsShowChat} />
+                        <Chat
+                            setIsShowChat={setIsShowChat}
+                            userLogin={userLogin}
+                            isShowChat={isShowChat}
+                        />
                     ) : (
                         <div
                             className={cx("chat-icon")}
