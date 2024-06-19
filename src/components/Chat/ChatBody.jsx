@@ -28,7 +28,7 @@ const ChatBody = ({ messages, userLogin }) => {
                 .map((msg, index) => {
                     return userLogin?.id === msg.senderId ? (
                         <div
-                            className="d-flex flex-row justify-content-end mb-4 pt-1"
+                            className="d-flex flex-row justify-content-end mb-3 mt-3 pt-1"
                             key={msg.messageId}
                             ref={
                                 index === messages.length - 1
@@ -36,14 +36,15 @@ const ChatBody = ({ messages, userLogin }) => {
                                     : null
                             }
                         >
-                            <div>
+                            <div
+                                style={{
+                                    maxWidth: "240px",
+                                }}
+                            >
                                 <p
-                                    className="small p-2 me-3 text-white rounded-3 bg-primary"
+                                    className="small me-2 text-white rounded-3 bg-primary p-2"
                                     style={{
-                                        height: "100%",
-                                        display: "flex",
-                                        justifyContent: "center",
-                                        alignItems: "center",
+                                        lineHeight: "1.4",
                                     }}
                                 >
                                     {msg.messageContent}

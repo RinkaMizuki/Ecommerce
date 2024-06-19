@@ -4,7 +4,13 @@ import styles from "./Chat.module.scss";
 
 const cx = classNames.bind(styles);
 
-const ChatBox = ({ handleSendMessage, message, setMessage }) => {
+const ChatBox = ({
+    handleSendMessage,
+    message,
+    setMessage,
+    setIsShowEmoji,
+    isShowEmoji,
+}) => {
     return (
         <div
             className={cx(
@@ -21,7 +27,10 @@ const ChatBox = ({ handleSendMessage, message, setMessage }) => {
                 onChange={(e) => setMessage(e.target.value)}
                 value={message}
             />
-            <span className="ms-3 text-muted">
+            <span
+                className="ms-3 text-muted"
+                onClick={() => setIsShowEmoji(!isShowEmoji)}
+            >
                 <i className="fas fa-smile"></i>
             </span>
             <span

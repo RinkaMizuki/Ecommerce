@@ -5,9 +5,10 @@ import styles from "./Chat.module.scss";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { chathubConnection } from "../../services/signalrService";
 import * as signalR from "@microsoft/signalr";
-import { Avatar } from "@mui/material";
 import ChatBody from "./ChatBody";
 import ChatBox from "./ChatBox";
+import EmojiPicker from "emoji-picker-react";
+import ChatHeader from "./ChatHeader";
 
 const cx = classNames.bind(styles);
 
@@ -16,6 +17,8 @@ const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
     const [messages, setMessages] = useState([]);
     const [admin, setAdmin] = useState(null);
     const [conversation, setConversation] = useState("");
+    const [isShowEmoji, setIsShowEmoji] = useState(false);
+    const [adminStatus, setAdminStatus] = useState(null);
 
     const handleSendMessage = async (e) => {
         if (e.type === "click" || (e.type === "keydown" && e.keyCode === 13))
@@ -29,15 +32,20 @@ const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
                     ""
                 );
                 setMessage("");
+                setIsShowEmoji(false);
             } catch (error) {
                 console.log(error);
             }
+    };
+    const handleChooseEmoji = (emojiObj, e) => {
+        setMessage((prevText) => `${prevText}${emojiObj.emoji}`);
     };
     useLayoutEffect(() => {
         try {
             chathubConnection.on("ReceiveMessage", (newMessage) => {
                 setMessages((prevMessages) => [...prevMessages, newMessage]);
             });
+
             chathubConnection.on(
                 "ReceiveAdmin",
                 (currentAdmin, conversationId) => {
@@ -45,6 +53,14 @@ const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
                     setAdmin(currentAdmin);
                 }
             );
+
+            chathubConnection.on("ReceiveStatus", (adminId, status) => {
+                setAdminStatus({
+                    adminId,
+                    status,
+                });
+            });
+
             if (
                 chathubConnection.state ===
                 signalR.HubConnectionState.Disconnected
@@ -99,47 +115,27 @@ const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
         <section className={cx("chat-container")}>
             <div className="container py-5">
                 <div className="row d-flex justify-content-center">
-                    <div className="col-lg-8 col-xl-9">
+                    <div className="col-lg-10">
                         <div className={cx("card-custom", "card")} id="chat2">
-                            <div className="card-header d-flex justify-content-between align-items-center p-3">
-                                <div className="d-flex align-items-center gap-3">
-                                    <Avatar src={admin?.url} />
-                                    <div>
-                                        <h3
-                                            className="mb-0"
-                                            style={{
-                                                fontWeight: "bold",
-                                                fontSize: "20px",
-                                            }}
-                                        >
-                                            {admin?.userName || "Unknown"}
-                                        </h3>
-                                        <span
-                                            style={{
-                                                fontSize: "14px",
-                                                color: "var(--text-gray-700)",
-                                            }}
-                                        >
-                                            {admin?.email}
-                                        </span>
-                                    </div>
-                                </div>
-                                <button
-                                    onClick={() => setIsShowChat(!isShowChat)}
-                                    type="button"
-                                    data-mdb-button-init
-                                    data-mdb-ripple-init
-                                    className="btn btn-danger btn-sm"
-                                    data-mdb-ripple-color="dark"
-                                >
-                                    Close
-                                </button>
-                            </div>
+                            <ChatHeader
+                                setIsShowChat={setIsShowChat}
+                                isShowChat={isShowChat}
+                                admin={admin}
+                                adminStatus={adminStatus}
+                            />
                             <ChatBody
                                 messages={messages}
                                 userLogin={userLogin}
                             />
+                            <EmojiPicker
+                                onEmojiClick={handleChooseEmoji}
+                                height={480}
+                                width={"100%"}
+                                open={isShowEmoji}
+                            />
                             <ChatBox
+                                setIsShowEmoji={setIsShowEmoji}
+                                isShowEmoji={isShowEmoji}
                                 handleSendMessage={handleSendMessage}
                                 setMessage={setMessage}
                                 message={message}

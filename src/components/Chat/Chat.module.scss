@@ -1,6 +1,6 @@
 .chat-container {
     position: fixed;
-    z-index: 77;
+    z-index: 99999999999999999;
     bottom: 30%;
     right: 0;
     font-family: "Montserrat";
@@ -25,6 +25,12 @@
 }
 
 .card-custom {
+    position: relative;
     box-shadow: var(--tw-ring-offset-shadow, 0 0 rgba(0, 0, 0, 0)),
         var(--tw-ring-shadow, 0 0 rgba(0, 0, 0, 0)), var(--tw-shadow);
+    & > aside {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
 }
