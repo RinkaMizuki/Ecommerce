@@ -6,14 +6,14 @@ import { Avatar } from "@mui/material";
 
 const cx = classNames.bind(styles);
 
-const ChatBody = ({ messages, userLogin }) => {
+const ChatBody = ({ messages, userLogin, isAdminPreparing }) => {
     const lastMessageRef = useRef(null);
     useEffect(() => {
-        // Cuộn tới tin nhắn cuối cùng khi danh sách tin nhắn thay đổi
         if (lastMessageRef.current) {
             lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
         }
-    }, [messages]);
+    }, [messages, lastMessageRef.current]);
+    const userPrepare = messages.find((msg) => msg.senderId != userLogin.id);
 
     return (
         <div
@@ -86,6 +86,22 @@ const ChatBody = ({ messages, userLogin }) => {
                         </div>
                     );
                 })}
+            {isAdminPreparing && (
+                <div
+                    className="d-flex flex-row align-items-center justify-content-start pt-1 gap-3"
+                    ref={lastMessageRef}
+                >
+                    <Avatar
+                        src={userPrepare?.sender?.url}
+                        alt={userPrepare?.sender?.avatar}
+                    />
+                    <div className={cx("is-typing")}>
+                        <div className={cx("jump1")}></div>
+                        <div className={cx("jump2")}></div>
+                        <div className={cx("jump3")}></div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

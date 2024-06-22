@@ -19,6 +19,8 @@ const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
     const [conversation, setConversation] = useState("");
     const [isShowEmoji, setIsShowEmoji] = useState(false);
     const [adminStatus, setAdminStatus] = useState(null);
+    const [isPreparing, setIsPreparing] = useState(false);
+    const [isAdminPreparing, setIsAdminPreparing] = useState(false);
 
     const handleSendMessage = async (e) => {
         if (e.type === "click" || (e.type === "keydown" && e.keyCode === 13))
@@ -37,9 +39,11 @@ const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
                 console.log(error);
             }
     };
+
     const handleChooseEmoji = (emojiObj, e) => {
         setMessage((prevText) => `${prevText}${emojiObj.emoji}`);
     };
+
     useLayoutEffect(() => {
         try {
             chathubConnection.on("ReceiveMessage", (newMessage) => {
@@ -96,6 +100,12 @@ const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
     }, []);
 
     useEffect(() => {
+        chathubConnection.on("ReceivePreparing", (isPrepare) => {
+            setIsAdminPreparing(isPrepare);
+        });
+    }, []);
+
+    useEffect(() => {
         if (
             (isShowChat || conversation) &&
             chathubConnection.state === signalR.HubConnectionState.Connected
@@ -111,6 +121,37 @@ const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
         }
     }, [isShowChat, conversation]);
 
+    useEffect(() => {
+        if (
+            chathubConnection.state === signalR.HubConnectionState.Connected &&
+            isPreparing
+        ) {
+            console.log(isPreparing);
+            chathubConnection.invoke(
+                "SendMessagePreparingAsync",
+                admin?.email,
+                isPreparing
+            );
+        } else if (
+            chathubConnection.state === signalR.HubConnectionState.Connected &&
+            !isPreparing
+        ) {
+            chathubConnection.invoke(
+                "SendMessagePreparingAsync",
+                admin?.email,
+                isPreparing
+            );
+        }
+    }, [isPreparing]);
+
+    useEffect(() => {
+        if (!message) {
+            setIsPreparing(false);
+        } else {
+            setIsPreparing(true);
+        }
+    }, [message]);
+
     return (
         <section className={cx("chat-container")}>
             <div className="container py-5">
@@ -124,6 +165,8 @@ const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
                                 adminStatus={adminStatus}
                             />
                             <ChatBody
+                                isPreparing={isPreparing}
+                                isAdminPreparing={isAdminPreparing}
                                 messages={messages}
                                 userLogin={userLogin}
                             />

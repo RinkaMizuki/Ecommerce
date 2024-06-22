@@ -23,6 +23,17 @@ import useDebounce from "../../../hooks/useDebounce";
 import useCustomFetch from "../../../hooks/useCustomFetch";
 import queryString from "query-string";
 import ProductSearch from "../../../components/ProductSearch/ProductSearch";
+import Sidebar from "../Sidebar";
+import MenuIcon from "@mui/icons-material/Menu";
+import {
+    Popper,
+    Button as ButtonMui,
+    Grow,
+    ClickAwayListener,
+    MenuList,
+    MenuItem,
+    Paper,
+} from "@mui/material";
 
 const cx = classNames.bind(styles);
 
@@ -76,7 +87,8 @@ const Header = function ({ toggleTopHeader }) {
     const [productTitle, setProductTitle] = useState("");
     const [products, setProducts] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [getListProductSearch] = useCustomFetch();
+    const [categories, setCategories] = useState([]);
+    const [getList] = useCustomFetch();
 
     const config = { tension: 300, friction: 20 };
     const initialStyles = { opacity: 0, transform: "scale(0.5)" };
@@ -84,6 +96,39 @@ const Header = function ({ toggleTopHeader }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
+    const [open, setOpen] = useState(false);
+    const anchorRef = useRef(null);
+
+    const handleToggle = () => {
+        setOpen((prevOpen) => !prevOpen);
+    };
+
+    const handleClose = (event) => {
+        if (anchorRef.current && anchorRef.current.contains(event.target)) {
+            return;
+        }
+
+        setOpen(false);
+    };
+
+    function handleListKeyDown(event) {
+        if (event.key === "Tab") {
+            event.preventDefault();
+            setOpen(false);
+        } else if (event.key === "Escape") {
+            setOpen(false);
+        }
+    }
+
+    // return focus to the button when we transitioned from !open -> open
+    const prevOpen = useRef(open);
+    useEffect(() => {
+        if (prevOpen.current === true && open === false) {
+            anchorRef.current.focus();
+        }
+
+        prevOpen.current = open;
+    }, [open]);
 
     const handleShowLanguage = () => {
         setIsShow(!isShow);
@@ -109,7 +154,7 @@ const Header = function ({ toggleTopHeader }) {
                         filter: JSON.stringify({ q: debounced }),
                         range: JSON.stringify([0, SHOW_PRODUCT_MAX]),
                     });
-                    const res = await getListProductSearch(
+                    const res = await getList(
                         `/Admin/products?${queryStringData}`
                     );
                     setProducts(res.data);
@@ -173,6 +218,16 @@ const Header = function ({ toggleTopHeader }) {
         const ids = getLocalProductQuantity(userLogin?.user?.id);
         setListProductId(ids);
     }, [userLogin?.user?.id]);
+
+    useEffect(() => {
+        if (location.pathname.includes("/product/")) {
+            const fetchData = async () => {
+                const response = await getList("/Admin/categories");
+                setCategories(response.data);
+            };
+            fetchData();
+        }
+    }, []);
 
     const handleLogout = async () => {
         dispatch(logoutStart());
@@ -263,7 +318,103 @@ const Header = function ({ toggleTopHeader }) {
             >
                 <div className={cx("header-container")}>
                     <div className={cx("left-header")}>
-                        <Link to="/">MT Store</Link>
+                        <div>
+                            <Link to="/">MT Store </Link>
+                            {location.pathname.includes("/product/") && (
+                                <>
+                                    <ButtonMui
+                                        sx={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "5px",
+                                        }}
+                                        variant="outlined"
+                                        ref={anchorRef}
+                                        id="composition-button"
+                                        aria-controls={
+                                            open
+                                                ? "composition-menu"
+                                                : undefined
+                                        }
+                                        aria-expanded={
+                                            open ? "true" : undefined
+                                        }
+                                        aria-haspopup="true"
+                                        onClick={handleToggle}
+                                    >
+                                        <MenuIcon />
+                                        <span
+                                            style={{
+                                                lineHeight: 1,
+                                            }}
+                                        >
+                                            Danh mục
+                                        </span>
+                                    </ButtonMui>
+                                    <Popper
+                                        sx={{
+                                            zIndex: 999,
+                                        }}
+                                        anchorEl={anchorRef.current}
+                                        open={open}
+                                        role={undefined}
+                                        placement="bottom-start"
+                                        transition
+                                        disablePortal
+                                    >
+                                        {({ TransitionProps, placement }) => (
+                                            <Grow
+                                                {...TransitionProps}
+                                                style={{
+                                                    transformOrigin:
+                                                        placement ===
+                                                        "bottom-start"
+                                                            ? "left top"
+                                                            : "left bottom",
+                                                }}
+                                            >
+                                                <Paper>
+                                                    <ClickAwayListener
+                                                        onClickAway={
+                                                            handleClose
+                                                        }
+                                                    >
+                                                        <MenuList
+                                                            autoFocusItem={open}
+                                                            sx={{
+                                                                padding: "0",
+                                                            }}
+                                                            id="composition-menu"
+                                                            aria-labelledby="composition-button"
+                                                            onKeyDown={
+                                                                handleListKeyDown
+                                                            }
+                                                        >
+                                                            <Sidebar
+                                                                categories={
+                                                                    categories
+                                                                }
+                                                                isShowLine={
+                                                                    false
+                                                                }
+                                                                style={{
+                                                                    margin: "0",
+                                                                    alignSelf:
+                                                                        "flex-start",
+                                                                }}
+                                                                className={cx(
+                                                                    "custom-sidebar"
+                                                                )}
+                                                            />
+                                                        </MenuList>
+                                                    </ClickAwayListener>
+                                                </Paper>
+                                            </Grow>
+                                        )}
+                                    </Popper>
+                                </>
+                            )}
+                        </div>
                         <Link
                             to="/"
                             className={cx({

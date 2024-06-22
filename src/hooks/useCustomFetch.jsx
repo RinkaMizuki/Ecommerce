@@ -7,10 +7,12 @@ import {
     get as refreshToken,
     post as postLogout,
 } from "../services/ssoService";
+import { store } from "../redux/store";
 
 let isRefreshing = false;
 let refreshSubscribers = [];
 let refreshPromise = null;
+let isLoggingOut = false;
 
 //subscribe all request error 401 when refreshtoken is fetching
 const subscribeTokenRefresh = (cb) => {
@@ -21,12 +23,13 @@ const subscribeTokenRefresh = (cb) => {
 const onRefreshed = () => {
     refreshSubscribers.map((cb) => cb());
 };
-export const getRefreshToken = async (type) => {
+export const getRefreshToken = async () => {
     if (isRefreshing) {
         await refreshPromise;
         return;
     }
     isRefreshing = true;
+    const type = store.getState().auth.login?.type;
     await refreshToken("/auth/refresh-token", {
         params: {
             type,
@@ -66,21 +69,24 @@ const useCustomFetch = () => {
             const originalRequest = error.config;
             if (error.response?.status === 403 && !originalRequest._retry) {
                 originalRequest._retry = true;
-                dispatch(logoutStart());
-                try {
-                    await postLogout(
-                        `/auth/logout`,
-                        {
-                            userId: userLogin?.user?.id,
-                        },
-                        {}
-                    );
-                    dispatch(logoutFailed(error.response.data));
-                } catch (err) {
-                    dispatch(logoutFailed(err.response.data));
-                    console.log(err);
-                } finally {
-                    navigate("/login");
+                if (!isLoggingOut) {
+                    isLoggingOut = true;
+                    dispatch(logoutStart());
+                    try {
+                        await postLogout(
+                            `/auth/logout`,
+                            {
+                                userId: userLogin?.user?.id,
+                            },
+                            {}
+                        );
+                        dispatch(logoutFailed(error.response.data));
+                    } catch (err) {
+                        dispatch(logoutFailed(err.response.data));
+                        console.log(err);
+                    } finally {
+                        navigate("/login");
+                    }
                 }
             } else if (
                 error.response?.status === 401 &&
@@ -89,7 +95,7 @@ const useCustomFetch = () => {
                 if (!isRefreshing) {
                     originalRequest._retry = true;
                     try {
-                        refreshPromise = await getRefreshToken(typeLogin);
+                        refreshPromise = await getRefreshToken();
                         onRefreshed(); // Notify all subscribers with new token
                         refreshSubscribers = [];
                         return httpRequests(originalRequest);

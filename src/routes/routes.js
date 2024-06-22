@@ -23,129 +23,135 @@ import FacebookLogin from "../pages/FacebookLogin";
 import ResetPassword from "../pages/ResetPassword";
 import Order from "../pages/Order";
 import LoggedIn from "../HOC/LoggedIn";
-import Review from "../pages/Review/Review";
+import Review from "../pages/Review";
+import Product from "../pages/Product";
 
 const publicRoutes = [
-  {
-    path: config.routes.home,
-    element: Home,
-    layout: "filter"
-  },
-  {
-    path: config.routes.register,
-    element: LoggedIn(Register),
-    layout: "default"
-  },
-  {
-    path: config.routes.login,
-    element: LoggedIn(Login),
-    layout: "default"
-  },
-  {
-    path: config.routes.resetPassword,
-    element: ResetPassword,
-    layout: null
-  },
-  {
-    path: config.routes.googleLogin,
-    element: GoogleLogin,
-    layout: "default"
-  },
-  {
-    path: config.routes.facebookLogin,
-    element: FacebookLogin,
-    layout: "default"
-  },
-  {
-    path: config.routes.favorite,
-    element: AuthRequired(WishList),
-    layout: "default"
-  },
-  {
-    path: config.routes.contact,
-    element: AuthRequired(Contact),
-    layout: "default"
-  },
-  {
-    path: config.routes.about,
-    element: About,
-    layout: "default"
-  },
-  {
-    path: config.routes.productDetail,
-    element: ProductDetail,
-    layout: "default"
-  },
-  {
-    path: config.routes.category,
-    element: CategoryDetail,
-    layout: "filter"
-  },
-  {
-    path: config.routes.profile,
-    element: AuthRequired(Profile),
-    layout: "management"
-  },
-  {
-    path: config.routes.order,
-    element: AuthRequired(Order),
-    layout: "management"
-  },
-  {
-    path: config.routes.cancel,
-    element: AuthRequired(Order),
-    layout: "management"
-  },
-  {
-    path: config.routes.return,
-    element: AuthRequired(Order),
-    layout: "management"
-  },
-  {
-    path: config.routes.link,
-    element: AuthRequired(Link),
-    layout: "management"
-  },
-  {
-    path: config.routes.address,
-    element: AuthRequired(Address),
-    layout: "management"
-  },
-  {
-    path: config.routes.review,
-    element: AuthRequired(Review),
-    layout: "management"
-  },
-  {
-    path: config.routes.confirm,
-    element: Confirm,
-    layout: null
-  },
-  {
-    path: config.routes.cart,
-    element: AuthRequired(Cart),
-    layout: "default",
-  },
-  {
-    path: config.routes.checkout,
-    element: AuthRequired(Checkout),
-    layout: "default",
-  },
-  {
-    path: config.routes.payment,
-    element: AuthRequired(Payment),
-    layout: "default",
-  },
-  {
-    path: config.routes.paymentError,
-    element: AuthRequired(PaymentError),
-    layout: null,
-  },
-  {
-    path: config.routes.error,
-    element: Notfound,
-    layout: null,
-  }
-]
+    {
+        path: config.routes.home,
+        element: Home,
+        layout: "filter",
+    },
+    {
+        path: config.routes.register,
+        element: LoggedIn(Register),
+        layout: "default",
+    },
+    {
+        path: config.routes.login,
+        element: LoggedIn(Login),
+        layout: "default",
+    },
+    {
+        path: config.routes.resetPassword,
+        element: ResetPassword,
+        layout: null,
+    },
+    {
+        path: config.routes.googleLogin,
+        element: GoogleLogin,
+        layout: "default",
+    },
+    {
+        path: config.routes.facebookLogin,
+        element: FacebookLogin,
+        layout: "default",
+    },
+    {
+        path: config.routes.favorite,
+        element: AuthRequired(WishList),
+        layout: "default",
+    },
+    {
+        path: config.routes.contact,
+        element: AuthRequired(Contact),
+        layout: "default",
+    },
+    {
+        path: config.routes.about,
+        element: About,
+        layout: "default",
+    },
+    {
+        path: config.routes.productDetail,
+        element: ProductDetail,
+        layout: "default",
+    },
+    {
+        path: config.routes.product,
+        element: Product,
+        layout: "default",
+    },
+    {
+        path: config.routes.category,
+        element: CategoryDetail,
+        layout: "filter",
+    },
+    {
+        path: config.routes.profile,
+        element: AuthRequired(Profile),
+        layout: "management",
+    },
+    {
+        path: config.routes.order,
+        element: AuthRequired(Order),
+        layout: "management",
+    },
+    {
+        path: config.routes.cancel,
+        element: AuthRequired(Order),
+        layout: "management",
+    },
+    {
+        path: config.routes.return,
+        element: AuthRequired(Order),
+        layout: "management",
+    },
+    {
+        path: config.routes.link,
+        element: AuthRequired(Link),
+        layout: "management",
+    },
+    {
+        path: config.routes.address,
+        element: AuthRequired(Address),
+        layout: "management",
+    },
+    {
+        path: config.routes.review,
+        element: AuthRequired(Review),
+        layout: "management",
+    },
+    {
+        path: config.routes.confirm,
+        element: Confirm,
+        layout: null,
+    },
+    {
+        path: config.routes.cart,
+        element: AuthRequired(Cart),
+        layout: "default",
+    },
+    {
+        path: config.routes.checkout,
+        element: AuthRequired(Checkout),
+        layout: "default",
+    },
+    {
+        path: config.routes.payment,
+        element: AuthRequired(Payment),
+        layout: "default",
+    },
+    {
+        path: config.routes.paymentError,
+        element: AuthRequired(PaymentError),
+        layout: null,
+    },
+    {
+        path: config.routes.error,
+        element: Notfound,
+        layout: null,
+    },
+];
 
-export { publicRoutes }
+export { publicRoutes };

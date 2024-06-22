@@ -16,8 +16,7 @@ const accessTokenFactory = async () => {
         const decodedToken = jwtDecode(token);
         if (decodedToken.exp < Date.now() / 1000) {
             // Nếu token đã hết hạn, làm mới token
-            const type = store.getState().auth.login.type;
-            await getRefreshToken(type);
+            await getRefreshToken();
             token = getTokenFromCookie("accessToken");
         }
     } else {

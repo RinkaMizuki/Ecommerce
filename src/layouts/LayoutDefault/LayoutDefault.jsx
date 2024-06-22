@@ -7,6 +7,8 @@ import Map from "../../components/Map";
 import Chat from "../../components/Chat/Chat";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import ScrollButton from "../../components/ScrollButton";
+import ChatIcon from "../../assets/images/chat.png";
 
 const cx = classNames.bind(styles);
 
@@ -20,6 +22,7 @@ const LayoutDefault = ({ toggleTopHeader, children }) => {
     return (
         <>
             <Header toggleTopHeader={toggleTopHeader} />
+            <ScrollButton />
             <div
                 className={cx("content-wrapper")}
                 style={{
@@ -41,10 +44,30 @@ const LayoutDefault = ({ toggleTopHeader, children }) => {
                         />
                     ) : (
                         <div
-                            className={cx("chat-icon")}
+                            className={cx("chat-wrapper")}
                             onClick={() => setIsShowChat(!isShowChat)}
                         >
-                            <i className="fa-solid fa-comment-dots"></i>
+                            <div
+                                className={cx(
+                                    "animated_chat",
+                                    "infinite",
+                                    "zoomIn_chat",
+                                    "cmoz-alo-circle"
+                                )}
+                            ></div>
+                            <div
+                                className={cx(
+                                    "animated_chat",
+                                    "infinite",
+                                    "pulse_chat",
+                                    "cmoz-alo-circle-fill"
+                                )}
+                            ></div>
+                            <img
+                                src={ChatIcon}
+                                alt="Chat"
+                                className={cx("chat-icon")}
+                            />
                         </div>
                     ))}
                 {children}

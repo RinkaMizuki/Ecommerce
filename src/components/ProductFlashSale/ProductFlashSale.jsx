@@ -17,6 +17,7 @@ import useCustomFetch from "../../hooks/useCustomFetch.jsx";
 import queryString from "query-string";
 import Lightbox from "../Lightbox";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 const cx = classNames.bind(styles);
 
@@ -35,13 +36,16 @@ const ProductFlashSale = () => {
             try {
                 setIsLoading(true);
 
-                const filterData = { sale: 'flashSale' };
-                const queryStringData = queryString.stringify({ filter: JSON.stringify(filterData) })
+                const filterData = { sale: "flashsale" };
+                const queryStringData = queryString.stringify({
+                    filter: JSON.stringify(filterData),
+                    range: JSON.stringify([0, 11]),
+                });
 
                 const response = await get(`Admin/products?${queryStringData}`);
                 setProductSale(response.data);
             } catch (error) {
-                console.error('Error fetching data:', error);
+                console.error("Error fetching data:", error);
             } finally {
                 setIsLoading(false);
             }
@@ -53,35 +57,33 @@ const ProductFlashSale = () => {
 
     const closeLightBox = (id) => {
         setProductId(id);
-    }
+    };
 
     return (
-        <div className={cx("flashsale-container")} >
+        <div className={cx("flashsale-container")}>
             <ViewTitle
                 flashsale={true}
                 refs={{
                     prevRef,
-                    nextRef
+                    nextRef,
                 }}
                 label={t("today")}
                 title={t("flashsale")}
             />
-            {
-                productSale?.map(p => {
-                    if (p.id == productId) {
-                        return (
-                            <div style={{ fontFamily: "Poppins" }} key={p.id}>
-                                <Lightbox
-                                    onClose={closeLightBox}
-                                    url={p.url}
-                                    alt={p.title}
-                                />
-                            </div>
-                        )
-                    }
-                    return null;
-                })
-            }
+            {productSale?.map((p) => {
+                if (p.id == productId) {
+                    return (
+                        <div style={{ fontFamily: "Poppins" }} key={p.id}>
+                            <Lightbox
+                                onClose={closeLightBox}
+                                url={p.url}
+                                alt={p.title}
+                            />
+                        </div>
+                    );
+                }
+                return null;
+            })}
             <div className={cx("container")}>
                 <Swiper
                     onInit={(swiper) => {
@@ -95,23 +97,20 @@ const ProductFlashSale = () => {
                     modules={[FreeMode, Navigation]}
                     className={cx("mySwiper")}
                 >
-                    {productSale?.map(p => (
+                    {productSale?.map((p) => (
                         <SwiperSlide
                             className={cx("custom-swiper-slide")}
                             key={p.id}
                         >
-                            <Cart
-                                onCloseLightBox={closeLightBox}
-                                data={p}
-                            />
+                            <Cart onCloseLightBox={closeLightBox} data={p} />
                         </SwiperSlide>
                     ))}
                 </Swiper>
-                <div className={cx("btn-wrapper")}>
-                    <Button lagre={true}>{t('view-all')}</Button>
-                </div>
+                <Link className={cx("btn-wrapper")} to="/product/flash-sale">
+                    <Button lagre={true}>{t("view-all")}</Button>
+                </Link>
             </div>
         </div>
-    )
-}
+    );
+};
 export default ProductFlashSale;
