@@ -12,6 +12,7 @@ import FlashSaleImg from "../../assets/images/flashsale.jpg";
 import HotImg from "../../assets/images/bestseller.jpg";
 import SuggestImg from "../../assets/images/suggest.jpg";
 import FilterRange from "../../components/FilterRange";
+import CountDown from "../../components/CountDown";
 import {
     minDistance,
     priceDistance,
@@ -189,27 +190,33 @@ const Product = () => {
                 }
                 return null;
             })}
-            <img
-                src={
-                    typeSale === "flashsale"
-                        ? FlashSaleImg
-                        : typeSale === "forYou"
-                        ? SuggestImg
-                        : HotImg
-                }
-                alt={
-                    typeSale === "flashsale"
-                        ? "Flash Sale"
-                        : typeSale === "forYou"
-                        ? "Suggest For You"
-                        : "Best Seller"
-                }
-                style={{
-                    borderRadius: "5px",
-                    maxHeight: "100%",
-                    width: "100%",
-                }}
-            />
+            <div className={cx("banner-wrapper")}>
+                <img
+                    src={
+                        typeSale === "flashsale"
+                            ? FlashSaleImg
+                            : typeSale === "forYou"
+                            ? SuggestImg
+                            : HotImg
+                    }
+                    alt={
+                        typeSale === "flashsale"
+                            ? "Flash Sale"
+                            : typeSale === "forYou"
+                            ? "Suggest For You"
+                            : "Best Seller"
+                    }
+                    style={{
+                        borderRadius: "5px",
+                        maxHeight: "100%",
+                        width: "100%",
+                    }}
+                />
+                {typeSale === "flashsale" && (
+                    <CountDown className={cx("count-down")} />
+                )}
+            </div>
+
             <div className={cx("toolbar-wrapper")}>
                 <SortBar
                     sortArray={sortArray}

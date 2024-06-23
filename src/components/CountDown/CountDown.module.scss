@@ -1,21 +1,25 @@
 .flashsale-countdown {
-  display: flex;
-  align-self: flex-end;
-  align-items: center;
-  font-weight: 500;
-  gap: 18px;
-  >span {
-    color: var(--primary);
-    font-size: 23px;
-    margin-top: 20px;
-  }
-  & p {
-    text-align: center;
-    font-size: 30px;
-    font-weight: 700;
-    margin-top: 8px;
-  }
+    display: flex;
+    align-self: flex-end;
+    align-items: center;
+    font-weight: 500;
+    gap: 18px;
+    > span {
+        color: var(--primary);
+        font-size: 23px;
+        margin-top: 20px;
+    }
+    & p {
+        text-align: center;
+        font-size: 30px;
+        font-weight: 700;
+        margin-top: 8px;
+    }
 }
 .flashsale-end {
-  color: var(--primary);
+    color: var(--primary);
+}
+.countdown-wrapper {
+    display: inline-flex;
+    gap: 20px;
 }

@@ -40,3 +40,16 @@
     max-width: 150px;
     align-self: flex-start;
 }
+.banner-wrapper {
+    position: relative;
+}
+.count-down {
+    position: absolute;
+    bottom: 50%;
+    right: 3%;
+    transform: translateY(50%);
+    color: white;
+    > span {
+        color: white !important;
+    }
+}

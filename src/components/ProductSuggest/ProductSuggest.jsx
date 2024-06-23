@@ -29,7 +29,7 @@ const ProductSuggest = () => {
             try {
                 setIsLoading(true);
 
-                const filterData = { suggest: "forYou", random: 8 };
+                const filterData = { suggest: "forYou" };
                 const queryStringData = queryString.stringify({
                     filter: JSON.stringify(filterData),
                     range: JSON.stringify([0, 17]),
