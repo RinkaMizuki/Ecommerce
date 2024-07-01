@@ -2,13 +2,14 @@
 /* eslint-disable react/no-unescaped-entities */
 import classNames from "classnames/bind";
 import styles from "./Chat.module.scss";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { chathubConnection } from "../../services/signalrService";
 import * as signalR from "@microsoft/signalr";
 import ChatBody from "./ChatBody";
 import ChatBox from "./ChatBox";
 import EmojiPicker from "emoji-picker-react";
 import ChatHeader from "./ChatHeader";
+import { useClickOutside } from "../../hooks/useClickOutside";
 
 const cx = classNames.bind(styles);
 
@@ -21,6 +22,7 @@ const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
     const [adminStatus, setAdminStatus] = useState(null);
     const [isPreparing, setIsPreparing] = useState(false);
     const [isAdminPreparing, setIsAdminPreparing] = useState(false);
+    const emojiWapperRef = useRef(null);
 
     const handleSendMessage = async (e) => {
         if (e.type === "click" || (e.type === "keydown" && e.keyCode === 13))
@@ -28,7 +30,7 @@ const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
                 await chathubConnection.invoke(
                     "SendMessageAsync",
                     userLogin?.id,
-                    admin?.email,
+                    admin?.userId,
                     message,
                     conversation,
                     ""
@@ -43,6 +45,10 @@ const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
     const handleChooseEmoji = (emojiObj, e) => {
         setMessage((prevText) => `${prevText}${emojiObj.emoji}`);
     };
+
+    useClickOutside(emojiWapperRef, () => {
+        setIsShowEmoji(false);
+    });
 
     useLayoutEffect(() => {
         try {
@@ -126,10 +132,9 @@ const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
             chathubConnection.state === signalR.HubConnectionState.Connected &&
             isPreparing
         ) {
-            console.log(isPreparing);
             chathubConnection.invoke(
                 "SendMessagePreparingAsync",
-                admin?.email,
+                admin?.userId,
                 isPreparing
             );
         } else if (
@@ -138,7 +143,7 @@ const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
         ) {
             chathubConnection.invoke(
                 "SendMessagePreparingAsync",
-                admin?.email,
+                admin?.userId,
                 isPreparing
             );
         }
@@ -170,12 +175,17 @@ const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
                                 messages={messages}
                                 userLogin={userLogin}
                             />
-                            <EmojiPicker
-                                onEmojiClick={handleChooseEmoji}
-                                height={480}
-                                width={"100%"}
-                                open={isShowEmoji}
-                            />
+                            <div
+                                ref={emojiWapperRef}
+                                className={cx("emoji-wrapper")}
+                            >
+                                <EmojiPicker
+                                    onEmojiClick={handleChooseEmoji}
+                                    height={480}
+                                    width={"100%"}
+                                    open={isShowEmoji}
+                                />
+                            </div>
                             <ChatBox
                                 setIsShowEmoji={setIsShowEmoji}
                                 isShowEmoji={isShowEmoji}

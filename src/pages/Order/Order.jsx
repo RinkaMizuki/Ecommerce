@@ -236,6 +236,7 @@ const Order = () => {
                                                                                 {
                                                                                     item?.discountProduct
                                                                                 }
+
                                                                                 %
                                                                             </p>
                                                                         </div>

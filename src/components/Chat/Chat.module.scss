@@ -28,11 +28,12 @@
     position: relative;
     box-shadow: var(--tw-ring-offset-shadow, 0 0 rgba(0, 0, 0, 0)),
         var(--tw-ring-shadow, 0 0 rgba(0, 0, 0, 0)), var(--tw-shadow);
-    & > aside {
-        position: absolute;
-        top: 0;
-        left: 0;
-    }
+}
+
+.emoji-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 .is-typing {

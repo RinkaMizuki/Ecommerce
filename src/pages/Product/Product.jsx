@@ -18,6 +18,7 @@ import {
     priceDistance,
 } from "../../components/CategoryDetail/Aside";
 import { useParams } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
 const cx = classNames.bind(styles);
 const PERPAGE = 5;
@@ -176,6 +177,11 @@ const Product = () => {
 
     return (
         <div className={cx("flashsale-container")} ref={scrollRef}>
+            <ToastContainer
+                style={{
+                    marginTop: "70px",
+                }}
+            ></ToastContainer>
             {productsFlashSale?.map((p) => {
                 if (p.id == productId) {
                     return (

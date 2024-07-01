@@ -123,11 +123,6 @@ const Login = () => {
         };
         dispatch(loginStart());
         try {
-            // const res = await loginService("/Auth/login", user);
-            // tokenService.setToken({
-            //   token: res.data.accessToken,
-            // })
-            // toast.success("Login account successfully !", toastOptions);
             const res = await post("/auth/login", user);
             localStorage.setItem("remember", isChecked);
             if (!res.data?.user?.f2a) {

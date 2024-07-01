@@ -1,5 +1,4 @@
 import httpRequests from "../utils/httpRequests";
-import tokenService from "../services/tokenService";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutFailed, logoutStart } from "../redux/authSlice";
@@ -29,10 +28,8 @@ export const getRefreshToken = async () => {
         return;
     }
     isRefreshing = true;
-    const type = store.getState().auth.login?.type;
     await refreshToken("/auth/refresh-token", {
         params: {
-            type,
             remember: JSON.parse(localStorage.getItem("remember") || "false"),
         },
     });
@@ -42,17 +39,10 @@ export const getRefreshToken = async () => {
 const useCustomFetch = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const typeLogin = useSelector((state) => state.auth.login.type);
     const userLogin = useSelector((state) => state.auth.login.currentUser);
     //nếu có token thì trước khi request sẽ đính kèm vào headers
     httpRequests.interceptors.request.use(
         async (config) => {
-            if (typeLogin === "google") {
-                const token = tokenService.getLocalAccessToken()?.token;
-                if (token) {
-                    config.headers["Authorization"] = `Bearer ${token}`;
-                }
-            }
             return config;
         },
         (error) => {
@@ -73,13 +63,9 @@ const useCustomFetch = () => {
                     isLoggingOut = true;
                     dispatch(logoutStart());
                     try {
-                        await postLogout(
-                            `/auth/logout`,
-                            {
-                                userId: userLogin?.user?.id,
-                            },
-                            {}
-                        );
+                        await postLogout(`/auth/logout`, {
+                            userId: userLogin?.user?.id,
+                        });
                         dispatch(logoutFailed(error.response.data));
                     } catch (err) {
                         dispatch(logoutFailed(err.response.data));

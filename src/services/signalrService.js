@@ -20,8 +20,7 @@ const accessTokenFactory = async () => {
             token = getTokenFromCookie("accessToken");
         }
     } else {
-        const type = store.getState().auth.login.type;
-        await getRefreshToken(type);
+        await getRefreshToken();
         token = getTokenFromCookie("accessToken");
     }
 

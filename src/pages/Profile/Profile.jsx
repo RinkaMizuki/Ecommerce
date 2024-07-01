@@ -259,22 +259,6 @@ const Profile = () => {
         }
     };
 
-    // const handleVerifyEmail = async () => {
-    //   try {
-    //     if (!userLogin?.emailConfirm) {
-    //       const resendConfirmEmail = getUserInfo;
-    //       const response = await resendConfirmEmail(`/Auth/resend-confirm-email/${userLogin?.id}`);
-    //       toast.success(response?.data?.message, toastOptions);
-    //     }
-    //     else {
-    //       toast.info("Your email has been verified.", toastOptions);
-    //     }
-    //   } catch (error) {
-    //     console.log(error);
-    //     toast.error(error?.response?.data?.message, toastOptions);
-    //   }
-    // }
-
     const handleSwitchF2A = async () => {
         !isSend && setOpen(!open);
         setIsF2A(!isF2A);

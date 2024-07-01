@@ -4,7 +4,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useLocation } from "react-router-dom";
 import Map from "../../components/Map";
-import Chat from "../../components/Chat/Chat";
+import Chat from "../../components/Chat";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import ScrollButton from "../../components/ScrollButton";
