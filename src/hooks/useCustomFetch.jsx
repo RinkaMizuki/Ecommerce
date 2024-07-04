@@ -6,7 +6,6 @@ import {
     get as refreshToken,
     post as postLogout,
 } from "../services/ssoService";
-import { store } from "../redux/store";
 
 let isRefreshing = false;
 let refreshSubscribers = [];
@@ -40,6 +39,7 @@ const useCustomFetch = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const userLogin = useSelector((state) => state.auth.login.currentUser);
+
     //nếu có token thì trước khi request sẽ đính kèm vào headers
     httpRequests.interceptors.request.use(
         async (config) => {

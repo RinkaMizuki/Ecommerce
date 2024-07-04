@@ -23,10 +23,16 @@
 .confirm-message {
     display: flex;
     justify-content: center;
+    flex-direction: column;
+    gap: 20px;
     align-items: center;
-
+    > h1 {
+        font-weight: 600;
+        font-size: 25px;
+    }
     > p {
         color: var(--black);
+        text-align: center;
         font-size: 1rem;
         width: 23.75rem;
     }
@@ -52,19 +58,9 @@
         transition: all 0.2s ease-in-out;
     }
 
-    & > button:last-child {
+    & > button {
         &:hover {
             background-color: rgb(224, 117, 117);
-        }
-    }
-
-    & > button:first-child {
-        background-color: transparent;
-        color: var(--black);
-
-        &:hover {
-            background-color: #f8f8f8;
-            opacity: 0.9;
         }
     }
 }

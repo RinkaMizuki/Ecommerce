@@ -2,7 +2,8 @@
 import classNames from "classnames/bind";
 import styles from "./Chat.module.scss";
 import { memo, useEffect, useRef } from "react";
-import { Avatar } from "@mui/material";
+import { Avatar, Box } from "@mui/material";
+import TooltipTime from "./TooltipTime";
 
 const cx = classNames.bind(styles);
 
@@ -36,20 +37,23 @@ const ChatBody = ({ messages, userLogin, isAdminPreparing }) => {
                                     : null
                             }
                         >
-                            <div
-                                style={{
-                                    maxWidth: "240px",
-                                }}
-                            >
-                                <p
-                                    className="small me-2 text-white rounded-3 bg-primary p-2"
+                            <TooltipTime date={msg?.sendAt}>
+                                <div
                                     style={{
-                                        lineHeight: "1.4",
+                                        maxWidth: "240px",
                                     }}
                                 >
-                                    {msg.messageContent}
-                                </p>
-                            </div>
+                                    <p
+                                        className="small me-2 text-white rounded-3 bg-primary p-2"
+                                        style={{
+                                            lineHeight: "1.4",
+                                        }}
+                                    >
+                                        {msg.messageContent}
+                                    </p>
+                                </div>
+                            </TooltipTime>
+
                             <Avatar
                                 src={msg.sender?.url}
                                 alt={msg.sender?.avatar}
@@ -69,20 +73,25 @@ const ChatBody = ({ messages, userLogin, isAdminPreparing }) => {
                                 src={msg.sender?.url}
                                 alt={msg.sender?.avatar}
                             />
-                            <div>
-                                <p
-                                    className="small p-2 ms-3 rounded-3"
-                                    style={{
-                                        backgroundColor: "#f5f6f7",
-                                        height: "100%",
-                                        display: "flex",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                    }}
-                                >
-                                    {msg.messageContent}
-                                </p>
-                            </div>
+                            <TooltipTime
+                                date={msg?.sendAt}
+                                position="right-start"
+                            >
+                                <div>
+                                    <p
+                                        className="small p-2 ms-3 rounded-3"
+                                        style={{
+                                            backgroundColor: "#f5f6f7",
+                                            height: "100%",
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        {msg.messageContent}
+                                    </p>
+                                </div>
+                            </TooltipTime>
                         </div>
                     );
                 })}

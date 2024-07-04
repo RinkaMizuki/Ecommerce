@@ -232,13 +232,9 @@ const Header = function ({ toggleTopHeader }) {
     const handleLogout = async () => {
         dispatch(logoutStart());
         try {
-            const res = await postLogout(
-                `/auth/logout`,
-                {
-                    userId: userLogin?.user?.id,
-                },
-                {}
-            );
+            const res = await postLogout(`/auth/logout`, {
+                userId: userLogin?.user?.id,
+            });
             dispatch(logoutSuccess(res?.data));
             navigate("/login");
         } catch (error) {

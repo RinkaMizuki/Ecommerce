@@ -51,56 +51,46 @@ const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
     });
 
     useLayoutEffect(() => {
-        try {
-            chathubConnection.on("ReceiveMessage", (newMessage) => {
-                setMessages((prevMessages) => [...prevMessages, newMessage]);
+        chathubConnection.on("ReceiveMessage", (newMessage) => {
+            setMessages((prevMessages) => [...prevMessages, newMessage]);
+        });
+
+        chathubConnection.on("ReceiveAdmin", (currentAdmin, conversationId) => {
+            setConversation(conversationId);
+            setAdmin(currentAdmin);
+        });
+
+        chathubConnection.on("ReceiveStatus", (adminId, status) => {
+            setAdminStatus({
+                adminId,
+                status,
             });
+        });
 
-            chathubConnection.on(
-                "ReceiveAdmin",
-                (currentAdmin, conversationId) => {
-                    setConversation(conversationId);
-                    setAdmin(currentAdmin);
-                }
-            );
-
-            chathubConnection.on("ReceiveStatus", (adminId, status) => {
-                setAdminStatus({
-                    adminId,
-                    status,
+        if (
+            chathubConnection.state === signalR.HubConnectionState.Disconnected
+        ) {
+            chathubConnection
+                .start()
+                .then(() => {
+                    console.log("ChatHub connected successfully.");
+                })
+                .catch((err) => {
+                    console.error("Error connecting to ChatHub:", err);
                 });
-            });
-
-            if (
-                chathubConnection.state ===
-                signalR.HubConnectionState.Disconnected
-            ) {
-                chathubConnection
-                    .start()
-                    .then(() => {
-                        console.log("ChatHub connected successfully.");
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                    });
-            }
-        } catch (error) {
-            console.log(error);
         }
         return () => {
-            try {
-                if (
-                    chathubConnection.state ===
-                    signalR.HubConnectionState.Connected
-                ) {
-                    chathubConnection
-                        .stop()
-                        .then(() =>
-                            console.warn("ChatHub disconnected successfully.")
-                        );
-                }
-            } catch (error) {
-                console.log(error);
+            if (
+                chathubConnection.state === signalR.HubConnectionState.Connected
+            ) {
+                chathubConnection
+                    .stop()
+                    .then(() =>
+                        console.warn("ChatHub disconnected successfully.")
+                    )
+                    .catch((err) =>
+                        console.error("Error disconnected to ChatHub:", err)
+                    );
             }
         };
     }, []);
@@ -116,14 +106,14 @@ const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
             (isShowChat || conversation) &&
             chathubConnection.state === signalR.HubConnectionState.Connected
         ) {
-            try {
-                chathubConnection.invoke("GetMessageAsync", conversation);
-                chathubConnection.on("ReceiveMessages", (listMessages) => {
-                    setMessages(listMessages);
-                });
-            } catch (err) {
-                console.log(err);
-            }
+            chathubConnection
+                .invoke("GetMessageAsync", conversation)
+                .catch((err) =>
+                    console.error("Error invoking GetMessageAsync:", err)
+                );
+            chathubConnection.on("ReceiveMessages", (listMessages) => {
+                setMessages(listMessages);
+            });
         }
     }, [isShowChat, conversation]);
 
@@ -132,20 +122,26 @@ const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
             chathubConnection.state === signalR.HubConnectionState.Connected &&
             isPreparing
         ) {
-            chathubConnection.invoke(
-                "SendMessagePreparingAsync",
-                admin?.userId,
-                isPreparing
-            );
+            chathubConnection
+                .invoke("SendMessagePreparingAsync", admin?.userId, isPreparing)
+                .catch((err) =>
+                    console.error(
+                        "Error invoking SendMessagePreparingAsync: ",
+                        err
+                    )
+                );
         } else if (
             chathubConnection.state === signalR.HubConnectionState.Connected &&
             !isPreparing
         ) {
-            chathubConnection.invoke(
-                "SendMessagePreparingAsync",
-                admin?.userId,
-                isPreparing
-            );
+            chathubConnection
+                .invoke("SendMessagePreparingAsync", admin?.userId, isPreparing)
+                .catch((err) =>
+                    console.error(
+                        "Error invoking SendMessagePreparingAsync: ",
+                        err
+                    )
+                );
         }
     }, [isPreparing]);
 
