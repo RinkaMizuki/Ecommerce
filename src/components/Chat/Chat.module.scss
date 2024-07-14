@@ -1,98 +1,93 @@
 .chat-container {
-    position: fixed;
-    z-index: 1499;
-    bottom: 30%;
-    right: 0;
-    font-family: "Montserrat";
+  position: fixed;
+  z-index: 1499;
+  bottom: 30%;
+  right: 0;
+  font-family: "Montserrat";
 }
 
 .chat-area {
-    > span {
-        cursor: pointer;
-    }
+  > span {
+    cursor: pointer;
+  }
 }
 
 .card-body {
-    padding: 10px;
-    overflow-y: scroll;
+  padding: 10px;
+  overscroll-behavior: contain;
+  overflow-y: scroll;
 }
 
 .card-body::-webkit-scrollbar-thumb {
-    -webkit-box-shadow: none;
-    box-shadow: none;
-    border-radius: 5px;
-    background-color: var(--text-gray-500);
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  border-radius: 5px;
+  background-color: var(--text-gray-500);
 }
 
 .card-custom {
-    position: relative;
-    box-shadow: var(--tw-ring-offset-shadow, 0 0 rgba(0, 0, 0, 0)),
-        var(--tw-ring-shadow, 0 0 rgba(0, 0, 0, 0)), var(--tw-shadow);
-}
-
-.emoji-wrapper {
-    position: absolute;
-    top: 0;
-    left: 0;
+  position: relative;
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 rgba(0, 0, 0, 0)),
+    var(--tw-ring-shadow, 0 0 rgba(0, 0, 0, 0)), var(--tw-shadow);
 }
 
 .is-typing {
-    width: 85px;
-    display: flex;
-    gap: 10px;
+  width: 85px;
+  display: flex;
+  gap: 10px;
 }
 
 .jump1,
 .jump2,
 .jump3 {
-    width: 7px;
-    height: 7px;
-    border-radius: 100%;
-    background-color: gray;
+  width: 7px;
+  height: 7px;
+  border-radius: 100%;
+  background-color: gray;
 }
 
 .jump1 {
-    animation: typing 1.5s linear infinite;
-    animation-delay: 01.1s;
+  animation: typing 1.5s linear infinite;
+  animation-delay: 01.1s;
 }
 
 .jump2 {
-    animation: typing 1.5s linear infinite;
-    animation-delay: 01.2s;
+  animation: typing 1.5s linear infinite;
+  animation-delay: 01.2s;
 }
 
 .jump3 {
-    animation: typing 1.5s linear infinite;
-    animation-delay: 01.3s;
+  animation: typing 1.5s linear infinite;
+  animation-delay: 01.3s;
 }
 
 @keyframes typing {
-    0% {
-        transform: translateY(0px);
-    }
+  0% {
+    transform: translateY(0px);
+  }
 
-    25% {
-        transform: translateY(0px);
-    }
+  25% {
+    transform: translateY(0px);
+  }
 
-    35% {
-        transform: translateY(15px);
-    }
+  35% {
+    transform: translateY(15px);
+  }
 
-    45% {
-        transform: translateY(0px);
-    }
+  45% {
+    transform: translateY(0px);
+  }
 
-    60% {
-        transform: translateY(-15px);
-    }
+  60% {
+    transform: translateY(-15px);
+  }
 
-    75% {
-        background-color: white;
-        transform: translateY(0px);
-    }
+  75% {
+    background-color: white;
+    transform: translateY(0px);
+  }
 
-    100% {
-        transform: translateY(0px);
-    }
+  100% {
+    transform: translateY(0px);
+  }
 }

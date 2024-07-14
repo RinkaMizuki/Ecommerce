@@ -9,192 +9,186 @@ import ChatBody from "./ChatBody";
 import ChatBox from "./ChatBox";
 import EmojiPicker from "emoji-picker-react";
 import ChatHeader from "./ChatHeader";
-import { useClickOutside } from "../../hooks/useClickOutside";
+import { Box, ClickAwayListener } from "@mui/material";
 
 const cx = classNames.bind(styles);
 
 const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
-    const [message, setMessage] = useState("");
-    const [messages, setMessages] = useState([]);
-    const [admin, setAdmin] = useState(null);
-    const [conversation, setConversation] = useState("");
-    const [isShowEmoji, setIsShowEmoji] = useState(false);
-    const [adminStatus, setAdminStatus] = useState(null);
-    const [isPreparing, setIsPreparing] = useState(false);
-    const [isAdminPreparing, setIsAdminPreparing] = useState(false);
-    const emojiWapperRef = useRef(null);
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [admin, setAdmin] = useState(null);
+  const [conversation, setConversation] = useState("");
+  const [isShowEmoji, setIsShowEmoji] = useState(false);
+  const [adminStatus, setAdminStatus] = useState(null);
+  const [isPreparing, setIsPreparing] = useState(false);
+  const [isAdminPreparing, setIsAdminPreparing] = useState(false);
 
-    const handleSendMessage = async (e) => {
-        if (e.type === "click" || (e.type === "keydown" && e.keyCode === 13))
-            try {
-                await chathubConnection.invoke(
-                    "SendMessageAsync",
-                    userLogin?.id,
-                    admin?.userId,
-                    message,
-                    conversation,
-                    ""
-                );
-                setMessage("");
-                setIsShowEmoji(false);
-            } catch (error) {
-                console.log(error);
-            }
-    };
-
-    const handleChooseEmoji = (emojiObj, e) => {
-        setMessage((prevText) => `${prevText}${emojiObj.emoji}`);
-    };
-
-    useClickOutside(emojiWapperRef, () => {
+  const handleSendMessage = async (e) => {
+    if (e.type === "click" || (e.type === "keydown" && e.keyCode === 13))
+      try {
+        const messageDto = {
+          messageId: null,
+          senderId: userLogin.id,
+          conversationId: conversation,
+          messageContent: message,
+          originalMessageId: null,
+        };
+        await chathubConnection.invoke(
+          "SendMessageAsync",
+          admin?.userId,
+          messageDto
+        );
+        setMessage("");
         setIsShowEmoji(false);
+      } catch (error) {
+        console.log(error);
+      }
+  };
+
+  const handleChooseEmoji = (emojiObj, e) => {
+    setMessage((prevText) => `${prevText}${emojiObj.emoji}`);
+  };
+
+  useLayoutEffect(() => {
+    chathubConnection.on("ReceiveMessage", (newMessage) => {
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
     });
 
-    useLayoutEffect(() => {
-        chathubConnection.on("ReceiveMessage", (newMessage) => {
-            setMessages((prevMessages) => [...prevMessages, newMessage]);
+    chathubConnection.on("ReceiveAdmin", (currentAdmin, conversationId) => {
+      setConversation(conversationId);
+      setAdmin(currentAdmin);
+    });
+
+    chathubConnection.on("ReceiveStatus", (adminId, status) => {
+      setAdminStatus({
+        adminId,
+        status,
+      });
+    });
+
+    if (chathubConnection.state === signalR.HubConnectionState.Disconnected) {
+      chathubConnection
+        .start()
+        .then(() => {
+          console.log("ChatHub connected successfully.");
+        })
+        .catch((err) => {
+          console.error("Error connecting to ChatHub:", err);
         });
+    }
+    return () => {
+      if (chathubConnection.state === signalR.HubConnectionState.Connected) {
+        chathubConnection
+          .stop()
+          .then(() => console.warn("ChatHub disconnected successfully."))
+          .catch((err) => console.error("Error disconnected to ChatHub:", err));
+      }
+    };
+  }, []);
 
-        chathubConnection.on("ReceiveAdmin", (currentAdmin, conversationId) => {
-            setConversation(conversationId);
-            setAdmin(currentAdmin);
-        });
+  useEffect(() => {
+    chathubConnection.on("ReceivePreparing", (isPrepare) => {
+      setIsAdminPreparing(isPrepare);
+    });
+  }, []);
 
-        chathubConnection.on("ReceiveStatus", (adminId, status) => {
-            setAdminStatus({
-                adminId,
-                status,
-            });
-        });
+  useEffect(() => {
+    if (
+      (isShowChat || conversation) &&
+      chathubConnection.state === signalR.HubConnectionState.Connected
+    ) {
+      chathubConnection
+        .invoke("GetMessagesAsync", "[0,14]", conversation)
+        .catch((err) => console.error("Error invoking GetMessageAsync:", err));
+      chathubConnection.on("ReceiveMessages", (listMessages) => {
+        setMessages(listMessages);
+      });
+    }
+  }, [isShowChat, conversation]);
 
-        if (
-            chathubConnection.state === signalR.HubConnectionState.Disconnected
-        ) {
-            chathubConnection
-                .start()
-                .then(() => {
-                    console.log("ChatHub connected successfully.");
-                })
-                .catch((err) => {
-                    console.error("Error connecting to ChatHub:", err);
-                });
-        }
-        return () => {
-            if (
-                chathubConnection.state === signalR.HubConnectionState.Connected
-            ) {
-                chathubConnection
-                    .stop()
-                    .then(() =>
-                        console.warn("ChatHub disconnected successfully.")
-                    )
-                    .catch((err) =>
-                        console.error("Error disconnected to ChatHub:", err)
-                    );
-            }
-        };
-    }, []);
+  useEffect(() => {
+    if (
+      chathubConnection.state === signalR.HubConnectionState.Connected &&
+      isPreparing
+    ) {
+      chathubConnection
+        .invoke("SendMessagePreparingAsync", admin?.userId, isPreparing)
+        .catch((err) =>
+          console.error("Error invoking SendMessagePreparingAsync: ", err)
+        );
+    } else if (
+      chathubConnection.state === signalR.HubConnectionState.Connected &&
+      !isPreparing
+    ) {
+      chathubConnection
+        .invoke("SendMessagePreparingAsync", admin?.userId, isPreparing)
+        .catch((err) =>
+          console.error("Error invoking SendMessagePreparingAsync: ", err)
+        );
+    }
+  }, [isPreparing]);
 
-    useEffect(() => {
-        chathubConnection.on("ReceivePreparing", (isPrepare) => {
-            setIsAdminPreparing(isPrepare);
-        });
-    }, []);
+  useEffect(() => {
+    if (!message) {
+      setIsPreparing(false);
+    } else {
+      setIsPreparing(true);
+    }
+  }, [message]);
 
-    useEffect(() => {
-        if (
-            (isShowChat || conversation) &&
-            chathubConnection.state === signalR.HubConnectionState.Connected
-        ) {
-            chathubConnection
-                .invoke("GetMessageAsync", conversation)
-                .catch((err) =>
-                    console.error("Error invoking GetMessageAsync:", err)
-                );
-            chathubConnection.on("ReceiveMessages", (listMessages) => {
-                setMessages(listMessages);
-            });
-        }
-    }, [isShowChat, conversation]);
-
-    useEffect(() => {
-        if (
-            chathubConnection.state === signalR.HubConnectionState.Connected &&
-            isPreparing
-        ) {
-            chathubConnection
-                .invoke("SendMessagePreparingAsync", admin?.userId, isPreparing)
-                .catch((err) =>
-                    console.error(
-                        "Error invoking SendMessagePreparingAsync: ",
-                        err
-                    )
-                );
-        } else if (
-            chathubConnection.state === signalR.HubConnectionState.Connected &&
-            !isPreparing
-        ) {
-            chathubConnection
-                .invoke("SendMessagePreparingAsync", admin?.userId, isPreparing)
-                .catch((err) =>
-                    console.error(
-                        "Error invoking SendMessagePreparingAsync: ",
-                        err
-                    )
-                );
-        }
-    }, [isPreparing]);
-
-    useEffect(() => {
-        if (!message) {
-            setIsPreparing(false);
-        } else {
-            setIsPreparing(true);
-        }
-    }, [message]);
-
-    return (
-        <section className={cx("chat-container")}>
-            <div className="container py-5">
-                <div className="row d-flex justify-content-center">
-                    <div className="col-lg-10">
-                        <div className={cx("card-custom", "card")} id="chat2">
-                            <ChatHeader
-                                setIsShowChat={setIsShowChat}
-                                isShowChat={isShowChat}
-                                admin={admin}
-                                adminStatus={adminStatus}
-                            />
-                            <ChatBody
-                                isPreparing={isPreparing}
-                                isAdminPreparing={isAdminPreparing}
-                                messages={messages}
-                                userLogin={userLogin}
-                            />
-                            <div
-                                ref={emojiWapperRef}
-                                className={cx("emoji-wrapper")}
-                            >
-                                <EmojiPicker
-                                    onEmojiClick={handleChooseEmoji}
-                                    height={480}
-                                    width={"100%"}
-                                    open={isShowEmoji}
-                                />
-                            </div>
-                            <ChatBox
-                                setIsShowEmoji={setIsShowEmoji}
-                                isShowEmoji={isShowEmoji}
-                                handleSendMessage={handleSendMessage}
-                                setMessage={setMessage}
-                                message={message}
-                            />
-                        </div>
-                    </div>
-                </div>
+  return (
+    <section className={cx("chat-container")}>
+      <div className="container py-5">
+        <div className="row d-flex justify-content-center">
+          <div className="col-lg-10">
+            <div className={cx("card-custom", "card")} id="chat2">
+              <ChatHeader
+                setIsShowChat={setIsShowChat}
+                isShowChat={isShowChat}
+                admin={admin}
+                adminStatus={adminStatus}
+              />
+              <ChatBody
+                isPreparing={isPreparing}
+                isAdminPreparing={isAdminPreparing}
+                messages={messages}
+                userLogin={userLogin}
+              />
+              {isShowEmoji ? (
+                <ClickAwayListener
+                  onClickAway={() => {
+                    setIsShowEmoji(false);
+                  }}
+                >
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      left: 0,
+                      top: "30px",
+                    }}
+                  >
+                    <EmojiPicker
+                      width="100%"
+                      open={isShowEmoji}
+                      onEmojiClick={handleChooseEmoji}
+                      style={{ zIndex: 9999 }}
+                    />
+                  </Box>
+                </ClickAwayListener>
+              ) : null}
+              <ChatBox
+                setIsShowEmoji={setIsShowEmoji}
+                isShowEmoji={isShowEmoji}
+                handleSendMessage={handleSendMessage}
+                setMessage={setMessage}
+                message={message}
+              />
             </div>
-        </section>
-    );
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 };
 
 export default Chat;

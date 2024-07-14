@@ -1,85 +1,85 @@
 .content-wrapper {
-    padding: 30px 110px 0px 110px;
-    position: relative;
+  padding: 30px 110px 0px 110px;
+  position: relative;
 }
 
 .chat-wrapper {
-    position: fixed;
-    z-index: 99999999;
-    bottom: 12%;
-    cursor: pointer;
-    width: 30px;
-    height: 30px;
-    color: #0866ff;
-    right: 1%;
+  position: fixed;
+  z-index: 4999;
+  bottom: 12%;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  color: #0866ff;
+  right: 1%;
 }
 
 .chat-icon {
-    width: 30px;
-    height: 30px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    position: absolute;
+  width: 30px;
+  height: 30px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
 }
 
 .zoomIn_chat {
-    animation-name: zoomIn_chat;
+  animation-name: zoomIn_chat;
 }
 .animated_chat {
-    animation-duration: 1s;
-    animation-fill-mode: both;
+  animation-duration: 1s;
+  animation-fill-mode: both;
 }
 .animated_chat.infinite {
-    animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
 }
 .cmoz-alo-circle {
-    width: 40px;
-    height: 40px;
-    top: -5px;
-    right: -5px;
-    position: absolute;
-    background-color: transparent;
-    border-radius: 100%;
-    border: 2px solid rgba(17, 130, 252, 0.8);
-    border-color: #1182fc;
-    opacity: 0.5;
+  width: 40px;
+  height: 40px;
+  top: -5px;
+  right: -5px;
+  position: absolute;
+  background-color: transparent;
+  border-radius: 100%;
+  border: 2px solid rgba(17, 130, 252, 0.8);
+  border-color: #1182fc;
+  opacity: 0.5;
 }
 .cmoz-alo-circle-fill {
-    width: 50px;
-    height: 50px;
-    top: -10px;
-    position: absolute;
-    transition: all 0.2s ease-in-out;
-    border-radius: 100%;
-    border: 2px solid transparent;
-    transition: all 0.5s;
-    background-color: rgba(17, 130, 252, 0.45);
-    opacity: 0.75;
-    right: -10px;
+  width: 50px;
+  height: 50px;
+  top: -10px;
+  position: absolute;
+  transition: all 0.2s ease-in-out;
+  border-radius: 100%;
+  border: 2px solid transparent;
+  transition: all 0.5s;
+  background-color: rgba(17, 130, 252, 0.45);
+  opacity: 0.75;
+  right: -10px;
 }
 .pulse_chat {
-    animation-name: pulse_chat;
+  animation-name: pulse_chat;
 }
 
 @keyframes zoomIn_chat {
-    from {
-        opacity: 0;
-        transform: scale3d(0.7, 0.7, 0.7);
-    }
-    50% {
-        opacity: 1;
-    }
+  from {
+    opacity: 0;
+    transform: scale3d(0.7, 0.7, 0.7);
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 @keyframes pulse_chat {
-    from {
-        transform: scale3d(1, 1, 1);
-    }
-    50% {
-        transform: scale3d(1.05, 1.05, 1.05);
-    }
-    to {
-        transform: scale3d(1, 1, 1);
-    }
+  from {
+    transform: scale3d(1, 1, 1);
+  }
+  50% {
+    transform: scale3d(1.05, 1.05, 1.05);
+  }
+  to {
+    transform: scale3d(1, 1, 1);
+  }
 }

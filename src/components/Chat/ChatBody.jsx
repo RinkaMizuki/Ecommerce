@@ -53,7 +53,6 @@ const ChatBody = ({ messages, userLogin, isAdminPreparing }) => {
                                     </p>
                                 </div>
                             </TooltipTime>
-
                             <Avatar
                                 src={msg.sender?.url}
                                 alt={msg.sender?.avatar}

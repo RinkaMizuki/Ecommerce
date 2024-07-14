@@ -1,6 +1,13 @@
 import { Lightbox as LightboxCpn } from "react-modal-image";
 
-const Lightbox = ({ imageBackgroundColor = "transparent", hideZoom = true, hideDownload = true, onClose = () => { }, url = "", alt = "" }) => {
+const Lightbox = ({
+  imageBackgroundColor = "transparent",
+  hideZoom = true,
+  hideDownload = true,
+  onClose = () => {},
+  url = "",
+  alt = "",
+}) => {
   return (
     <LightboxCpn
       imageBackgroundColor={imageBackgroundColor}
@@ -10,7 +17,7 @@ const Lightbox = ({ imageBackgroundColor = "transparent", hideZoom = true, hideD
       large={url}
       alt={alt}
     />
-  )
+  );
 };
 
 export default Lightbox;
