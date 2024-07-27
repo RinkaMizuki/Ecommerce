@@ -40,8 +40,8 @@
 .jump1,
 .jump2,
 .jump3 {
-  width: 7px;
-  height: 7px;
+  width: 5px;
+  height: 5px;
   border-radius: 100%;
   background-color: gray;
 }
@@ -71,7 +71,7 @@
   }
 
   35% {
-    transform: translateY(15px);
+    transform: translateY(5px);
   }
 
   45% {
@@ -79,7 +79,7 @@
   }
 
   60% {
-    transform: translateY(-15px);
+    transform: translateY(-5px);
   }
 
   75% {

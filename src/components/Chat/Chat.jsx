@@ -14,7 +14,10 @@ import { Box, ClickAwayListener } from "@mui/material";
 const cx = classNames.bind(styles);
 
 const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState({
+    content: "",
+    type: "text",
+  });
   const [messages, setMessages] = useState([]);
   const [admin, setAdmin] = useState(null);
   const [conversation, setConversation] = useState("");
@@ -30,7 +33,8 @@ const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
           messageId: null,
           senderId: userLogin.id,
           conversationId: conversation,
-          messageContent: message,
+          messageContent: message.content,
+          messageType: message.type,
           originalMessageId: null,
         };
         await chathubConnection.invoke(
@@ -38,7 +42,10 @@ const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
           admin?.userId,
           messageDto
         );
-        setMessage("");
+        setMessage({
+          content: "",
+          type: "text",
+        });
         setIsShowEmoji(false);
       } catch (error) {
         console.log(error);
@@ -46,7 +53,12 @@ const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
   };
 
   const handleChooseEmoji = (emojiObj, e) => {
-    setMessage((prevText) => `${prevText}${emojiObj.emoji}`);
+    setMessage((prevMessage) => {
+      return {
+        ...prevText,
+        content: `${prevMessage.content}${emojiObj.emoji}`,
+      };
+    });
   };
 
   useLayoutEffect(() => {
@@ -112,7 +124,12 @@ const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
       isPreparing
     ) {
       chathubConnection
-        .invoke("SendMessagePreparingAsync", admin?.userId, isPreparing)
+        .invoke(
+          "SendMessagePreparingAsync",
+          admin?.userId,
+          isPreparing,
+          conversation
+        )
         .catch((err) =>
           console.error("Error invoking SendMessagePreparingAsync: ", err)
         );
@@ -121,7 +138,12 @@ const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
       !isPreparing
     ) {
       chathubConnection
-        .invoke("SendMessagePreparingAsync", admin?.userId, isPreparing)
+        .invoke(
+          "SendMessagePreparingAsync",
+          admin?.userId,
+          isPreparing,
+          conversation
+        )
         .catch((err) =>
           console.error("Error invoking SendMessagePreparingAsync: ", err)
         );
