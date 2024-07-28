@@ -63,6 +63,7 @@ const ChatBody = ({ messages, userLogin, isAdminPreparing }) => {
                   <p
                     className="small p-2 ms-3 rounded-3"
                     style={{
+                      lineHeight: "1.5",
                       backgroundColor: "#f5f6f7",
                       height: "100%",
                       display: "flex",

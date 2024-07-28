@@ -55,7 +55,7 @@ const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
   const handleChooseEmoji = (emojiObj, e) => {
     setMessage((prevMessage) => {
       return {
-        ...prevText,
+        ...prevMessage,
         content: `${prevMessage.content}${emojiObj.emoji}`,
       };
     });

@@ -15,7 +15,12 @@
 .card-body {
   padding: 10px;
   overscroll-behavior: contain;
-  overflow-y: scroll;
+  overflow: overlay;
+}
+
+.card-body::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
 }
 
 .card-body::-webkit-scrollbar-thumb {
