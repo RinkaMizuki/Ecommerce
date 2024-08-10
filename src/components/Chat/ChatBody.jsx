@@ -58,7 +58,7 @@ const ChatBody = ({ messages, userLogin, isAdminPreparing }) => {
               ref={index === messages.length - 1 ? lastMessageRef : null}
             >
               <Avatar src={msg.sender?.url} alt={msg.sender?.avatar} />
-              <TooltipTime date={msg?.sendAt} position="right-start">
+              <TooltipTime date={msg?.sendAt} position="right">
                 <div>
                   <p
                     className="small p-2 ms-3 rounded-3"
