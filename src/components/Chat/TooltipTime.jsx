@@ -9,7 +9,7 @@ const TooltipTime = ({
 }) => {
   return (
     <Tooltip
-      title={new Date(date).toLocaleTimeString()}
+      title={new Date(date).toLocaleDateString()}
       placement={position}
       slotProps={{
         popper: {

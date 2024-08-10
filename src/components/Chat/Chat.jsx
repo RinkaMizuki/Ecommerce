@@ -109,14 +109,6 @@ const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
       (isShowChat || conversation) &&
       chathubConnection.state === signalR.HubConnectionState.Connected
     ) {
-      if (chathubConnection.state === signalR.HubConnectionState.Connected) {
-        chathubConnection
-          .invoke("GetListParticipantAsync", userLogin.userId)
-          .then((data) => console.log(data))
-          .catch((err) =>
-            console.error("Error invoking GetListParticipantAsync: ", err)
-          );
-      }
       chathubConnection
         .invoke("GetMessagesAsync", "[0,14]", conversation)
         .catch((err) => console.error("Error invoking GetMessageAsync:", err));

@@ -1,31 +1,26 @@
 import { Pagination, Navigation, Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "./Slider.css";
-import 'swiper/scss';
-import 'swiper/scss/pagination';
-import 'swiper/scss/navigation';
-import 'swiper/scss/zoom';
+import "swiper/scss";
+import "swiper/scss/pagination";
+import "swiper/scss/navigation";
+import "swiper/scss/zoom";
 import { useEffect, useState } from "react";
 import useCustomFetch from "../../../hooks/useCustomFetch";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 const Slider = () => {
-
   const [getListSlider] = useCustomFetch();
   const [listSlider, setListSlider] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-
     const fetchData = async () => {
-      setIsLoading(true);
-      const response = await getListSlider("/Admin/sliders")
+      const response = await getListSlider("/Admin/sliders");
       setListSlider(response.data);
-      setIsLoading(false);
-    }
+    };
 
     fetchData();
-
-  }, [])
+  }, []);
 
   return (
     <div className="container">
@@ -45,27 +40,17 @@ const Slider = () => {
         navigation={true} //cho phép click vào thanh điều hướng
         modules={[Pagination, Navigation, Autoplay]}
       >
-        {true ? listSlider.map((slide) => (
+        {listSlider.map((slide) => (
           <SwiperSlide key={slide.id}>
             <div className="swiper-zoom-container">
-              <img
-                src={slide.url}
-                alt={slide.image}
-                loading="lazy"
-              />
+              <LazyLoadImage src={slide.url} alt={slide.image} />
               <div className="swiper-lazy-preloader"></div>
             </div>
           </SwiperSlide>
-        )) :
-          <SwiperSlide>
-            <div className="swiper-zoom-container">
-              <img className="skeleton" id="logo-img" alt="" />
-            </div>
-          </SwiperSlide>
-        }
+        ))}
       </Swiper>
     </div>
-  )
+  );
 };
 
 export default Slider;

@@ -16,6 +16,8 @@
   padding: 10px;
   overscroll-behavior: contain;
   overflow: overlay;
+  position: relative;
+  height: 400px;
 }
 
 .card-body::-webkit-scrollbar {
