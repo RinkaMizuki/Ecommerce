@@ -15,6 +15,7 @@ import { useContext } from "react";
 function App() {
   const [toggleTopHeader, setToggleTopHeader] = useState(false);
   const { handleShowModalStrange } = useContext(ModalContext);
+
   useEffect(() => {
     socket.on("receiveLoginDetected", function ({ token }) {
       const currentToken = getTokenFromCookie("accessToken");

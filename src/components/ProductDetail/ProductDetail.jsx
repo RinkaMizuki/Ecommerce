@@ -1,16 +1,19 @@
 import { Breadcrumbs } from "@mui/material";
 import styles from "./ProductDetail.module.scss";
 import classNames from "classnames/bind";
-import Link from '@mui/material/Link';
+import Link from "@mui/material/Link";
 import useCustomFetch from "../../hooks/useCustomFetch";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import StarRatings from "react-star-ratings";
-import ReactHtmlParser from "react-html-parser"
+import ReactHtmlParser from "react-html-parser";
 import Button from "../Button/Button";
 import ProductRelate from "../ProductRelate";
 import { useSelector } from "react-redux";
-import { getLocalFavoriteProductId, setLocalFavoriteProductId } from "../../services/favoriteService";
+import {
+  getLocalFavoriteProductId,
+  setLocalFavoriteProductId,
+} from "../../services/favoriteService";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import ProductReview from "../ProductReview";
@@ -29,17 +32,18 @@ const toastOptions = {
   draggable: true,
   progress: undefined,
   theme: "colored",
-}
+};
 
 const ProductDetail = () => {
-
   const [getData] = useCustomFetch();
   const [category, setCategory] = useState({});
   const [product, setProduct] = useState({});
   const [color, setColor] = useState("");
   const [quantity, setQuantity] = useState(1);
-  const userLogin = useSelector(state => state.auth.login.currentUser);
-  const [idFavorites, setIdFavorites] = useState(getLocalFavoriteProductId(userLogin?.user?.id));
+  const userLogin = useSelector((state) => state.auth.login.currentUser);
+  const [idFavorites, setIdFavorites] = useState(
+    getLocalFavoriteProductId(userLogin?.user?.id)
+  );
 
   const colorRef = useRef(null);
   const params = useParams();
@@ -49,61 +53,63 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const productResponse = await getData(`Admin/products/${params.productId}`);
-        const categoryResponse = await getData(`Admin/categories/${productResponse.data.categoryId}`);
-        setCategory(categoryResponse.data)
-        setProduct(productResponse.data)
-      }
-      catch (error) {
+        const productResponse = await getData(
+          `Admin/products/${params.productId}`
+        );
+        const categoryResponse = await getData(
+          `Admin/categories/${productResponse.data.categoryId}`
+        );
+        setCategory(categoryResponse.data);
+        setProduct(productResponse.data);
+      } catch (error) {
         if (error.response?.status === 404) {
           navigate("/error", {
             replace: true,
-          })
+          });
         }
         console.log(error);
       }
-    }
-    setTimeout(() => {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      })
-    }, 100);
+    };
     fetchData();
-  }, [params.productId])
+  }, [params.productId]);
 
   useEffect(() => {
     const handleStorageChange = () => {
       const ids = getLocalFavoriteProductId(userLogin?.user?.id);
       setIdFavorites(ids);
-    }
+    };
 
-    window.addEventListener(`FavoriteDataEvent_${userLogin?.user?.id}`, handleStorageChange);
+    window.addEventListener(
+      `FavoriteDataEvent_${userLogin?.user?.id}`,
+      handleStorageChange
+    );
 
     return () => {
-      window.removeEventListener(`FavoriteDataEvent_${userLogin?.user?.id}`, handleStorageChange);
+      window.removeEventListener(
+        `FavoriteDataEvent_${userLogin?.user?.id}`,
+        handleStorageChange
+      );
     };
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (colorRef.current.children.length > 1) {
       const listColor = Array.from(colorRef.current.children).slice(1);
-      setColor(listColor[0].getAttribute('id'));
+      setColor(listColor[0].getAttribute("id"));
     }
-  }, [product])
+  }, [product]);
 
   const handleChooseColor = (e) => {
     setColor(e.target.getAttribute("id"));
-  }
+  };
 
   function handleClick(event) {
     event.preventDefault();
     const isExistRoute = event.target.href.split("/")[3];
     if (!isExistRoute) {
-      navigate("/")
-    }
-    else if (isExistRoute == "category") {
-      navigate(`/category/${event.target.href.split("/").pop()}`)
+      navigate("/");
+    } else if (isExistRoute == "category") {
+      navigate(`/category/${event.target.href.split("/").pop()}`);
     }
   }
 
@@ -111,36 +117,52 @@ const ProductDetail = () => {
     if (!checkUserLogin()) {
       return;
     }
-    const isRemove = setLocalFavoriteProductId(id, userLogin.user.id)
+    const isRemove = setLocalFavoriteProductId(id, userLogin.user.id);
     if (!isRemove) {
-      toast.success("A product has been added to wishlist", toastOptions)
+      toast.success("A product has been added to wishlist", toastOptions);
     } else {
-      toast.info("A product has been removed from the favorites list", toastOptions)
+      toast.info(
+        "A product has been removed from the favorites list",
+        toastOptions
+      );
     }
-  }
+  };
 
   const handleClickBuy = () => {
     if (!checkUserLogin()) {
       return;
     }
     const currentProductId = params.productId;
-    toast.info("Products has been added to cart", toastOptions)
-    setLocalProductQuantity(currentProductId, userLogin?.user?.id, quantity, "addMany", false, color)
-  }
+    toast.info("Products has been added to cart", toastOptions);
+    setLocalProductQuantity(
+      currentProductId,
+      userLogin?.user?.id,
+      quantity,
+      "addMany",
+      false,
+      color
+    );
+  };
   const checkUserLogin = () => {
     if (!userLogin?.user) {
-      navigate("/login", { state: { from: { pathname: location.pathname } } })
+      navigate("/login", { state: { from: { pathname: location.pathname } } });
       return false;
     }
     return true;
-  }
+  };
 
   return (
     <div className={cx("main-container")}>
-      <ToastContainer style={{
-        marginTop: "70px"
-      }}></ToastContainer>
-      <div role="presentation" onClick={handleClick} style={{ marginTop: "10px" }}>
+      <ToastContainer
+        style={{
+          marginTop: "70px",
+        }}
+      ></ToastContainer>
+      <div
+        role="presentation"
+        onClick={handleClick}
+        style={{ marginTop: "10px" }}
+      >
         <Breadcrumbs aria-label="breadcrumb">
           <Link underline="hover" color="inherit" href="/">
             Home
@@ -165,8 +187,11 @@ const ProductDetail = () => {
       </div>
       <div className={cx("product-container")}>
         <div className={cx("product-images")}>
-          {product?.productImages?.slice(0, 5).map(p => (
-            <div className={cx("product-background-image")} key={p.productImageId} >
+          {product?.productImages?.slice(0, 5).map((p) => (
+            <div
+              className={cx("product-background-image")}
+              key={p.productImageId}
+            >
               <LazyLoadImage
                 src={p.url}
                 alt={p.image}
@@ -187,33 +212,68 @@ const ProductDetail = () => {
           </div>
         </div>
         <div className={cx("product-info")}>
-          <h2 className={cx("product-title")}>
-            {product?.title}
-          </h2>
+          <h2 className={cx("product-title")}>{product?.title}</h2>
           <div className={cx("product-reviews-wrapper")}>
             <StarRatings
-              rating={isNaN(product?.productRates?.reduce((sum, rate) => sum + rate.star, 0) / product?.productRates?.length) ? 0 : product?.productRates?.reduce((sum, rate) => sum + rate.star, 0) / product?.productRates?.length}
+              rating={
+                isNaN(
+                  product?.productRates?.reduce(
+                    (sum, rate) => sum + rate.star,
+                    0
+                  ) / product?.productRates?.length
+                )
+                  ? 0
+                  : product?.productRates?.reduce(
+                      (sum, rate) => sum + rate.star,
+                      0
+                    ) / product?.productRates?.length
+              }
               starRatedColor="gold"
               numberOfStars={5}
               starDimension="17px"
               starSpacing="1px"
-              name='rating'
+              name="rating"
             />
-            <span className={cx("product-reviews")} style={{
-              marginLeft: "5px"
-            }}>
+            <span
+              className={cx("product-reviews")}
+              style={{
+                marginLeft: "5px",
+              }}
+            >
               ({product?.productRates?.length} Reviews)
               <span>&nbsp; &nbsp; |</span>
-              <span style={{
-                color: product?.productStock?.stockQuantity ? "#66FFA3" : "var(--primary)"
-              }}> &nbsp;{product?.productStock?.stockQuantity ? " In Stock" : "Out Stock"}</span>
+              <span
+                style={{
+                  color: product?.productStock?.stockQuantity
+                    ? "#66FFA3"
+                    : "var(--primary)",
+                }}
+              >
+                {" "}
+                &nbsp;
+                {product?.productStock?.stockQuantity
+                  ? " In Stock"
+                  : "Out Stock"}
+              </span>
             </span>
           </div>
           <div className={cx("product-price-wrapper")}>
-            <span className={cx("product-price-sale")}>{(product?.price * (1 - product?.discount / 100)).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</span>
-            <span className={cx("product-price")}>{product?.price?.toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</span>
+            <span className={cx("product-price-sale")}>
+              {(product?.price * (1 - product?.discount / 100)).toLocaleString(
+                "it-IT",
+                { style: "currency", currency: "VND" }
+              )}
+            </span>
+            <span className={cx("product-price")}>
+              {product?.price?.toLocaleString("it-IT", {
+                style: "currency",
+                currency: "VND",
+              })}
+            </span>
           </div>
-          <div className={cx("product-desc")}>{ReactHtmlParser(product?.description || "")}</div>
+          <div className={cx("product-desc")}>
+            {ReactHtmlParser(product?.description || "")}
+          </div>
           <hr />
           <div className={cx("product-colors")} ref={colorRef}>
             <span>Colors: </span>
@@ -229,45 +289,73 @@ const ProductDetail = () => {
                 className={cx("minus")}
                 disabled={quantity == 1}
                 style={{
-                  cursor: quantity == 1 ? "not-allowed" : "pointer"
+                  cursor: quantity == 1 ? "not-allowed" : "pointer",
                 }}
                 onClick={() => {
-                  quantity > 1 && setQuantity(quantity - 1)
-                }}>-</button>
+                  quantity > 1 && setQuantity(quantity - 1);
+                }}
+              >
+                -
+              </button>
               <input
                 className={cx("quantity")}
                 min="0"
                 name="quantity"
                 value={quantity}
                 type="number"
-                onChange={() => { }} />
+                onChange={() => {}}
+              />
               <button
                 disabled={quantity >= product?.productStock?.stockQuantity}
                 className={cx("plus", {
-                  "plus-disabled": quantity >= product?.productStock?.stockQuantity
+                  "plus-disabled":
+                    quantity >= product?.productStock?.stockQuantity,
                 })}
                 style={{
-                  cursor: quantity >= product?.productStock?.stockQuantity ? "not-allowed" : "pointer"
+                  cursor:
+                    quantity >= product?.productStock?.stockQuantity
+                      ? "not-allowed"
+                      : "pointer",
                 }}
                 onClick={() => setQuantity(quantity + 1)}
-              >+</button>
+              >
+                +
+              </button>
             </div>
-            <Button disable={!product?.productStock?.stockQuantity} className={cx("btn-buynow")} onClick={product?.productStock?.stockQuantity ? handleClickBuy : () => { }}>Buy Now</Button>
-            <span className={cx("heart-wrapper")}
-              onClick={() => { handleSaveFavorite(product.id) }}
+            <Button
+              disable={!product?.productStock?.stockQuantity}
+              className={cx("btn-buynow")}
+              onClick={
+                product?.productStock?.stockQuantity ? handleClickBuy : () => {}
+              }
             >
-              {!idFavorites.includes(product?.id) || !userLogin ? <i className={cx("fa-regular fa-heart", "normal")}>
-              </i> : <i className={cx("fa-solid fa-heart", "active")}></i>}
+              Buy Now
+            </Button>
+            <span
+              className={cx("heart-wrapper")}
+              onClick={() => {
+                handleSaveFavorite(product.id);
+              }}
+            >
+              {!idFavorites.includes(product?.id) || !userLogin ? (
+                <i className={cx("fa-regular fa-heart", "normal")}></i>
+              ) : (
+                <i className={cx("fa-solid fa-heart", "active")}></i>
+              )}
             </span>
           </div>
-          <span className={cx("stock-text")}>We have <span className={cx("stock-quantity")}>{product?.productStock?.stockQuantity}</span> in Stock</span>
+          <span className={cx("stock-text")}>
+            We have{" "}
+            <span className={cx("stock-quantity")}>
+              {product?.productStock?.stockQuantity}
+            </span>{" "}
+            in Stock
+          </span>
           <div className={cx("product-delivery")}>
             <div className={cx("free-delivery-wrapper")}>
               <i className="fa-solid fa-truck"></i>
               <div className={cx("free-delivery-info")}>
-                <h2 className={cx("free-delivery-title")}>
-                  Free Delivery
-                </h2>
+                <h2 className={cx("free-delivery-title")}>Free Delivery</h2>
                 <p className={cx("free-delivery-desc")}>
                   Enter your postal code for Delivery Availability
                 </p>
@@ -277,9 +365,7 @@ const ProductDetail = () => {
             <div className={cx("free-return-wrapper")}>
               <i className="fa-solid fa-recycle"></i>
               <div className={cx("free-return-info")}>
-                <h2 className={cx("free-return-title")}>
-                  Return Delivery
-                </h2>
+                <h2 className={cx("free-return-title")}>Return Delivery</h2>
                 <p className={cx("free-return-desc")}>
                   Free 30 Days Delivery Returns. Details
                 </p>
@@ -290,13 +376,16 @@ const ProductDetail = () => {
       </div>
       <ProductReview product={product} />
       <div className={cx("relate-container")}>
-        {product?.categoryId && <ProductRelate categoryId={product?.categoryId}
-          currentId={product.id}
-          number={4}
-        />}
+        {product?.categoryId && (
+          <ProductRelate
+            categoryId={product?.categoryId}
+            currentId={product.id}
+            number={4}
+          />
+        )}
       </div>
     </div>
-  )
+  );
 };
 
 export default ProductDetail;

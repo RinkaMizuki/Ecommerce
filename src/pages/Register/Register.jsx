@@ -1,12 +1,12 @@
 import styles from "./Register.module.scss";
 import classNames from "classnames/bind";
 import ecommerceRegister from "../../assets/images/ecommerce-register.jpg";
-import Button from "../../components/Button"
-import Loading from "../../components/Loading"
+import Button from "../../components/Button";
+import Loading from "../../components/Loading";
 import { Link, Navigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import useCustomFetch from "../../hooks/useCustomFetch";
 import useDebounce from "../../hooks/useDebounce";
 import { Helmet } from "react-helmet";
@@ -22,12 +22,11 @@ const toastOptions = {
   draggable: true,
   progress: undefined,
   theme: "colored",
-}
+};
 
 const cx = classNames.bind(styles);
 
 const Register = () => {
-
   //hooks
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
@@ -43,37 +42,37 @@ const Register = () => {
   const passwordRef = useRef(null);
   const confirmPasswordRef = useRef(null);
 
-  const userLogin = useSelector(state => state.auth.login.currentUser);
+  const userLogin = useSelector((state) => state.auth.login.currentUser);
 
   const clearInput = () => {
     setUserName("");
     setEmail("");
     setPassword("");
     setConfirmPassword("");
-  }
+  };
   //logics handle
   const handleTogglePassword = () => {
-    const typePassword = passwordRef.current?.getAttribute("type")
+    const typePassword = passwordRef.current?.getAttribute("type");
 
     if (typePassword == "password") {
-      passwordRef.current.setAttribute("type", "text")
-      setIsHidePassword(false)
+      passwordRef.current.setAttribute("type", "text");
+      setIsHidePassword(false);
     } else {
-      passwordRef.current.setAttribute("type", "password")
-      setIsHidePassword(true)
+      passwordRef.current.setAttribute("type", "password");
+      setIsHidePassword(true);
     }
-  }
+  };
   const handleToggleConfirmPassword = () => {
-    const typeConfirmPassword = confirmPasswordRef.current?.getAttribute("type")
+    const typeConfirmPassword =
+      confirmPasswordRef.current?.getAttribute("type");
     if (typeConfirmPassword == "password") {
-      confirmPasswordRef.current.setAttribute("type", "text")
-      setIsHideConfirmPassword(false)
+      confirmPasswordRef.current.setAttribute("type", "text");
+      setIsHideConfirmPassword(false);
+    } else {
+      confirmPasswordRef.current.setAttribute("type", "password");
+      setIsHideConfirmPassword(true);
     }
-    else {
-      confirmPasswordRef.current.setAttribute("type", "password")
-      setIsHideConfirmPassword(true)
-    }
-  }
+  };
   const debounced = useDebounce(userName, 500);
   useEffect(() => {
     if (!debounced?.trim()) {
@@ -89,17 +88,17 @@ const Register = () => {
       } finally {
         setLoadingUserName(false);
       }
-    }
+    };
     fetchData();
-  }, [debounced])
+  }, [debounced]);
 
   useEffect(() => {
     window.scrollTo({
       top: 0,
-      behavior: "smooth"
+      behavior: "smooth",
     });
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   const handleKeyDown = (e) => {
@@ -107,41 +106,40 @@ const Register = () => {
       submitRef.current?.click();
       return;
     }
-  }
+  };
 
   const handleCreateAccount = async () => {
     try {
       setIsLoading(true);
       if (password != confirmPassword) {
-        toast.error('Confirm password incorrect.', toastOptions);
+        toast.error("Confirm password incorrect.", toastOptions);
         return;
       }
       const data = {
         email,
         username: userName,
         password,
-        service: import.meta.env.VITE_ECOMMERCE_SERVICE_NAME,
         confirmPassword,
-      }
+        serviceName: import.meta.env.VITE_ECOMMERCE_SERVICE_NAME,
+        serviceUrl: import.meta.env.VITE_ECOMMERCE_SERVICE_URL,
+      };
       // const res = await registerService("/Auth/register", data);
       const res = await post("/auth/register", data);
       if (res?.data?.statusCode == 201) {
-        toast.success(res.data.message, toastOptions)
+        toast.success(res.data.message, toastOptions);
       }
       clearInput();
-    }
-    catch (err) {
-
-      if (err?.response?.data?.statusCode == 409) { //status code conflict state 
-        toast.error(err?.response?.data?.message, toastOptions)
-      }
-      else {
-        toast.error(err?.response?.data?.message, toastOptions)
+    } catch (err) {
+      if (err?.response?.data?.statusCode == 409) {
+        //status code conflict state
+        toast.error(err?.response?.data?.message, toastOptions);
+      } else {
+        toast.error(err?.response?.data?.message, toastOptions);
       }
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className={cx("register-wrapper")}>
@@ -151,9 +149,11 @@ const Register = () => {
         <link rel="canonical" href={`${window.location.origin}/register`} />
       </Helmet>
       <div className={cx("register-image")}>
-        <ToastContainer style={{
-          marginTop: "110px",
-        }}></ToastContainer>
+        <ToastContainer
+          style={{
+            marginTop: "110px",
+          }}
+        ></ToastContainer>
         <img src={ecommerceRegister} alt="Ecommerce" />
       </div>
       <div className={cx("register-form")}>
@@ -163,31 +163,107 @@ const Register = () => {
         </div>
         <form className={cx("register-info")}>
           <div className={cx("username-input")}>
-            <input type="text" placeholder="User Name" value={userName} onChange={(e) => {
-              setUserName(e.target.value)
-              setLoadingUserName(!!e.target.value);
-              if (debounced === e.target.value) {
-                setLoadingUserName(false);
-              }
-            }} required />
-            {loadingUserName ? <i className={cx("fa-solid fa-spinner", "loading")}></i> : userName ? !loadingUserName ? (!isExistUserName ? <i className={cx("fa-regular fa-circle-check", "checked")}></i> : <i className={cx("fa-solid fa-ban", "cancel")}></i>) : <></> : <></>}
+            <input
+              type="text"
+              placeholder="User Name"
+              value={userName}
+              onChange={(e) => {
+                setUserName(e.target.value);
+                setLoadingUserName(!!e.target.value);
+                if (debounced === e.target.value) {
+                  setLoadingUserName(false);
+                }
+              }}
+              required
+            />
+            {loadingUserName ? (
+              <i className={cx("fa-solid fa-spinner", "loading")}></i>
+            ) : userName ? (
+              !loadingUserName ? (
+                !isExistUserName ? (
+                  <i
+                    className={cx("fa-regular fa-circle-check", "checked")}
+                  ></i>
+                ) : (
+                  <i className={cx("fa-solid fa-ban", "cancel")}></i>
+                )
+              ) : (
+                <></>
+              )
+            ) : (
+              <></>
+            )}
           </div>
           <input
-            type="email" placeholder="Email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+            type="email"
+            placeholder="Email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
           <div className={cx("password-wrapper")}>
-            <input type="password" placeholder="Password" required value={password} onChange={(e) => setPassword(e.target.value.trim())} ref={passwordRef} />
-            {!isHidePassword ? <i className="fa-regular fa-eye" onClick={handleTogglePassword}></i> : <i className="fa-regular fa-eye-slash" onClick={handleTogglePassword}></i>}
+            <input
+              type="password"
+              placeholder="Password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value.trim())}
+              ref={passwordRef}
+            />
+            {!isHidePassword ? (
+              <i
+                className="fa-regular fa-eye"
+                onClick={handleTogglePassword}
+              ></i>
+            ) : (
+              <i
+                className="fa-regular fa-eye-slash"
+                onClick={handleTogglePassword}
+              ></i>
+            )}
           </div>
           <div className={cx("password-wrapper")}>
-            <input type="password" placeholder="Confirm Password" required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value.trim())} ref={confirmPasswordRef} />
-            {!isHideConfirmPassword ? <i className="fa-regular fa-eye" onClick={handleToggleConfirmPassword}></i> : <i className="fa-regular fa-eye-slash" onClick={handleToggleConfirmPassword}></i>}
+            <input
+              type="password"
+              placeholder="Confirm Password"
+              required
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value.trim())}
+              ref={confirmPasswordRef}
+            />
+            {!isHideConfirmPassword ? (
+              <i
+                className="fa-regular fa-eye"
+                onClick={handleToggleConfirmPassword}
+              ></i>
+            ) : (
+              <i
+                className="fa-regular fa-eye-slash"
+                onClick={handleToggleConfirmPassword}
+              ></i>
+            )}
           </div>
         </form>
         <div>
-          <Button className={cx("btn-register")} lagre onClick={handleCreateAccount} ref={submitRef}
-            disable={!password || !userName || !email || !confirmPassword || isExistUserName || isLoading}
+          <Button
+            className={cx("btn-register")}
+            lagre
+            onClick={handleCreateAccount}
+            ref={submitRef}
+            disable={
+              !password ||
+              !userName ||
+              !email ||
+              !confirmPassword ||
+              isExistUserName ||
+              isLoading
+            }
           >
-            {!isLoading ? "Register Account" : <Loading className={cx("custom-loading")} />}
+            {!isLoading ? (
+              "Register Account"
+            ) : (
+              <Loading className={cx("custom-loading")} />
+            )}
           </Button>
         </div>
         <div className={cx("register-redirect")}>
@@ -196,7 +272,7 @@ const Register = () => {
         </div>
       </div>
     </div>
-  )
+  );
 };
 
 export default Register;

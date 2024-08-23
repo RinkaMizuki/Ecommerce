@@ -9,18 +9,19 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Helmet } from "react-helmet";
 import AuthRequired from "../../HOC/AuthRequired";
+import useToTop from "../../hooks/useToTop";
 
 const cx = classNames.bind(styles);
 
 const LayoutManagement = AuthRequired(({ toggleTopHeader, children }) => {
-
-  const userLogin = useSelector(state => state.auth.login.currentUser);
+  useToTop();
+  const userLogin = useSelector((state) => state.auth.login.currentUser);
   const navigate = useNavigate();
 
   function handleClick(event) {
     event.preventDefault();
     if (!event.target.href?.split("/")[3]) {
-      navigate("/")
+      navigate("/");
     }
   }
 
@@ -30,12 +31,21 @@ const LayoutManagement = AuthRequired(({ toggleTopHeader, children }) => {
       <Helmet>
         <meta charSet="utf-8" />
         <title>MT Store - Account</title>
-        <link rel="canonical" href={`${window.location.origin}/manager/profile`} />
+        <link
+          rel="canonical"
+          href={`${window.location.origin}/manager/profile`}
+        />
       </Helmet>
-      <div className={cx("main-container")} style={{
-        marginTop: toggleTopHeader ? "76px" : "unset"
-      }}>
-        <div role="presentation" onClick={handleClick} className={cx("breadcrumb")}
+      <div
+        className={cx("main-container")}
+        style={{
+          marginTop: toggleTopHeader ? "76px" : "unset",
+        }}
+      >
+        <div
+          role="presentation"
+          onClick={handleClick}
+          className={cx("breadcrumb")}
         >
           <Breadcrumbs aria-label="breadcrumb">
             <Link underline="hover" color="inherit" href="/">
@@ -62,7 +72,7 @@ const LayoutManagement = AuthRequired(({ toggleTopHeader, children }) => {
       </div>
       <Footer />
     </>
-  )
+  );
 });
 
 export default LayoutManagement;
