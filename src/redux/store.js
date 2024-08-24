@@ -7,6 +7,7 @@ import orderSlice from "./orderSlice";
 import returnSlice from "./returnSlice";
 import cancelSlice from "./cancelSlice";
 import reviewSlice from "./reviewSlice";
+import pendingSlice from "./pendingSlice";
 
 const rootReducer = combineReducers({
   auth: authSlice,
@@ -14,22 +15,24 @@ const rootReducer = combineReducers({
   order: orderSlice,
   return: returnSlice,
   cancel: cancelSlice,
-  review: reviewSlice
-})
+  review: reviewSlice,
+  pending: pendingSlice,
+});
 
 const persistConfig = {
   key: "root",
   version: 1,
   storage,
   whitelist: ["auth"],
-}
-const persistedReducer = persistReducer(persistConfig, rootReducer)
+};
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
   reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
-    serializableCheck: false,
-  }),
-})
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
+});
 
 export const persistor = persistStore(store);

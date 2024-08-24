@@ -45,8 +45,8 @@ const ChatBox = ({
         onClick={handleSendMessage}
         className="ms-3"
         style={{
-          cursor: `${message ? "pointer" : "default"}`,
-          color: `${message && "#0866ff"}`,
+          cursor: `${message.content ? "pointer" : "default"}`,
+          color: `${message.content && "#0866ff"}`,
         }}
       >
         <i className="fas fa-paper-plane"></i>

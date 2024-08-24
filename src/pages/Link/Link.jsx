@@ -359,7 +359,7 @@ const Link = () => {
           </div>
         </div>
       </div>
-      <div className={cx("link-social-wrapper")}>
+      {/* <div className={cx("link-social-wrapper")}>
         <h1 className={cx("link-title")}>Social Network</h1>
         <div className={cx("link-info-wrapper")}>
           <div className={cx("link-info-item")}>
@@ -468,7 +468,7 @@ const Link = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

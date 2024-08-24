@@ -1,0 +1,60 @@
+.payment-pending-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 5px;
+  margin-bottom: 100px;
+}
+
+.payment-account-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.payment-title {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  color: var(--black);
+  font-size: 25px;
+  margin: 0 0 20px;
+  color: var(--primary);
+  padding-bottom: 10px;
+}
+
+.payment-info-wrapper {
+  display: flex;
+  gap: 30px;
+  flex-direction: column;
+}
+
+.payment-link {
+  color: #6d5bba; /* Primary color */
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.payment-link:hover {
+  color: #8d58bf; /* Hover color */
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  background-color: #f0f0f0; /* Subtle background color on hover */
+}
+
+.payment-link:active {
+  color: #6d5bba; /* Active color */
+  background-color: #e0e0e0; /* Slightly darker background on click */
+  text-shadow: none;
+}
+
+.payment-link:focus {
+  outline: 2px solid #8d58bf; /* Focus outline */
+  outline-offset: 2px;
+}
+
+.payment-info-item {
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+}

@@ -24,9 +24,10 @@ import { listUserAddress } from "../../redux/addressSlice";
 import queryString from "query-string";
 import ReviewsIcon from "@mui/icons-material/Reviews";
 import { listUserOrder } from "../../redux/orderSlice";
-import { listUserReturn } from "../../redux/returnSlice";
+import { listOrderReturn } from "../../redux/returnSlice";
 import { listUserCancel } from "../../redux/cancelSlice";
 import { listUserReview } from "../../redux/reviewSlice";
+import { listOrderPending } from "../../redux/pendingSlice";
 
 const cx = classNames.bind(styles);
 
@@ -134,6 +135,7 @@ export default function AccountMenu() {
   const [listAddress, setListAddress] = useState([]);
   const [listReturn, setListReturn] = useState([]);
   const [listOrder, setListOrder] = useState([]);
+  const [listPending, setListPending] = useState([]);
   const [listCancel, setListCancel] = useState([]);
   const [listReview, setListReview] = useState([]);
   const userLogin = useSelector((state) => state.auth.login.currentUser?.user);
@@ -155,7 +157,7 @@ export default function AccountMenu() {
     } else if (nodeId == 7) {
       navigate("/manager/links");
     } else if (nodeId == 8) {
-      navigate("/manager/payments");
+      navigate("/manager/payments-pending");
     } else if (nodeId == 10) {
       navigate("/manager/reviews");
     } else if (nodeId == 11) {
@@ -186,7 +188,7 @@ export default function AccountMenu() {
         const queryStringData = queryString.stringify({
           filter: JSON.stringify({
             userId: userLogin.id,
-            status: "ordered || delivered || shipped",
+            status: ["ordered", "delivered ", "shipped"],
           }),
           sort: JSON.stringify(["OrderDate", "DESC"]),
         });
@@ -206,7 +208,7 @@ export default function AccountMenu() {
         const queryStringData = queryString.stringify({
           filter: JSON.stringify({
             userId: userLogin.id,
-            status: "returned",
+            status: ["returned"],
           }),
           sort: JSON.stringify(["OrderDate", "DESC"]),
         });
@@ -215,7 +217,7 @@ export default function AccountMenu() {
           {}
         );
         setListReturn(response.data);
-        dispatch(listUserReturn(response.data));
+        dispatch(listOrderReturn(response.data));
       } catch (error) {
         console.log(error);
       }
@@ -229,7 +231,7 @@ export default function AccountMenu() {
         const queryStringData = queryString.stringify({
           filter: JSON.stringify({
             userId: userLogin.id,
-            status: "cancelled",
+            status: ["cancelled"],
           }),
           sort: JSON.stringify(["OrderDate", "DESC"]),
         });
@@ -239,6 +241,29 @@ export default function AccountMenu() {
         );
         setListCancel(response.data);
         dispatch(listUserCancel(response.data));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, [isCancelFetching]);
+
+  useLayoutEffect(() => {
+    const fetchData = async () => {
+      try {
+        const queryStringData = queryString.stringify({
+          filter: JSON.stringify({
+            userId: userLogin.id,
+            status: ["pending"],
+          }),
+          sort: JSON.stringify(["OrderDate", "DESC"]),
+        });
+        const response = await getListInfo(
+          `/Admin/orders?${queryStringData}`,
+          {}
+        );
+        setListPending(response.data);
+        dispatch(listOrderPending(response.data));
       } catch (error) {
         console.log(error);
       }
@@ -343,7 +368,8 @@ export default function AccountMenu() {
           />
           <StyledTreeItem
             nodeId="8"
-            labelText="Payment Options"
+            labelInfo={listPending?.length || 0}
+            labelText="Payment Pending"
             labelIcon={PaymentIcon}
             color="#a250f5"
             bgColor="#f3e8fd"

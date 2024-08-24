@@ -7,18 +7,15 @@ const returnSlice = createSlice({
     listReturn: [],
   },
   reducers: {
-    saveUserReturn: (state, action) => {
+    saveOrderReturn: (state, action) => {
       state.isFetching = action.payload;
     },
-    listUserReturn: (state, action) => {
+    listOrderReturn: (state, action) => {
       state.listReturn = action.payload;
     },
-  }
-})
+  },
+});
 
-export const {
-  saveUserOrder,
-  listUserReturn,
-} = returnSlice.actions
+export const { saveOrderReturn, listOrderReturn } = returnSlice.actions;
 
-export default returnSlice.reducer
+export default returnSlice.reducer;

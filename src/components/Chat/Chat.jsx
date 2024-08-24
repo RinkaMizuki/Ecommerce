@@ -27,7 +27,10 @@ const Chat = ({ setIsShowChat, isShowChat, userLogin }) => {
   const [isAdminPreparing, setIsAdminPreparing] = useState(false);
 
   const handleSendMessage = async (e) => {
-    if (e.type === "click" || (e.type === "keydown" && e.keyCode === 13))
+    if (
+      (e.type === "click" || (e.type === "keydown" && e.keyCode === 13)) &&
+      message.content
+    )
       try {
         const messageDto = {
           messageId: null,
