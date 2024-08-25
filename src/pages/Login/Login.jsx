@@ -66,7 +66,6 @@ const Login = () => {
   const error = useSelector((state) => state.auth.login.error);
   const message = useSelector((state) => state.auth.login.message);
   const isFetching = useSelector((state) => state.auth.login.isFetching);
-
   //logics handle
   const handleTogglePassword = () => {
     const typePassword = passwordRef.current?.getAttribute("type");
@@ -124,6 +123,7 @@ const Login = () => {
     dispatch(loginStart());
     try {
       const res = await post("/auth/login", user);
+
       localStorage.setItem("remember", isChecked);
       if (!res.data?.user?.f2a) {
         toast.success(res?.data?.message, toastOptions);

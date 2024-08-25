@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { publicRoutes } from "./routes/routes.js";
 import { Fragment, useEffect, useState } from "react";
 import LayoutDefault from "./layouts/LayoutDefault";
@@ -6,8 +6,6 @@ import "./App.css";
 import LayoutManagement from "./layouts/LayoutManagement";
 import { ModalContext } from "./context/ModalContext.jsx";
 import LayoutFilter from "./layouts/LayoutFilter";
-import { BrowserView, MobileView } from "react-device-detect";
-import NoSupport from "./pages/NoSupport";
 import socket from "./services/socketioService.js";
 import { getTokenFromCookie } from "./services/signalrService.js";
 import { useContext } from "react";
@@ -40,44 +38,35 @@ function App() {
   }, []);
 
   return (
-    <>
-      <BrowserView>
-        <BrowserRouter>
-          <Routes>
-            {publicRoutes.map((route, index) => {
-              const Layout =
-                route?.layout === "management"
-                  ? LayoutManagement
-                  : !route?.layout
-                  ? Fragment
-                  : route?.layout === "filter"
-                  ? LayoutFilter
-                  : LayoutDefault;
-              return (
-                <Route
-                  key={index}
-                  path={route.path}
-                  element={
-                    route?.layout ? (
-                      <Layout toggleTopHeader={toggleTopHeader}>
-                        <route.element />
-                      </Layout>
-                    ) : (
-                      <Layout>
-                        <route.element />
-                      </Layout>
-                    )
-                  }
-                ></Route>
-              );
-            })}
-          </Routes>
-        </BrowserRouter>
-      </BrowserView>
-      <MobileView>
-        <NoSupport />
-      </MobileView>
-    </>
+    <Routes>
+      {publicRoutes.map((route, index) => {
+        const Layout =
+          route?.layout === "management"
+            ? LayoutManagement
+            : !route?.layout
+            ? Fragment
+            : route?.layout === "filter"
+            ? LayoutFilter
+            : LayoutDefault;
+        return (
+          <Route
+            key={index}
+            path={route.path}
+            element={
+              route?.layout ? (
+                <Layout toggleTopHeader={toggleTopHeader}>
+                  <route.element />
+                </Layout>
+              ) : (
+                <Layout>
+                  <route.element />
+                </Layout>
+              )
+            }
+          ></Route>
+        );
+      })}
+    </Routes>
   );
 }
 
